@@ -1,0 +1,29 @@
+{% import '_includes/forms' as forms %}
+
+<div class="icon-picker-settings">
+    {% if not errors | length %}
+        {% set iconSetsInput %}
+            {{ forms.checkboxSelectField({
+                id: 'svgicons',
+                name: 'iconSets',
+                label: 'Available Icon Sets' | t('icon-picker'),
+                options: iconSets,
+                values: settings.iconSets ?: '*',
+                showAllOption: true,
+            }) }}
+        {% endset %}
+    {% else %}
+        {% set iconSetsInput %}
+            <div class="errors">
+                {% for error in errors %}
+                    {{ error | t('icon-picker') | raw }}
+                {% endfor %}
+            </div>
+        {% endset %}
+    {% endif %}
+
+    {{ forms.field({
+        label: 'Icon Sets' | t('icon-picker'),
+        id: 'iconSets'
+    }, iconSetsInput) }}
+</div>
