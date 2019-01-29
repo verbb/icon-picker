@@ -99,14 +99,20 @@ class IconPickerField extends Field
 
     public function normalizeValue($value, ElementInterface $element = null)
     {
-        if ($value === null) {
-            return new IconModel();
-        }
+        $model = new IconModel();
 
         if (is_string($value)) {
-            $value = Json::decodeIfJson($value);
+            $content = Json::decodeIfJson($value);
+
+            if (is_array($content)) {
+                foreach ($content as $k => $v) {
+                    if (property_exists($model, $k)) {
+                        $model->$k = $v;
+                    }
+                }
+            }
         }
 
-        return $value;
+        return $model;
     }
 }
