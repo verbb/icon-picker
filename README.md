@@ -10,6 +10,9 @@ Currently only supports single SVG's, but files can be organised into multiple f
 - Support SVG sprite maps
 - Support select libraries (Font Awesome)
 
+### Pricing
+This plugin will be available on the plugin store after initial testing and development for $19.
+
 ## Installation
 You can install Icon Picker via the plugin store, or through Composer.
 
