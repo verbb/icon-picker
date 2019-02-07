@@ -1,3 +1,8 @@
+> ## Beta release
+> 
+> ### This plugin is currently undergoing beta testing. Feel free to install and report bugs, and refer to our roadmap before the formal release.
+>
+
 # Icon Picker Plugin for Craft CMS
 
 Icon Picker is a field for Craft CMS to let your content editors select an icon from a selected folder for your project.
