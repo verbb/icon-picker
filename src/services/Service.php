@@ -51,7 +51,7 @@ class Service extends Component
                 $icons[$relativeFilePath] = [
                     'value' => $relativeFilePath,
                     'url' => $url,
-                    'label' => basename($relativeFilePath),
+                    'label' => pathinfo($relativeFilePath, PATHINFO_FILENAME),
                 ];
             }
         } else {
@@ -60,7 +60,7 @@ class Service extends Component
             $icons[$blankUrl] = [
                 'value' => $blankUrl,
                 'url' => $blankUrl,
-                'label' => basename($blankUrl),
+                'label' => pathinfo($blankUrl, PATHINFO_FILENAME),
             ];
         }
 
