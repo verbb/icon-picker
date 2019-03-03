@@ -39,6 +39,7 @@ class Service extends Component
 
                 // Get the resulting URL
                 $url = FileHelper::normalizePath($iconSetsUrl . DIRECTORY_SEPARATOR . $relativeFilePath);
+                $url = Craft::getAlias($url);
 
                 // Add in the folder name (if present), which helps to group things nicely
                 $folder = $this->_getFolderName($relativeFilePath, false);

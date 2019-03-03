@@ -25,6 +25,7 @@ Craft.IconPicker.Input = Garnish.Base.extend({
             maxItems: 1,
             maxOptions: 100,
             create: false,
+            // dropdownParent: 'body',
             render: {
                 item: function(item, escape) {
                     var html = '<div class="icon-picker-thumb">' +

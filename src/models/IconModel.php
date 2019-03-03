@@ -30,7 +30,10 @@ class IconModel extends Model
     {
         $iconSetsUrl = IconPicker::$plugin->getSettings()->iconSetsUrl;
 
-        return FileHelper::normalizePath($iconSetsUrl . DIRECTORY_SEPARATOR . $this->icon);
+        $url = FileHelper::normalizePath($iconSetsUrl . DIRECTORY_SEPARATOR . $this->icon);
+        $url = Craft::getAlias($url);
+
+        return $url;
     }
 
     public function getInline()
