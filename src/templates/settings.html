@@ -18,7 +18,7 @@
 {% namespace 'settings' %}
     {{ forms.textField({
         label: 'Icons URL' | t('icon-picker'),
-        instructions: 'Provide the full, or relative URL to your icon files. Also suppose aliases.' | t('icon-picker'),
+        instructions: 'Provide the full, or relative URL to your icon files. Also supports aliases.' | t('icon-picker'),
         name: 'iconSetsUrl',
         value: settings.iconSetsUrl,
         errors: settings.getErrors('iconSetsUrl'),
