@@ -1,7 +1,41 @@
 {% extends 'icon-picker/_layouts' %}
 {% import '_includes/forms' as forms %}
 
+{% set crumbs = [
+    { label: 'Icon Picker' | t('icon-picker'), url: url('icon-picker/settings') },
+    { label: 'Settings' | t('app'), url: url('icon-picker/settings') }
+] %}
+
+{% set fullPageForm = true %}
+
 {% block blockContent %}
+
+<h2>{{ 'Settings' | t('icon-picker') }}</h2>
+
+<input type="hidden" name="action" value="plugins/save-plugin-settings">
+<input type="hidden" name="pluginHandle" value="icon-picker">
+
+{% namespace 'settings' %}
+    {{ forms.textField({
+        label: 'Icons URL' | t('icon-picker'),
+        instructions: 'Provide the full, or relative URL to your icon files. Also suppose aliases.' | t('icon-picker'),
+        name: 'iconSetsUrl',
+        value: settings.iconSetsUrl,
+        errors: settings.getErrors('iconSetsUrl'),
+        required: true,
+    }) }}
+
+    {{ forms.textField({
+        label: 'Icons Path' | t('icon-picker'),
+        instructions: 'Provide the full path to your icon files.' | t('icon-picker'),
+        name: 'iconSetsPath',
+        value: settings.iconSetsPath,
+        errors: settings.getErrors('iconSetsPath'),
+        required: true,
+    }) }}
+{% endnamespace %}
+
+<hr>
 
 <h2>{{ 'Migrate SVG Icons plugin fields' | t('icon-picker') }}</h2>
 
