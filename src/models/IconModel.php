@@ -74,9 +74,17 @@ class IconModel extends Model
         return $this->icon;
     }
 
-    public function getGlyph()
+    public function getGlyph($format = 'charHex')
     {
-        return '&#' . $this->glyphId;
+        if ($format === 'decimal') {
+            return $this->glyphId;
+        } else if ($format === 'hex') {
+            return dechex($this->glyphId);
+        } else if ($format === 'char') {
+            return '&#' . $this->glyphId;
+        }
+
+        return '&#x' . dechex($this->glyphId);
     }
 
 }
