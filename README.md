@@ -1,102 +1,27 @@
-> ## Beta release
-> 
-> ### This plugin is currently undergoing beta testing. Feel free to install and report bugs, and refer to our roadmap before the formal release.
->
-
 # Icon Picker Plugin for Craft CMS
+
+<img width="500" src="https://verbb.io/uploads/plugins/icon-picker/_800x455_crop_center-center/icon-picker-social-card.png">
 
 Icon Picker is a field for Craft CMS to let your content editors select an icon from a selected folder for your project.
 
-Currently only supports single SVG's, but files can be organised into multiple folders.
+## Features
 
-### Roadmap (before release)
+- Provides a searchable, intuitive UI for selecting icons.
+- Supports single SVGs, SVG sprites, and icon fonts.
+- Support for multiple folders to keep your icons organised.
+- Built-in support for Font Awesome 5.
+- Restrict which icon sets are available for each field.
+- Extendable to allow more third-party remote icon sets through event hooks.
 
-- Support icon fonts
-- Support SVG sprite maps
-- Support select libraries (Font Awesome)
+<img width="500" src="https://raw.githubusercontent.com/verbb/icon-picker/craft-3/docs/screenshots/index.png" style="box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-radius: 4px; border: 1px solid rgba(0,0,0,0.12);">
 
-### Pricing
-This plugin will be available on the plugin store after initial testing and development for $19.
+## Documentation
 
-## Installation
-You can install Icon Picker via the plugin store, or through Composer.
+Visit the [Icon Picker Plugin page](https://verbb.io/craft-plugins/icon-picker) for all documentation, guides, pricing and developer resources.
 
-### Craft Plugin Store
-To install **Icon Picker**, navigate to the _Plugin Store_ section of your Craft control panel, search for `Icon Picker`, and click the _Try_ button.
+## Support
 
-### Composer
-You can also add the package to your project using Composer.
-
-1. Open your terminal and go to your Craft project:
-
-        cd /path/to/project
-
-2. Then tell Composer to load the plugin:
-    
-        composer require verbb/icon-picker
-
-3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Icon Picker.
-
-## Usage
-
-Create your field, and optionally limit any particular folders you require. When editing an entry, use the dropdown field to select an icon, or start typing to filter icons by their filename.
-
-## Configuration
-
-Create an `icon-picker.php` file under your `/config` directory with the following options available to you. You can also use multi-environment options to change these per environment.
-
-```php
-<?php
-
-return [
-    '*' => [
-        'iconSetsPath' => CRAFT_BASE_PATH . '/icons/',
-        'iconSetsUrl' => '/icons/',
-    ]
-];
-```
-
-### Configuration options
-
-- `iconSetsPath` - File system path to the base folder for your icons.
-- `iconSetsUrl` - The base URL prepended to the path and filename of the icon.
-
-## Icon
-
-Whenever you're dealing with a icon in your template, you're actually working with a `Icon` object.
-
-## Attributes
-
-Attribute | Description
---- | ---
-`id` | ID of the icon.
-`icon` | The filename and relative path of the icon.
-`width` | The width of the icon.
-`height` | The height of the icon.
-
-## Methods
-
-Method | Description
---- | ---
-`getDimensions(height)` | Returns an array of [width, height] for the icon. Pass in an optional height to restrict it by, while keeping the aspect ratio of the icon.
-`getUrl()` | Return the full URL to the icon.
-`getInline()` | Returns the raw contents of the icon.
-
-## Available Variables
-
-The following are common methods you will want to call in your front end templates:
-
-### `craft.iconPicker.getIcon(icon)`
-
-Fetches an `Icon` from the provided filename and relative path.
-
-### `craft.iconPicker.getDimensions(icon, height)`
-
-Returns the dimensions of an icon from the provided filename and relative path. Optionally provide a height to contrain the dimensions by.
-
-### `craft.iconPicker.inline(icon)`
-
-Returns the raw content from the provided filename and relative path.
+Get in touch with us via the [Icon Picker Support page](https://verbb.io/craft-plugins/icon-picker/support) or by [creating a Github issue](https://github.com/verbb/icon-picker/issues)
 
 ### Credits
 Based on [SVG Icons](https://github.com/fyrebase/svg-icons) for Craft 2.
