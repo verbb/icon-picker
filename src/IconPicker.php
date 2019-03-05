@@ -1,6 +1,7 @@
 <?php
 namespace verbb\iconpicker;
 
+use verbb\iconpicker\assetbundles\IconPickerCacheAsset;
 use verbb\iconpicker\base\PluginTrait;
 use verbb\iconpicker\fields\IconPickerField;
 use verbb\iconpicker\models\Settings;
@@ -51,7 +52,7 @@ class IconPicker extends Plugin
 
         // Provide a cache of loaded spritesheets for the CP
         if (Craft::$app->getRequest()->getIsCpRequest()) {
-            Craft::$app->view->registerJs('Craft.IconPicker.Cache = { stylesheets: [], fonts: [] };', View::POS_READY);
+            Craft::$app->getView()->registerAssetBundle(IconPickerCacheAsset::class);
         }
     }
 

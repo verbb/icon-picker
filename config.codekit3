@@ -429,6 +429,17 @@
 		"oS": 3,
 		"uL": 1
 		},
+	"/src/resources/src/js/icon-picker-cache.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 1,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "/src/resources/dist/js/icon-picker-cache.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/src/resources/src/js/icon-picker.js": {
 		"bF": 0,
 		"ft": 64,
