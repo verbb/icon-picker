@@ -1,7 +1,7 @@
 {% import '_includes/forms' as forms %}
 
 <div class="icon-picker {{ showLabels ? 'show-labels' }}">
-    <select class="icon-picker-select" name="{{ name ~ '[icon]' }}" data-placeholder="Select Icon...">
+    <select class="icon-picker-select" name="{{ name ~ '[icon]' }}" data-placeholder="{{ (iconSets | length) ? 'Select Icon...' | t('icon-picker') : 'No icons available' | t('icon-picker') }}">
         <option value="">None</option>
 
         {% for optgroup, icons in iconSets %}
