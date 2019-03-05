@@ -6,4 +6,4 @@ With Icon Picker, you can access the name of the SVG picked, or even get the raw
 
 :::tip
 You can also use [SVG Sprites](docs:feature-tour/svg-icons) instead of, or an addition to single SVGs.
-::;
+:::
