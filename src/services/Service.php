@@ -120,6 +120,10 @@ class Service extends Component
         }
 
         if ($remoteSets) {
+            if ($remoteSets === '*') {
+                $remoteSets = IconPicker::$plugin->getIconSources()->getRegisteredIconSources();
+            }
+
             foreach ($remoteSets as $remoteSetHandle) {
                 $remoteSet = IconPicker::$plugin->getIconSources()->getRegisteredIconSourceByHandle($remoteSetHandle);
 
@@ -407,7 +411,7 @@ class Service extends Component
         } else if ($type === 'svg') {
             return ($path) ? FileHelper::normalizePath($path) : 'root';
         } else {
-            return FileHelper::normalizePath($path . DIRECTORY_SEPARATOR . $name);
+            return ($path) ? FileHelper::normalizePath($path . DIRECTORY_SEPARATOR . $name) : $name;
         }
     }
 
