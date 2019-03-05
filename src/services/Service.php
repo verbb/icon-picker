@@ -249,6 +249,11 @@ class Service extends Component
             }
         }
 
+        // Sort alphabetically
+        uasort($iconSets, function($a, $b) {
+            return strcmp(basename($a), basename($b));
+        });
+
         return $iconSets;
     }
 
