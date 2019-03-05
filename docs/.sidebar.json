@@ -1,0 +1,43 @@
+[
+    {
+        "title": "Get Started",
+        "collapsable": false,
+        "children": [
+            "get-started/installation-setup",
+            "get-started/requirements",
+            "get-started/configuration"
+        ]
+    },
+    {
+        "title": "Feature Tour",
+        "collapsable": false,
+        "children": [
+            "feature-tour/svg-icons",
+            "feature-tour/svg-sprites",
+            "feature-tour/icon-fonts"
+        ]
+    },
+    {
+        "title": "Template Guides",
+        "collapsable": false,
+        "children": [
+            "template-guides/available-variables",
+            "template-guides/rendering-icons"
+        ]
+    },
+    {
+        "title": "Developers",
+        "collapsable": false,
+        "children": [
+            "developers/icon",
+            "developers/icon-sources"
+        ]
+    },
+    {
+        "title": "Support",
+        "collapsable": false,
+        "children": [
+            "support/get-support"
+        ]
+    }
+]
