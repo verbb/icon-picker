@@ -1,5 +1,12 @@
 {% import '_includes/forms' as forms %}
 
+{{ forms.lightswitchField({
+    label: 'Show Labels' | t('icon-picker'),
+    instructions: 'Whether to show labels for each icon in the selection dropdown.' | t('icon-picker'),
+    name: 'showLabels',
+    on: settings.showLabels,
+}) }}
+
 {% if not errors | length %}
     {{ forms.checkboxSelectField({
         id: 'svgicons',

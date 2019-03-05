@@ -81,10 +81,6 @@ class Service extends Component
                         'url' => $file['@id'],
                         'label' => $file['@id'],
                     ];
-
-                    if ($i > 5) {
-                        break;
-                    }
                 }
 
                 $this->_loadedSpriteSheets[$spriteSheet] = $files;
@@ -112,10 +108,6 @@ class Service extends Component
                         'url' => '&#' . $glyph['glyphId'],
                         'label' => $glyph['name'],
                     ];
-
-                    if ($i > 5) {
-                        break;
-                    }
                 }
 
                 $this->_loadedFonts[$file] = $glyphs;

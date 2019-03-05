@@ -34,6 +34,7 @@ class IconPickerField extends Field
     // =========================================================================
 
     public $columnType = Schema::TYPE_TEXT;
+    public $showLabels = false;
     public $iconSets;
 
 
@@ -63,6 +64,7 @@ class IconPickerField extends Field
             'name' => $this->handle,
             'fonts' => $fonts,
             'spriteSheets' => $spriteSheets,
+            'settings' => $this->settings,
         ]) . ');');
 
         return Craft::$app->getView()->renderTemplate('icon-picker/_field/input', [
@@ -71,6 +73,7 @@ class IconPickerField extends Field
             'namespaceId' => $nameSpacedId,
             'value' => $value,
             'iconSets' => $iconSets,
+            'showLabels' => $this->showLabels,
         ]);
     }
 

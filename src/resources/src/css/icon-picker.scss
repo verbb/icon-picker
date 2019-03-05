@@ -72,6 +72,11 @@ select.icon-picker-select {
     height: 56px;
     padding: 0 !important;
     margin: 0 !important;
+
+    .icon-picker.show-labels & {
+        width: 100px;
+        height: 66px;
+    }
 }
 
 .icon-picker-item img {
@@ -97,6 +102,10 @@ select.icon-picker-select {
     display: block;
     width: 100%;
     height: auto;
+}
+
+.icon-picker-item-label {
+    font-size: 12px;
 }
 
 

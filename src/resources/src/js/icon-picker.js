@@ -18,6 +18,8 @@ Craft.IconPicker.Input = Garnish.Base.extend({
     init: function(options) {
         this.options = options;
 
+        var self = this;
+
         this.loadSpriteSheets();
         this.loadFonts();
 
@@ -55,13 +57,14 @@ Craft.IconPicker.Input = Garnish.Base.extend({
                         var content = '<span class="icon-picker-font font-face-' + item.name + '">' + item.url + '</span>';
                     }
 
-                    console.log(item)
+                    var labels = self.options.settings.showLabels ? escape(item.text) : '';
 
                     return '<div class="icon-picker-item">' +
                         '<div class="icon-picker-item-wrap">' +
                             '<div class="icon-picker-item-icon">' +
                                 content + 
                             '</div>' +
+                            '<span class="icon-picker-item-label">' + labels + '</span>' +
                         '</div>' +
                     '</div>';
                 }

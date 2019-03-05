@@ -1,6 +1,6 @@
 {% import '_includes/forms' as forms %}
 
-<div class="icon-picker">
+<div class="icon-picker {{ showLabels ? 'show-labels' }}">
     <select class="icon-picker-select" name="{{ name ~ '[icon]' }}" data-placeholder="Select Icon...">
         <option value="">None</option>
 
