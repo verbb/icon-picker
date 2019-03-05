@@ -18,6 +18,7 @@ class IconModel extends Model
     public $glyphName;
     public $iconSet;
     public $type;
+    public $css;
     public $width;
     public $height;
 
@@ -33,6 +34,10 @@ class IconModel extends Model
 
         if ($this->glyphId) {
             return $this->glyph;
+        }
+
+        if ($this->css) {
+            return $this->css;
         }
 
         return $this->getUrl();
@@ -69,6 +74,8 @@ class IconModel extends Model
             return implode(':', [$this->type, $this->iconSet, $this->sprite]);
         } else if ($this->type === 'glyph') {
             return implode(':', [$this->type, $this->iconSet, $this->glyphId, $this->glyphName]);
+        } else if ($this->type === 'css') {
+            return implode(':', [$this->type, $this->iconSet, $this->css]);
         }
 
         return $this->icon;

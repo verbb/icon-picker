@@ -2,6 +2,7 @@
 namespace verbb\iconpicker\base;
 
 use verbb\iconpicker\IconPicker;
+use verbb\iconpicker\services\IconSources;
 use verbb\iconpicker\services\Service;
 
 use Craft;
@@ -21,6 +22,11 @@ trait PluginTrait
 
     // Public Methods
     // =========================================================================
+
+    public function getIconSources()
+    {
+        return $this->get('iconSources');
+    }
 
     public function getService()
     {
@@ -44,6 +50,7 @@ trait PluginTrait
     private function _setPluginComponents()
     {
         $this->setComponents([
+            'iconSources' => IconSources::class,
             'service' => Service::class,
         ]);
     }

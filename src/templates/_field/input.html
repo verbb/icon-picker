@@ -7,13 +7,7 @@
         {% for optgroup, icons in iconSets %}
             <optgroup label="{{ optgroup == 'root' ? '' : optgroup }}">
                 {% for icon in icons %}
-                    {% if icon.type == 'sprite' %}
-                        <option data-data="{{ icon | json_encode }}" value="{{ icon.value }}"{% if icon.value == value.getSerializedValue() %} selected{% endif %}>{{ icon.label }}</option>
-                    {% elseif icon.type == 'glyph' %}
-                        <option data-data="{{ icon | json_encode }}" value="{{ icon.value }}"{% if icon.value == value.getSerializedValue() %} selected{% endif %}>{{ icon.label }}</option>
-                    {% elseif icon.type == 'svg' %}
-                        <option data-data="{{ icon | json_encode }}" value="{{ icon.value }}"{% if icon.value == value.getSerializedValue() %} selected{% endif %}>{{ icon.label }}</option>
-                    {% endif %}
+                    <option data-data="{{ icon | json_encode }}" value="{{ icon.value }}"{% if icon.value == value.getSerializedValue() %} selected{% endif %}>{{ icon.label }}</option>
                 {% endfor %}
             </optgroup>
         {% endfor %}

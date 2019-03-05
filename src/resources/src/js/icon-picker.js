@@ -39,6 +39,8 @@ Craft.IconPicker.Input = Garnish.Base.extend({
                         var content = '<svg viewBox="0 0 1000 1000"><use xlink:href="#' + item.url + '" /></svg>';
                     } else if (item.type == 'glyph') {
                         var content = '<span class="icon-picker-font font-face-' + item.name + '">' + item.url + '</span>';
+                    } else if (item.type == 'css') {
+                        var content = '<span class="icon-picker-font ' + item.classes + '">' + item.url + '</span>';
                     }
 
                     return '<div class="icon-picker-thumb">' +
@@ -55,6 +57,8 @@ Craft.IconPicker.Input = Garnish.Base.extend({
                         var content = '<svg viewBox="0 0 1000 1000"><use xlink:href="#' + item.url + '" /></svg>';
                     } else if (item.type == 'glyph') {
                         var content = '<span class="icon-picker-font font-face-' + item.name + '">' + item.url + '</span>';
+                    } else if (item.type == 'css') {
+                        var content = '<span class="icon-picker-font ' + item.classes + '">' + item.url + '</span>';
                     }
 
                     var labels = self.options.settings.showLabels ? escape(item.text) : '';
@@ -78,18 +82,22 @@ Craft.IconPicker.Input = Garnish.Base.extend({
             if ($.inArray(font.name, Craft.IconPicker.Cache.fonts) == -1) {
                 Craft.IconPicker.Cache.fonts.push(font.name);
 
-                var css = '@font-face {' + 
-                    'font-family: "font-face-' + font.name + '";' + 
-                    'src: url("' + font.url + '");' + 
-                    'font-weight: normal;' + 
-                    'font-style: normal;' + 
-                '}' + 
+                if (font.type == 'local') {
+                    var css = '@font-face {' + 
+                        'font-family: "' + font.name + '";' + 
+                        'src: url("' + font.url + '");' + 
+                        'font-weight: normal;' + 
+                        'font-style: normal;' + 
+                    '}' + 
 
-                '.font-face-' + font.name + ' {' + 
-                    'font-family: "font-face-' + font.name + '" !important;' + 
-                '}';
+                    '.' + font.name + ' {' + 
+                        'font-family: "' + font.name + '" !important;' + 
+                    '}';
 
-                $('head').append('<style type="text/css">' + css + '</style>');
+                    $('head').append('<style type="text/css">' + css + '</style>');
+                } else if (font.type == 'remote') {
+                    $('head').append('<link rel="stylesheet" type="text/css" href="' + font.url + '">');
+                }
             }
         }
     },

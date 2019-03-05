@@ -36,6 +36,7 @@ class IconPickerField extends Field
     public $columnType = Schema::TYPE_TEXT;
     public $showLabels = false;
     public $iconSets;
+    public $remoteSets = [];
 
 
     // Public Methods
@@ -54,7 +55,8 @@ class IconPickerField extends Field
 
         Craft::$app->getView()->registerAssetBundle(IconPickerAsset::class);
 
-        $iconSets = IconPicker::$plugin->getService()->getIcons($this->iconSets);
+        $iconSets = IconPicker::$plugin->getService()->getIcons($this->iconSets, $this->remoteSets);
+
         $spriteSheets = IconPicker::$plugin->getService()->getSpriteSheets();
         $fonts = IconPicker::$plugin->getService()->getLoadedFonts();
 
@@ -85,6 +87,7 @@ class IconPickerField extends Field
         $errors = [];
 
         $iconSets = IconPicker::$plugin->getService()->getIconSets();
+        $remoteSets = IconPicker::$plugin->getIconSources()->getRegisteredOptions();
 
         if (!$iconSets) {
             $errors[] = 'Unable to locate SVG Icons source directory.</strong><br>Please ensure the directory <code>' . $iconSetsPath . '</code> exists.</p>';
@@ -93,6 +96,7 @@ class IconPickerField extends Field
         return Craft::$app->getView()->renderTemplate('icon-picker/_field/settings', [
             'settings' => $this->getSettings(),
             'iconSets' => $iconSets,
+            'remoteSets' => $remoteSets,
             'errors' => $errors,
         ]);
     }
@@ -132,6 +136,15 @@ class IconPickerField extends Field
             $value['iconSet'] = $explode[1];
             $value['glyphId'] = $explode[2];
             $value['glyphName'] = $explode[3];
+        }
+
+        if (strstr($value['icon'], 'css:')) {
+            $explode = explode(':', $value['icon']);
+
+            $value['icon'] = null;
+            $value['type'] = $explode[0];
+            $value['iconSet'] = $explode[1];
+            $value['css'] = $explode[2];
         }
 
         return $value;

@@ -10,6 +10,7 @@ use craft\helpers\FileHelper;
 use craft\helpers\Image;
 use craft\helpers\StringHelper;
 use craft\helpers\Template;
+use craft\helpers\UrlHelper;
 
 use yii\base\Event;
 use Cake\Utility\Xml as XmlParser;
@@ -28,7 +29,7 @@ class Service extends Component
     // Public Methods
     // =========================================================================
 
-    public function getIcons($iconSets)
+    public function getIcons($iconSets, $remoteSets)
     {
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->iconSetsPath;
@@ -37,7 +38,7 @@ class Service extends Component
         $icons = [];
 
         // Make sure to always check the directory first, otherwise will throw errors
-        if (is_dir($iconSetsPath)) {
+        if (is_dir($iconSetsPath) && $iconSets) {
             // Fetch the SVG files
             $files = $this->_getFiles($iconSets, [
                 'only' => ['*.svg'],
@@ -105,22 +106,44 @@ class Service extends Component
                         'type' => 'glyph',
                         'name' =>  $name,
                         'value' => 'glyph:' . $iconSet . ':' . $glyph['glyphId'] . ':' . $glyph['name'],
-                        'url' => '&#' . $glyph['glyphId'],
+                        'url' => '&#x' . dechex($glyph['glyphId']),
                         'label' => $glyph['name'],
                     ];
                 }
 
-                $this->_loadedFonts[$file] = $glyphs;
+                $this->_loadedFonts[] = [
+                    'type' => 'local',
+                    'name' => 'font-face-' . $name,
+                    'url' => $this->_getUrlForPath($file),
+                ];
             }
+        }
 
-        } else {
-            $blankUrl = Craft::$app->getAssetManager()->getPublishedUrl('@verbb/iconpicker/resources/dist', false, 'svg/icon-blank.svg');
+        if ($remoteSets) {
+            foreach ($remoteSets as $remoteSetHandle) {
+                $remoteSet = IconPicker::$plugin->getIconSources()->getRegisteredIconSourceByHandle($remoteSetHandle);
 
-            $icons[$blankUrl] = [
-                'value' => $blankUrl,
-                'url' => $blankUrl,
-                'label' => pathinfo($blankUrl, PATHINFO_FILENAME),
-            ];
+                if ($remoteSet) {
+                    foreach ($remoteSet['icons'] as $i => $icon) {
+                        $name = pathinfo($remoteSet['url'], PATHINFO_FILENAME);
+
+                        $icons[$remoteSet['label']][] = [
+                            'type' => 'css',
+                            'name' =>  $remoteSet['fontName'],
+                            'value' => 'css:' . $remoteSetHandle . ':' . $icon,
+                            'classes' => $remoteSet['classes'] . $icon,
+                            'url' => '',
+                            'label' => $icon,
+                        ];
+                    }
+
+                    $this->_loadedFonts[] = [
+                        'type' => 'remote',
+                        'name' => $remoteSet['fontName'],
+                        'url' => $remoteSet['url'],
+                    ];
+                }
+            }
         }
 
         return $icons;
@@ -193,17 +216,7 @@ class Service extends Component
 
     public function getLoadedFonts()
     {
-        $fonts = [];
-
-        foreach ($this->_loadedFonts as $font => $glyphs) {
-            $fonts[] = [
-                'url' => $this->_getUrlForPath($font),
-                'name' => pathinfo($font, PATHINFO_FILENAME),
-                'glyphs' => $glyphs,
-            ];
-        }
-
-        return $fonts;
+        return $this->_loadedFonts;
     }
 
     public function getIconSets()
@@ -356,6 +369,10 @@ class Service extends Component
             return $searches;
         }
 
+        if (!is_array($paths)) {
+            return null;
+        }
+
         foreach ($paths as $path) {
             foreach ($searches as $search) {
                 $array[] = FileHelper::normalizePath($path . DIRECTORY_SEPARATOR . $search);
@@ -399,17 +416,21 @@ class Service extends Component
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->iconSetsPath;
 
+        $files = [];
+
         // From the provided 'only' options, prefix paths with the icon set path, to ensure we only
         // fetch icons from icons sets that we've allowed. 
         // Will turn something like `['*.svg']` into `['my/path/*.svg']`.
         $options['only'] = $this->_fileSearchPaths($options['only'], $iconSets);
 
-        $files = FileHelper::findFiles($iconSetsPath, $options);
+        if ($options['only']) {
+            $files = FileHelper::findFiles($iconSetsPath, $options);
 
-        // Sort alphabetically
-        uasort($files, function($a, $b) {
-            return strcmp(basename($a), basename($b));
-        });
+            // Sort alphabetically
+            uasort($files, function($a, $b) {
+                return strcmp(basename($a), basename($b));
+            });
+        }
 
         return $files;
     }
