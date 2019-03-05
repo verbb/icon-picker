@@ -14,6 +14,7 @@ use craft\helpers\UrlHelper;
 use craft\services\Fields;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
+use craft\web\View;
 
 use yii\base\Event;
 use yii\base\Module;
@@ -47,6 +48,11 @@ class IconPicker extends Plugin
         $this->_registerCpRoutes();
         $this->_registerVariables();
         $this->_registerFieldTypes();
+
+        // Provide a cache of loaded spritesheets for the CP
+        if (Craft::$app->getRequest()->getIsCpRequest()) {
+            Craft::$app->view->registerJs('Craft.IconPicker.Cache = { stylesheets: [], fonts: [] };', View::POS_READY);
+        }
     }
 
     public function getSettingsResponse()

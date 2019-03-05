@@ -99,3 +99,30 @@ select.icon-picker-select {
     height: auto;
 }
 
+
+//
+// Icon Font Glyphs
+//
+
+.icon-picker-font {
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: baseline;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    .icon-picker-thumb & {
+        font-size: 24px;
+    }
+
+    .icon-picker-item & {
+        font-size: 36px;
+    }
+}
+
+

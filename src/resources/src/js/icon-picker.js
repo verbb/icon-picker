@@ -18,6 +18,9 @@ Craft.IconPicker.Input = Garnish.Base.extend({
     init: function(options) {
         this.options = options;
 
+        this.loadSpriteSheets();
+        this.loadFonts();
+
         this.container = $('#' + options.inputId + '-field');
         this.$selectize = this.container.find('.icon-picker-select');
 
@@ -28,28 +31,82 @@ Craft.IconPicker.Input = Garnish.Base.extend({
             // dropdownParent: 'body',
             render: {
                 item: function(item, escape) {
-                    var html = '<div class="icon-picker-thumb">' +
+                    if (item.type == 'svg') {
+                        var content = '<img src="' + item.url + '" alt="' + escape(item.text) + '" />';
+                    } else if (item.type == 'sprite') {
+                        var content = '<svg viewBox="0 0 1000 1000"><use xlink:href="#' + item.url + '" /></svg>';
+                    } else if (item.type == 'glyph') {
+                        var content = '<span class="icon-picker-font font-face-' + item.name + '">' + item.url + '</span>';
+                    }
+
+                    return '<div class="icon-picker-thumb">' +
                         '<div class="icon-picker-thumb-icon">' +
-                            '<img src="' + item.url + '" alt="' + escape(item.text) + '" />' +
+                            content + 
                         '</div>' +
                         '<span>' + escape(item.text) + '</span>' + 
                     '</div>';
-
-                    return html;
                 },
                 option: function(item, escape) {
-                    var html = '<div class="icon-picker-item">' +
+                    if (item.type == 'svg') {
+                        var content = '<img src="' + item.url + '" alt="' + escape(item.text) + '" title="' + escape(item.text) + '" />';
+                    } else if (item.type == 'sprite') {
+                        var content = '<svg viewBox="0 0 1000 1000"><use xlink:href="#' + item.url + '" /></svg>';
+                    } else if (item.type == 'glyph') {
+                        var content = '<span class="icon-picker-font font-face-' + item.name + '">' + item.url + '</span>';
+                    }
+
+                    console.log(item)
+
+                    return '<div class="icon-picker-item">' +
                         '<div class="icon-picker-item-wrap">' +
                             '<div class="icon-picker-item-icon">' +
-                                '<img src="' + item.url + '" alt="' + escape(item.text) + '" title="' + escape(item.text) + '" />' +
+                                content + 
                             '</div>' +
                         '</div>' +
                     '</div>';
-
-                    return html;
                 }
             }
         });
+    },
+    loadFonts: function() {
+        for (var i = 0; i < this.options.fonts.length; i++) {
+            var font = this.options.fonts[i];
+
+            if ($.inArray(font.name, Craft.IconPicker.Cache.fonts) == -1) {
+                Craft.IconPicker.Cache.fonts.push(font.name);
+
+                var css = '@font-face {' + 
+                    'font-family: "font-face-' + font.name + '";' + 
+                    'src: url("' + font.url + '");' + 
+                    'font-weight: normal;' + 
+                    'font-style: normal;' + 
+                '}' + 
+
+                '.font-face-' + font.name + ' {' + 
+                    'font-family: "font-face-' + font.name + '" !important;' + 
+                '}';
+
+                $('head').append('<style type="text/css">' + css + '</style>');
+            }
+        }
+    },
+
+    loadSpriteSheets: function() {
+        for (var i = 0; i < this.options.spriteSheets.length; i++) {
+            var sheet = this.options.spriteSheets[i];
+
+            if ($.inArray(sheet.name, Craft.IconPicker.Cache.stylesheets) == -1) {
+                Craft.IconPicker.Cache.stylesheets.push(sheet.name);
+
+                $.get(sheet.url, function(data) {
+                    var div = document.createElement('div');
+                    div.innerHTML = new XMLSerializer().serializeToString(data.documentElement);
+                    $svg = $(div).find('> svg');
+                    $svg.attr('id', 'icon-picker-spritesheet-' + sheet.name);
+                    $svg.css('display', 'none').prependTo('body');
+                });
+            }
+        }
     },
 });
 

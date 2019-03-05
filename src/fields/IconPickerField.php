@@ -53,41 +53,38 @@ class IconPickerField extends Field
 
         Craft::$app->getView()->registerAssetBundle(IconPickerAsset::class);
 
+        $iconSets = IconPicker::$plugin->getService()->getIcons($this->iconSets);
+        $spriteSheets = IconPicker::$plugin->getService()->getSpriteSheets();
+        $fonts = IconPicker::$plugin->getService()->getLoadedFonts();
+
         Craft::$app->getView()->registerJs('new Craft.IconPicker.Input(' . json_encode([
             'id' => $id,
             'inputId' => $nameSpacedId,
             'name' => $this->handle,
+            'fonts' => $fonts,
+            'spriteSheets' => $spriteSheets,
         ]) . ');');
-
-        $options = IconPicker::$plugin->getService()->getIcons($this->iconSets);
 
         return Craft::$app->getView()->renderTemplate('icon-picker/_field/input', [
             'id' => $id,
             'name' => $this->handle,
             'namespaceId' => $nameSpacedId,
             'value' => $value,
-            'options' => $options,
+            'iconSets' => $iconSets,
         ]);
     }
 
     public function getSettingsHtml()
     {
         $settings = IconPicker::getInstance()->getSettings();
-
         $iconSetsPath = $settings->iconSetsPath;
-        $iconSets = [];
+
         $errors = [];
 
-        if (is_dir($iconSetsPath)) {
-            $folders = FileHelper::findDirectories($iconSetsPath, [
-                'recursive' => false,
-            ]);
-            
-            foreach ($folders as $folder) {
-                $iconSets[$folder] = str_replace($iconSetsPath, '', $folder);
-            }
-        } else {
-            $errors[] = '<p><strong class="warning">Unable to locate SVG Icons source directory.</strong><br>Please ensure the directory <code>' . $iconSetsPath . '</code> exists.</p>';
+        $iconSets = IconPicker::$plugin->getService()->getIconSets();
+
+        if (!$iconSets) {
+            $errors[] = 'Unable to locate SVG Icons source directory.</strong><br>Please ensure the directory <code>' . $iconSetsPath . '</code> exists.</p>';
         }
 
         return Craft::$app->getView()->renderTemplate('icon-picker/_field/settings', [
@@ -110,5 +107,30 @@ class IconPickerField extends Field
         }
 
         return $model;
+    }
+
+    public function serializeValue($value, ElementInterface $element = null)
+    {
+        // If saving a sprite, we need to sort out the type - although easier than front-end input changing.
+        if (strstr($value['icon'], 'sprite:')) {
+            $explode = explode(':', $value['icon']);
+
+            $value['icon'] = null;
+            $value['type'] = $explode[0];
+            $value['iconSet'] = $explode[1];
+            $value['sprite'] = $explode[2];
+        }
+
+        if (strstr($value['icon'], 'glyph:')) {
+            $explode = explode(':', $value['icon']);
+
+            $value['icon'] = null;
+            $value['type'] = $explode[0];
+            $value['iconSet'] = $explode[1];
+            $value['glyphId'] = $explode[2];
+            $value['glyphName'] = $explode[3];
+        }
+
+        return $value;
     }
 }

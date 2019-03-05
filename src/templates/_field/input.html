@@ -1,33 +1,21 @@
 {% import '_includes/forms' as forms %}
 
-{% set hasOptgroups = false %}
-
 <div class="icon-picker">
-    <input type="hidden" name="{{ name ~ '[type]' }}" value="svg">
-
     <select class="icon-picker-select" name="{{ name ~ '[icon]' }}" data-placeholder="Select Icon...">
         <option value="">None</option>
 
-        {% for key, option in options %}
-            {% if option.optgroup is defined %}
-                {% if hasOptgroups %}
-                    </optgroup>
-                {% else %}
-                    {% set hasOptgroups = true %}
-                {% endif %}
-
-                <optgroup label="{{ option.optgroup }}">
-            {% else %}
-                {% set optionLabel = option.label ?? option %}
-                {% set optionValue = option.value ?? key %}
-                {% set optionDisabled = option.disabled ?? false %}
-                
-                <option data-data="{{ option | json_encode }}" value="{{ optionValue }}"{% if optionValue == value.icon %} selected{% endif %}{% if optionDisabled %} disabled{% endif %}>{{ optionLabel }}</option>
-            {% endif %}
-        {% endfor %}
-
-        {% if hasOptgroups %}
+        {% for optgroup, icons in iconSets %}
+            <optgroup label="{{ optgroup == 'root' ? '' : optgroup }}">
+                {% for icon in icons %}
+                    {% if icon.type == 'sprite' %}
+                        <option data-data="{{ icon | json_encode }}" value="{{ icon.value }}"{% if icon.value == value.getSerializedValue() %} selected{% endif %}>{{ icon.label }}</option>
+                    {% elseif icon.type == 'glyph' %}
+                        <option data-data="{{ icon | json_encode }}" value="{{ icon.value }}"{% if icon.value == value.getSerializedValue() %} selected{% endif %}>{{ icon.label }}</option>
+                    {% elseif icon.type == 'svg' %}
+                        <option data-data="{{ icon | json_encode }}" value="{{ icon.value }}"{% if icon.value == value.getSerializedValue() %} selected{% endif %}>{{ icon.label }}</option>
+                    {% endif %}
+                {% endfor %}
             </optgroup>
-        {% endif %}
+        {% endfor %}
     </select>
 </div>

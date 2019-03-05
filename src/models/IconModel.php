@@ -13,6 +13,10 @@ class IconModel extends Model
     // =========================================================================
 
     public $icon;
+    public $sprite;
+    public $glyphId;
+    public $glyphName;
+    public $iconSet;
     public $type;
     public $width;
     public $height;
@@ -20,6 +24,19 @@ class IconModel extends Model
 
     // Public Methods
     // =========================================================================
+
+    public function __toString()
+    {
+        if ($this->sprite) {
+            return $this->sprite;
+        }
+
+        if ($this->glyphId) {
+            return $this->glyph;
+        }
+
+        return $this->getUrl();
+    }
 
     public function getDimensions($height = null)
     {
@@ -39,6 +56,27 @@ class IconModel extends Model
     public function getInline()
     {
         return IconPicker::$plugin->getService()->inline($this->icon);
+    }
+
+    public function getIconName()
+    {
+        return ($this->icon) ? pathinfo($this->icon, PATHINFO_FILENAME) : '';
+    }
+
+    public function getSerializedValue()
+    {
+        if ($this->type === 'sprite') {
+            return implode(':', [$this->type, $this->iconSet, $this->sprite]);
+        } else if ($this->type === 'glyph') {
+            return implode(':', [$this->type, $this->iconSet, $this->glyphId, $this->glyphName]);
+        }
+
+        return $this->icon;
+    }
+
+    public function getGlyph()
+    {
+        return '&#' . $this->glyphId;
     }
 
 }
