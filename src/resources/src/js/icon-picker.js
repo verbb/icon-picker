@@ -30,7 +30,7 @@ Craft.IconPicker.Input = Garnish.Base.extend({
             maxItems: 1,
             maxOptions: 100,
             create: false,
-            // dropdownParent: 'body',
+            dropdownParent: 'body',
             render: {
                 item: function(item, escape) {
                     if (item.type == 'svg') {
