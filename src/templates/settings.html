@@ -1,5 +1,6 @@
 {% extends 'icon-picker/_layouts' %}
 {% import '_includes/forms' as forms %}
+{% import 'icon-picker/_macros' as macros %}
 
 {% set crumbs = [
     { label: 'Icon Picker' | t('icon-picker'), url: url('icon-picker/settings') },
@@ -23,6 +24,7 @@
         value: settings.iconSetsUrl,
         errors: settings.getErrors('iconSetsUrl'),
         required: true,
+        warning: macros.configWarning('iconSetsUrl', 'icon-picker'),
     }) }}
 
     {{ forms.textField({
@@ -32,6 +34,7 @@
         value: settings.iconSetsPath,
         errors: settings.getErrors('iconSetsPath'),
         required: true,
+        warning: macros.configWarning('iconSetsPath', 'icon-picker'),
     }) }}
 {% endnamespace %}
 
