@@ -3,6 +3,7 @@ namespace verbb\iconpicker\services;
 
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\events\RegisterIconSourceEvent;
+use verbb\iconpicker\helpers\IconPickerHelper;
 
 use Craft;
 use craft\base\Component;
@@ -28,7 +29,8 @@ class IconSources extends Component
     public function getRegisteredIconSources()
     {
         $icons = Craft::$app->getAssetManager()->getPublishedUrl('@verbb/iconpicker/resources/dist', false, 'json/font-awesome.json');
-        $icons = json_decode(file_get_contents($icons), true);
+
+        $icons = IconPickerHelper::getFileContents($icons);
 
         $sources = [
             'font-awesome-all' => [

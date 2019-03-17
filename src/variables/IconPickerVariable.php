@@ -2,6 +2,7 @@
 namespace verbb\iconpicker\variables;
 
 use verbb\iconpicker\IconPicker;
+use verbb\iconpicker\helpers\IconPickerHelper;
 
 use Craft;
 use craft\helpers\FileHelper;
@@ -35,7 +36,7 @@ class IconPickerVariable
         $url = FileHelper::normalizePath($iconSetsUrl . DIRECTORY_SEPARATOR . $path);
         $url = Craft::getAlias($url);
 
-        $sheet = file_get_contents($url);
+        $sheet = IconPickerHelper::getFileContents($url);
 
         return Template::raw($sheet);
     }
