@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.4 - 2018-03-17
+
+### Added
+- Add settings override notices for plugin settings screen.
+
+### Fixed
+- Fix SSL errors with spritesheets and icon sources when devMode is on.
+
 ## 1.0.3 - 2018-03-07
 
 ### Fixed
