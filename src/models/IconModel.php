@@ -68,6 +68,11 @@ class IconModel extends Model
         return ($this->icon) ? pathinfo($this->icon, PATHINFO_FILENAME) : '';
     }
 
+    public function getHasIcon()
+    {
+        return (bool)$this->icon;
+    }
+
     public function getSerializedValue()
     {
         if ($this->type === 'sprite') {
