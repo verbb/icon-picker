@@ -1,13 +1,30 @@
 <?php
 namespace verbb\iconpicker\helpers;
 
+use verbb\iconpicker\IconPicker;
+
 use Craft;
+use craft\helpers\FileHelper;
 use craft\helpers\Json;
+
+use URL\Normalizer;
 
 class IconPickerHelper
 {
     // Public Methods
     // =========================================================================
+
+    public static function getIconUrl($path)
+    {
+        $settings = IconPicker::$plugin->getSettings();
+        $iconSetsUrl = $settings->iconSetsUrl;
+
+        $normalizer = new Normalizer($iconSetsUrl . DIRECTORY_SEPARATOR . $path);
+        $url = $normalizer->normalize();
+        $url = Craft::getAlias($url);
+
+        return $url;
+    }
 
     public static function getFileContents($url)
     {

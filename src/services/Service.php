@@ -2,6 +2,7 @@
 namespace verbb\iconpicker\services;
 
 use verbb\iconpicker\IconPicker;
+use verbb\iconpicker\helpers\IconPickerHelper;
 use verbb\iconpicker\models\IconModel;
 
 use Craft;
@@ -392,14 +393,12 @@ class Service extends Component
     {
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->iconSetsPath;
-        $iconSetsUrl = $settings->iconSetsUrl;
 
         // This is the path, relative to the config variable, including the filename
         $relativeFilePath = str_replace($iconSetsPath, '', $file);
 
         // Get the resulting URL
-        $url = FileHelper::normalizePath($iconSetsUrl . DIRECTORY_SEPARATOR . $relativeFilePath);
-        $url = Craft::getAlias($url);
+        $url = IconPickerHelper::getIconUrl($relativeFilePath);
 
         return $url;
     }

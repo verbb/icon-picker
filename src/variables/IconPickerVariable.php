@@ -30,12 +30,7 @@ class IconPickerVariable
 
     public function spritesheet($path)
     {
-        $settings = IconPicker::$plugin->getSettings();
-        $iconSetsUrl = $settings->iconSetsUrl;
-
-        $url = FileHelper::normalizePath($iconSetsUrl . DIRECTORY_SEPARATOR . $path);
-        $url = Craft::getAlias($url);
-
+        $url = IconPickerHelper::getIconUrl($path);
         $sheet = IconPickerHelper::getFileContents($url);
 
         return Template::raw($sheet);
@@ -43,12 +38,6 @@ class IconPickerVariable
 
     public function fontUrl($path)
     {
-        $settings = IconPicker::$plugin->getSettings();
-        $iconSetsUrl = $settings->iconSetsUrl;
-
-        $url = FileHelper::normalizePath($iconSetsUrl . DIRECTORY_SEPARATOR . $path);
-        $url = Craft::getAlias($url);
-
-        return $url;
+        return IconPickerHelper::getIconUrl($path);
     }
 }

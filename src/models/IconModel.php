@@ -2,6 +2,7 @@
 namespace verbb\iconpicker\models;
 
 use verbb\iconpicker\IconPicker;
+use verbb\iconpicker\helpers\IconPickerHelper;
 
 use Craft;
 use craft\base\Model;
@@ -50,12 +51,7 @@ class IconModel extends Model
 
     public function getUrl()
     {
-        $iconSetsUrl = IconPicker::$plugin->getSettings()->iconSetsUrl;
-
-        $url = FileHelper::normalizePath($iconSetsUrl . DIRECTORY_SEPARATOR . $this->icon);
-        $url = Craft::getAlias($url);
-
-        return $url;
+        return IconPickerHelper::getIconUrl($this->icon);
     }
 
     public function getInline()
