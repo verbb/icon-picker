@@ -13,4 +13,5 @@ class Settings extends Model
 
     public $iconSetsPath = CRAFT_BASE_PATH . '/icons/';
     public $iconSetsUrl = '/icons/';
+    public $maxIconsShown = 100;
 }

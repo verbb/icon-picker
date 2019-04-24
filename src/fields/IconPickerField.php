@@ -51,7 +51,7 @@ class IconPickerField extends Field
         $id = Craft::$app->getView()->formatInputId($this->handle);
         $nameSpacedId = Craft::$app->getView()->namespaceInputId($id);
 
-        $settings = IconPicker::$plugin->getSettings();
+        $pluginSettings = IconPicker::$plugin->getSettings();
 
         Craft::$app->getView()->registerAssetBundle(IconPickerAsset::class);
 
@@ -60,13 +60,15 @@ class IconPickerField extends Field
         $spriteSheets = IconPicker::$plugin->getService()->getSpriteSheets();
         $fonts = IconPicker::$plugin->getService()->getLoadedFonts();
 
+        $settings = array_merge($this->settings, $pluginSettings->toArray());
+
         Craft::$app->getView()->registerJs('new Craft.IconPicker.Input(' . json_encode([
             'id' => $id,
             'inputId' => $nameSpacedId,
             'name' => $this->handle,
             'fonts' => $fonts,
             'spriteSheets' => $spriteSheets,
-            'settings' => $this->settings,
+            'settings' => $settings,
         ]) . ');');
 
         return Craft::$app->getView()->renderTemplate('icon-picker/_field/input', [

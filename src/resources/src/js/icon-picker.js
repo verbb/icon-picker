@@ -28,7 +28,7 @@ Craft.IconPicker.Input = Garnish.Base.extend({
 
         this.$selectize.selectize({
             maxItems: 1,
-            maxOptions: 100,
+            maxOptions: options.settings.maxIconsShown,
             create: false,
             dropdownParent: 'body',
             render: {

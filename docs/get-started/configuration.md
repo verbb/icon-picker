@@ -9,6 +9,7 @@ return [
     '*' => [
         'iconSetsPath' => CRAFT_BASE_PATH . '/icons/',
         'iconSetsUrl' => '/icons/',
+        'maxIconsShown' => 100,
     ]
 ];
 ```
@@ -17,6 +18,7 @@ return [
 
 - `iconSetsPath` - File system path to the base folder for your icons.
 - `iconSetsUrl` - The base URL prepended to the path and filename of the icon.
+- `maxIconsShown` - Set the maximum number of icons shown to pick from in the icon selection pane. This will not effect searching.
 
 ## Control Panel
 
