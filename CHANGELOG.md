@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.6 - 2019-04-24
+
+### Added
+- Add `maxIconsShown` to control how many icons should be shown in the selection pane.
+
+### Changed
+- Update default `iconSetsPath` to be relative to the web folder - `CRAFT_BASE_PATH . '/web/icons/'`.
+
+### Fixed
+- Fix compatibility with some sprite definitions.
+- Fix handling when no sub-folders in icon path, only single icons.
+
 ## 1.0.5 - 2019-04-07
 
 ### Added
