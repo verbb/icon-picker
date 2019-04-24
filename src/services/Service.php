@@ -347,7 +347,11 @@ class Service extends Component
 
             $xml = XmlParser::toArray(XmlParser::build($data));
 
-            $items = Hash::get($xml, 'svg.symbol');
+            $items = Hash::get($xml, 'svg.defs.symbol');
+
+            if (!$items) {
+                $items = Hash::get($xml, 'svg.symbol');
+            }
 
             if (!$items) {
                 $items = Hash::get($xml, 'svg.defs');
