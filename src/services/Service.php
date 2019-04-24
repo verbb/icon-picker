@@ -269,6 +269,9 @@ class Service extends Component
         $iconSets = [];
 
         if (is_dir($iconSetsPath)) {
+            // Always return the root
+            $iconSets['[root]'] = '[root]';
+
             $folders = FileHelper::findDirectories($iconSetsPath, [
                 'recursive' => false,
             ]);

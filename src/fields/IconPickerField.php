@@ -95,6 +95,11 @@ class IconPickerField extends Field
             $errors[] = 'Unable to locate SVG Icons source directory.</strong><br>Please ensure the directory <code>' . $iconSetsPath . '</code> exists.</p>';
         }
 
+        // If it found the path, we'll always have the root folder - make sure to remove that
+        if (in_array('[root]', $iconSets)) {
+            unset($iconSets['[root]']);
+        }
+
         return Craft::$app->getView()->renderTemplate('icon-picker/_field/settings', [
             'settings' => $this->getSettings(),
             'iconSets' => $iconSets,
