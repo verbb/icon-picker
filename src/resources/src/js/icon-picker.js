@@ -12,7 +12,7 @@ if (typeof Craft.IconPicker === typeof undefined) {
 (function($) {
 
 Craft.IconPicker.Input = Garnish.Base.extend({
-    container: null,
+    $container: null,
     $selectize: null,
 
     init: function(options) {
@@ -23,14 +23,16 @@ Craft.IconPicker.Input = Garnish.Base.extend({
         this.loadSpriteSheets();
         this.loadFonts();
 
-        this.container = $('#' + options.inputId + '-field');
-        this.$selectize = this.container.find('.icon-picker-select');
+        this.$container = $('#' + options.inputId + '-field');
+        this.$selectize = this.$container.find('.icon-picker-select');
+
+        // Fix up some CSS for parent fields that might have overflow clipping setup
+        this.fixClipping();
 
         this.$selectize.selectize({
             maxItems: 1,
             maxOptions: options.settings.maxIconsShown,
             create: false,
-            dropdownParent: 'body',
             render: {
                 item: function(item, escape) {
                     if (item.type == 'svg') {
@@ -75,6 +77,16 @@ Craft.IconPicker.Input = Garnish.Base.extend({
             }
         });
     },
+
+    fixClipping: function() {
+        var $neoField = this.$container.parents('.ni_block');
+
+        if ($neoField.length) {
+            $neoField.css({ overflow: 'visible' });
+            $neoField.find('.ni_block_body').css({ overflow: 'visible' });
+        }
+    },
+
     loadFonts: function() {
         for (var i = 0; i < this.options.fonts.length; i++) {
             var font = this.options.fonts[i];

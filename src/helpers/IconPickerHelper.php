@@ -28,17 +28,23 @@ class IconPickerHelper
 
     public static function getFileContents($url)
     {
-        $options = [];
+        try {
+            $options = [];
 
-        // Disable any SSL errors locally (or, when devMode is on)
-        if (Craft::$app->getConfig()->getGeneral()->devMode) {
-            $options['verify'] = false;
+            // Disable any SSL errors locally (or, when devMode is on)
+            if (Craft::$app->getConfig()->getGeneral()->devMode) {
+                $options['verify'] = false;
+            }
+
+            $client = Craft::createGuzzleClient($options);
+
+            $response = $client->get($url);
+
+            return $response->getBody()->getContents();
+        } catch (\Throwable $e) {
+            IconPicker::error('Error getting file content for ' . $url . ': ' . $e->getMessage());
         }
 
-        $client = Craft::createGuzzleClient($options);
-
-        $response = $client->get($url);
-
-        return Json::decode($response->getBody()->getContents());
+        return '';
     }
 }

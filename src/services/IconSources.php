@@ -7,6 +7,7 @@ use verbb\iconpicker\helpers\IconPickerHelper;
 
 use Craft;
 use craft\base\Component;
+use craft\helpers\Json;
 
 class IconSources extends Component
 {
@@ -30,7 +31,7 @@ class IconSources extends Component
     {
         $icons = Craft::$app->getAssetManager()->getPublishedUrl('@verbb/iconpicker/resources/dist', false, 'json/font-awesome.json');
 
-        $icons = IconPickerHelper::getFileContents($icons);
+        $icons = Json::decode(IconPickerHelper::getFileContents($icons));
 
         $sources = [
             'font-awesome-all' => [
