@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.7 - 2019-04-27
+
+### Fixed
+- Fix Live Preview not showing icon selection.
+- Fix Neo fields clipping icon selection.
+- Icon selection pane now attaches itself to the field, instead of the body.
+
 ## 1.0.6 - 2019-04-24
 
 ### Added
