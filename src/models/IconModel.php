@@ -54,6 +54,19 @@ class IconModel extends Model
         return IconPickerHelper::getIconUrl($this->icon);
     }
 
+    public function getPath()
+    {
+        $settings = IconPicker::$plugin->getSettings();
+        
+        $path = FileHelper::normalizePath($settings->iconSetsPath . DIRECTORY_SEPARATOR . $this->icon);
+
+        if (!file_exists($path)) {
+            return '';
+        }
+
+        return $path;
+    }
+
     public function getInline()
     {
         return IconPicker::$plugin->getService()->inline($this->icon);

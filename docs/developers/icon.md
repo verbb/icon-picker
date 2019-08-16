@@ -22,6 +22,7 @@ Method | Description
 --- | ---
 `getDimensions(height)` | Returns an array of [width, height] for the icon. Pass in an optional height to restrict it by, while keeping the aspect ratio of the icon.
 `getUrl()` | Return the full URL to the icon.
+`getPath()` | Return the full path to the icon.
 `getInline()` | Returns the raw contents of the icon.
 `getIconName()` | Returns the name of the icon, without the extension.
 `getGlyph(format)` | Returns the character representation of an individual icon glyph, for when an icon font is used.
