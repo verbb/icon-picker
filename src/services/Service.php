@@ -149,7 +149,7 @@ class Service extends Component
 
                         $this->_loadedFonts[] = [
                             'type' => 'local',
-                            'name' => 'font-face-' . $name,
+                            'name' => 'font-face-' . $iconSet,
                             'url' => $this->_getUrlForPath($file),
                         ];
                     }
