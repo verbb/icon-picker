@@ -29,7 +29,7 @@ class IconSources extends Component
 
     public function getRegisteredIconSources()
     {
-        $icons = Craft::$app->getAssetManager()->getPublishedUrl('@verbb/iconpicker/resources/dist', false) . 'json/font-awesome.json';
+        $icons = Craft::$app->getAssetManager()->getPublishedUrl('@verbb/iconpicker/resources/dist', false) . '/json/font-awesome.json';
 
         $icons = Json::decode(file_get_contents($icons));
         $sources = [
