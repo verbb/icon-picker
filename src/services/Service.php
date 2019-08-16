@@ -166,17 +166,19 @@ class Service extends Component
                 $remoteSet = IconPicker::$plugin->getIconSources()->getRegisteredIconSourceByHandle($remoteSetHandle);
 
                 if ($remoteSet) {
-                    foreach ($remoteSet['icons'] as $i => $icon) {
-                        $name = pathinfo($remoteSet['url'], PATHINFO_FILENAME);
+                    if (is_array($remoteSet['icons'])) {
+                        foreach ($remoteSet['icons'] as $i => $icon) {
+                            $name = pathinfo($remoteSet['url'], PATHINFO_FILENAME);
 
-                        $icons[$remoteSet['label']][] = [
-                            'type' => 'css',
-                            'name' =>  $remoteSet['fontName'],
-                            'value' => 'css:' . $remoteSetHandle . ':' . $icon,
-                            'classes' => $remoteSet['classes'] . $icon,
-                            'url' => '',
-                            'label' => $icon,
-                        ];
+                            $icons[$remoteSet['label']][] = [
+                                'type' => 'css',
+                                'name' =>  $remoteSet['fontName'],
+                                'value' => 'css:' . $remoteSetHandle . ':' . $icon,
+                                'classes' => $remoteSet['classes'] . $icon,
+                                'url' => '',
+                                'label' => $icon,
+                            ];
+                        }
                     }
 
                     $this->_loadedFonts[] = [
