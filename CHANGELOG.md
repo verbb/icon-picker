@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.8 - 2019-08-17
+
+### Added
+- Add `getPath()` function to icon model.
+- Add supported translation methods for field.
+
+### Changed
+- Changing to Local file read from External URL.
+
+### Fixed
+- Fix error when resolving font awesome json file path.
+- Fix error when trying to access remote icons sets.
+- Fix error with font-name for icon font files.
+
 ## 1.0.7 - 2019-04-27
 
 ### Fixed
