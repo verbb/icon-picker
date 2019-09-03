@@ -24,17 +24,6 @@ class IconPickerField extends Field
         return Craft::t('icon-picker', 'Icon Picker');
     }
 
-    public static function supportedTranslationMethods(): array
-    {
-        return [
-            self::TRANSLATION_METHOD_NONE,
-            self::TRANSLATION_METHOD_SITE,
-            self::TRANSLATION_METHOD_SITE_GROUP,
-            self::TRANSLATION_METHOD_LANGUAGE,
-            self::TRANSLATION_METHOD_CUSTOM,
-        ];
-    }
-
 
     // Properties
     // =========================================================================
@@ -116,6 +105,10 @@ class IconPickerField extends Field
 
     public function normalizeValue($value, ElementInterface $element = null)
     {
+        if ($value instanceof IconModel) {
+            return $value;
+        }
+
         $model = new IconModel();            
 
         if (is_string($value) && !empty($value)) {
