@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.9 - 2019-09-03
+
+### Fixed
+- Fix icons not propagating to other sites.
+
 ## 1.0.8 - 2019-08-17
 
 ### Added
