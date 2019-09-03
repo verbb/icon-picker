@@ -29,9 +29,10 @@ class IconSources extends Component
 
     public function getRegisteredIconSources()
     {
-        $icons = Craft::$app->getAssetManager()->getPublishedUrl('@verbb/iconpicker/resources/dist', false) . '/json/font-awesome.json';
+        $iconPath = __DIR__ . '/../json/font-awesome.json';
 
-        $icons = Json::decode(file_get_contents($icons));
+        $icons = Json::decode(file_get_contents($iconPath));
+
         $sources = [
             'font-awesome-all' => [
                 'label' => Craft::t('icon-picker', 'Font Awesome 5 (All)'),

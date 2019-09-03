@@ -391,6 +391,14 @@
 		"oAP": "/src/IconPicker.php",
 		"oF": 0
 		},
+	"/src/json/font-awesome.json": {
+		"ft": 524288,
+		"oA": 1,
+		"oAP": "/src/json/font-awesome-min.json",
+		"oF": 0,
+		"oO": 0,
+		"oS": 1
+		},
 	"/src/migrations": {
 		"ft": 65536,
 		"oA": 1,
