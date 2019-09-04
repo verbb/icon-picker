@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.10 - 2019-09-04
+
+### Fixed
+- Fix numerous errors when fetching remote icon sets via URL.
+- Change Font Awesome icon source to use file-system fetching, rather than via HTTP.
+
 ## 1.0.9 - 2019-09-03
 
 ### Fixed
