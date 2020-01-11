@@ -172,7 +172,7 @@ class Service extends Component
 
                             $icons[$remoteSet['label']][] = [
                                 'type' => 'css',
-                                'name' =>  $remoteSet['fontName'],
+                                'name' => $remoteSet['fontName'],
                                 'value' => 'css:' . $remoteSetHandle . ':' . $icon,
                                 'classes' => $remoteSet['classes'] . $icon,
                                 'url' => '',
