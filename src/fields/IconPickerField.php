@@ -8,11 +8,16 @@ use verbb\iconpicker\models\IconModel;
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
+use craft\gql\GqlEntityRegistry;
+use craft\gql\TypeLoader;
 use craft\helpers\FileHelper;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 
 use yii\db\Schema;
+
+use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\ObjectType;
 
 class IconPickerField extends Field
 {
@@ -154,5 +159,53 @@ class IconPickerField extends Field
         }
 
         return $value;
+    }
+
+    public function getContentGqlType()
+    {
+        $typeName = 'Icon_Dimensions';
+
+        $dimensionType = GqlEntityRegistry::getEntity($typeName) ?: GqlEntityRegistry::createEntity($typeName, new ObjectType([
+            'name' => $typeName,
+            'fields' => [
+                'width' => Type::string(),
+                'height' => Type::string(),
+            ]
+        ]));
+
+        TypeLoader::registerType($typeName, static function() use ($dimensionType) {
+            return $dimensionType;
+        });
+
+        $typeName = $this->handle . '_Icon';
+
+        $iconType = GqlEntityRegistry::getEntity($typeName) ?: GqlEntityRegistry::createEntity($typeName, new ObjectType([
+            'name' => $typeName,
+            'fields' => [
+                'url' => Type::string(),
+                'icon' => Type::string(),
+                'sprite' => Type::string(),
+                'glyphId' => Type::string(),
+                'glyphName' => Type::string(),
+                'iconSet' => Type::string(),
+                'type' => Type::string(),
+                'css' => Type::string(),
+                'width' => Type::string(),
+                'height' => Type::string(),
+                'path' => Type::string(),
+                'dimensions' => $dimensionType,
+                'inline' => Type::string(),
+                'iconName' => Type::string(),
+                'hasIcon' => Type::string(),
+                'serializedValue' => Type::string(),
+                'glyph' => Type::string(),
+            ],
+        ]));
+        
+        TypeLoader::registerType($typeName, static function() use ($iconType) {
+            return $iconType;
+        });
+        
+        return $iconType;
     }
 }
