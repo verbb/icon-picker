@@ -1,0 +1,16 @@
+{% import '_includes/forms' as forms %}
+
+<h1>{{ 'Icon Picker Cache' | t('icon-picker') }}</h1>
+
+<p>{{ 'For performance, each icon set for Icon Picker fields are cached. This means that the contents of the file or folder for the icon set is saved when you save your Icon Picker field. So, if you add or remove icons to your Icon Picker folder, you\'ll need to re-generate the cache. You can simply re-save your field for the cache to be updated, or regenerate all icon sets cache below.' | t('icon-picker') }}</p>
+
+<p class="light">{{ 'This will create a queue job for each icon set.' | t('icon-picker') }}</p>
+
+<form class="utility" method="post" accept-charset="UTF-8">
+    <input type="hidden" name="action" value="icon-picker/default/clear-cache">
+
+    {{ redirectInput('utilities/icon-picker-cache') }}
+    {{ csrfInput() }}
+
+    <input type="submit" class="btn submit" value="{{ 'Re-generate all icon set caches' | t('icon-picker')  }}">
+</form>

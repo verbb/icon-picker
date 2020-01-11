@@ -13,7 +13,7 @@ class GenerateIconSetCache extends BaseJob
     // Properties
     // =========================================================================
 
-    public $iconSet;
+    public $iconSetKey;
 
 
     // Public Methods
@@ -23,13 +23,13 @@ class GenerateIconSetCache extends BaseJob
     {
         $this->setProgress($queue, 0);
 
-        IconPicker::$plugin->getCache()->generateIconSetCache($this->iconSet);
+        IconPicker::$plugin->getCache()->generateIconSetCache($this->iconSetKey);
 
         $this->setProgress($queue, 1);
     }
 
     protected function defaultDescription(): string
     {
-        return Craft::t('icon-picker', 'Generating icon cache for "{iconSet}"', ['iconSet' => $this->iconSet]);
+        return Craft::t('icon-picker', 'Generating icon cache for "{iconSetKey}"', ['iconSetKey' => $this->iconSetKey]);
     }
 }

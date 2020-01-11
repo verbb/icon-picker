@@ -470,6 +470,7 @@ class Service extends Component
     {
         $string = str_replace('-', ' ', $string);
         $string = str_replace('/', ' - ', $string);
+        $string = str_replace('[root]', '', $string);
 
         return $string;
     }

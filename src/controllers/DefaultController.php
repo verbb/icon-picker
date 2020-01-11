@@ -31,6 +31,15 @@ class DefaultController extends Controller
         return $this->redirect('icon-picker/settings');
     }
 
+    public function actionClearCache()
+    {
+        IconPicker::$plugin->getCache()->clearAndRegenerate();
+
+        Craft::$app->getSession()->setNotice(Craft::t('icon-picker', 'Icon Set cache re-generation started.'));
+
+        return $this->redirectToPostedUrl();
+    }
+
     public function actionSettings()
     {
         $settings = IconPicker::$plugin->getSettings();

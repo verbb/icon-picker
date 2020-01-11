@@ -37,7 +37,7 @@ class Cache extends Component
 
         foreach ($iconSets as $iconSetKey => $iconSetName) {
             Craft::$app->getQueue()->push(new GenerateIconSetCache([
-                'iconSet' => $iconSetKey,
+                'iconSetKey' => $iconSetKey,
             ]));
 
             // Testing
@@ -45,13 +45,13 @@ class Cache extends Component
         }
     }
 
-    public function generateIconSetCache($iconSet)
+    public function generateIconSetCache($iconSetKey)
     {
         // Special-case for root folder
-        if ($iconSet === '[root]') {
+        if ($iconSetKey === '[root]') {
             $icons = IconPicker::$plugin->getService()->fetchIconsForFolder('', false);
         } else {
-            $iconSetType = explode(':', $iconSet);
+            $iconSetType = explode(':', $iconSetKey);
 
             $functionName = 'fetchIconsFor' . $iconSetType[0];
             $filePath = $iconSetType[1];
@@ -60,18 +60,18 @@ class Cache extends Component
         }
 
         // Save to the cache
-        $cacheKey = 'icon-picker:' . $iconSet;
+        $cacheKey = 'icon-picker:' . $iconSetKey;
 
         Craft::$app->getCache()->set($cacheKey, Json::encode($icons));
     }
 
-    public function getFilesFromCache($iconSet)
+    public function getFilesFromCache($iconSetKey)
     {
-        if (!$iconSet) {
+        if (!$iconSetKey) {
             return [];
         }
 
-        $cacheKey = 'icon-picker:' . $iconSet;
+        $cacheKey = 'icon-picker:' . $iconSetKey;
 
         if ($cache = Craft::$app->getCache()->get($cacheKey)) {
             return Json::decode($cache);

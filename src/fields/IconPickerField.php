@@ -172,12 +172,12 @@ class IconPickerField extends Field
 
         // When saving the field, fire off queue jobs to prime the icon cache
         foreach ($iconSets as $iconSetKey => $iconSetName) {
-            // Craft::$app->getQueue()->push(new GenerateIconSetCache([
-            //     'iconSet' => $iconSetKey,
-            // ]));
+            Craft::$app->getQueue()->push(new GenerateIconSetCache([
+                'iconSetKey' => $iconSetKey,
+            ]));
 
             // Testing
-            IconPicker::$plugin->getCache()->generateIconSetCache($iconSetKey);
+            // IconPicker::$plugin->getCache()->generateIconSetCache($iconSetKey);
         }
 
         parent::afterSave($isNew);
