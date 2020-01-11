@@ -6,6 +6,7 @@ use verbb\iconpicker\IconPicker;
 use Craft;
 use craft\helpers\FileHelper;
 use craft\helpers\Json;
+use craft\helpers\UrlHelper;
 
 use URL\Normalizer;
 
@@ -23,7 +24,7 @@ class IconPickerHelper
         $url = $normalizer->normalize();
         $url = Craft::getAlias($url);
 
-        return $url;
+        return UrlHelper::siteUrl($url);
     }
 
     public static function getFileContents($url)
