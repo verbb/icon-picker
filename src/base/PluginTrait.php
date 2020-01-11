@@ -2,6 +2,7 @@
 namespace verbb\iconpicker\base;
 
 use verbb\iconpicker\IconPicker;
+use verbb\iconpicker\services\Cache;
 use verbb\iconpicker\services\IconSources;
 use verbb\iconpicker\services\Service;
 
@@ -22,6 +23,11 @@ trait PluginTrait
 
     // Public Methods
     // =========================================================================
+
+    public function getCache()
+    {
+        return $this->get('cache');
+    }
 
     public function getIconSources()
     {
@@ -50,6 +56,7 @@ trait PluginTrait
     private function _setPluginComponents()
     {
         $this->setComponents([
+            'cache' => Cache::class,
             'iconSources' => IconSources::class,
             'service' => Service::class,
         ]);

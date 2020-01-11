@@ -39,121 +39,25 @@ class Service extends Component
         $icons = [];
 
         // Make sure to always check the directory first, otherwise will throw errors
-        if (is_dir($iconSetsPath) && $iconSets) {
-            if ($iconSets === '*') {
-                $iconSets = array_keys(IconPicker::$plugin->getService()->getIconSets());
-            }
+        if (!is_dir($iconSetsPath) || !$iconSets) {
+            return [];
+        }
 
-            $files = $this->_getFiles([
-                'only' => ['*.svg'],
-                'except' => ['*-sprites.svg'],
-                'recursive' => false,
-            ]);
+        foreach ($iconSets as $iconSetKey => $iconSetName) {
+            $iconSetName = $this->_prettyIconSetName($iconSetName);
 
-            foreach ($files as $key => $file) {
-                $url = $this->_getUrlForPath($file);
+            $cachedIconData = IconPicker::$plugin->getCache()->getFilesFromCache($iconSetKey);
 
-                $path = $this->_getRelativePathForFile($file);
-                $iconSet = ($path) ? FileHelper::normalizePath($path) : 'root';
-                $iconSetName = $this->_prettyIconSetName($iconSet);
+            if ($cachedIconData) {
+                // Grab any additional resources like spritesheets, fonts, etc
+                $loadedFonts = $cachedIconData['loadedFonts'] ?? [];
+                $loadedSpriteSheets = $cachedIconData['loadedSpriteSheets'] ?? [];
 
-                $item = str_replace($iconSetsPath, '', $file);
+                $this->_loadedFonts = array_merge($this->_loadedFonts, $loadedFonts);
+                $this->_loadedSpriteSheets = array_merge($this->_loadedSpriteSheets, $loadedSpriteSheets);
 
-                $icons[$iconSetName][] = [
-                    'type' => 'svg',
-                    'value' => $item,
-                    'url' => $url,
-                    'label' => pathinfo($file, PATHINFO_FILENAME),
-                ];
-            }
-
-            foreach ($iconSets as $iconSet) {
-                $iconSetType = explode(':', $iconSet);
-
-                // Fetch the SVG files
-                if ($iconSetType[0] === 'folder') {
-                    $files = $this->_getFiles([
-                        'only' => [$iconSetType[1] . '/*.svg'],
-                        'except' => ['*-sprites.svg'],
-                        'recursive' => true,
-                    ]);
-
-                    foreach ($files as $key => $file) {
-                        $url = $this->_getUrlForPath($file);
-
-                        $path = $this->_getRelativePathForFile($file);
-                        $iconSet = ($path) ? FileHelper::normalizePath($path) : 'root';
-                        $iconSetName = $this->_prettyIconSetName($iconSet);
-
-                        $item = str_replace($iconSetsPath, '', $file);
-
-                        $icons[$iconSetName][] = [
-                            'type' => 'svg',
-                            'value' => $item,
-                            'url' => $url,
-                            'label' => pathinfo($file, PATHINFO_FILENAME),
-                        ];
-                    }
-                }
-
-                // Fetch any spritesheets
-                if ($iconSetType[0] === 'sprite') {
-                    $spriteSheets = $this->_getFiles([
-                        'only' => [$iconSetType[1]],
-                        'recursive' => false,
-                    ]);
-
-                    foreach ($spriteSheets as $spriteSheet) {
-                        $files = $this->_fetchSvgsFromSprites($spriteSheet);
-
-                        $iconSet = pathinfo($iconSetType[1], PATHINFO_FILENAME);
-                        $iconSetName = $this->_prettyIconSetName($iconSet);
-
-                        foreach ($files as $i => $file) {
-                            $icons[$iconSetName][] = [
-                                'type' => 'sprite',
-                                'name' =>  pathinfo($spriteSheet, PATHINFO_FILENAME),
-                                'value' => 'sprite:' . $iconSet . ':' . $file['@id'],
-                                'url' => $file['@id'],
-                                'label' => $file['@id'],
-                            ];
-                        }
-
-                        $this->_loadedSpriteSheets[$spriteSheet] = $files;
-                    }
-                }
-
-                if ($iconSetType[0] === 'font') {
-                    $fonts = $this->_getFiles([
-                        'only' => [$iconSetType[1]],
-                        'recursive' => false,
-                    ]);
-
-                    foreach ($fonts as $key => $file) {
-                        $glyphs = $this->_fetchFontGlyphs($file);
-
-                        $iconSet = pathinfo($iconSetType[1], PATHINFO_FILENAME);
-                        $iconSetName = $this->_prettyIconSetName($iconSet);
-
-                        foreach ($glyphs as $i => $glyph) {
-                            $name = pathinfo($file, PATHINFO_FILENAME);
-
-                            $icons[$iconSetName][] = [
-                                'type' => 'glyph',
-                                'name' =>  $name,
-                                'value' => 'glyph:' . $iconSet . ':' . $glyph['glyphId'] . ':' . $glyph['name'],
-                                'url' => '&#x' . dechex($glyph['glyphId']),
-                                'label' => $glyph['name'],
-                            ];
-                        }
-
-                        $this->_loadedFonts[] = [
-                            'type' => 'local',
-                            'name' => 'font-face-' . $iconSet,
-                            'url' => $this->_getUrlForPath($file),
-                        ];
-                    }
-                }
+                // Return the actual icon info
+                $icons[$iconSetName] = $cachedIconData['icons'] ?? [];
             }
         }
 
@@ -191,6 +95,113 @@ class Service extends Component
         }
 
         return $icons;
+    }
+
+    public function fetchIconsForFolder($folderName, $recursive = true)
+    {
+        $settings = IconPicker::$plugin->getSettings();
+        $iconSetsPath = $settings->iconSetsPath;
+
+        // We only store a reference to the outer folder name without the path. Add it here
+        $folderPath = FileHelper::normalizePath($iconSetsPath . DIRECTORY_SEPARATOR . $folderName);
+
+        $data = [];
+
+        $files = $this->_getFiles($folderPath, [
+            'only' => ['*.svg'],
+            'except' => ['*-sprites.svg'],
+            'recursive' => $recursive,
+        ]);
+
+        foreach ($files as $key => $file) {
+            $url = $this->_getUrlForPath($file);
+
+            $path = $this->_getRelativePathForFile($file);
+            $iconSet = ($path) ? FileHelper::normalizePath($path) : 'root';
+
+            $item = str_replace($iconSetsPath, '', $file);
+
+            $data['icons'][] = [
+                'type' => 'svg',
+                'value' => $item,
+                'url' => $url,
+                'label' => pathinfo($file, PATHINFO_FILENAME),
+            ];
+        }
+
+        return $data;
+    }
+
+    public function fetchIconsForSprite($spriteFile)
+    {
+        $settings = IconPicker::$plugin->getSettings();
+        $iconSetsPath = $settings->iconSetsPath;
+
+        $data = [];
+
+        $spriteSheets = $this->_getFiles($iconSetsPath, [
+            'only' => [$spriteFile],
+            'recursive' => false,
+        ]);
+
+        foreach ($spriteSheets as $spriteSheet) {
+            $files = $this->_fetchSvgsFromSprites($spriteSheet);
+
+            $iconSet = pathinfo($spriteFile, PATHINFO_FILENAME);
+
+            foreach ($files as $i => $file) {
+                $data['icons'][] = [
+                    'type' => 'sprite',
+                    'name' =>  pathinfo($spriteSheet, PATHINFO_FILENAME),
+                    'value' => 'sprite:' . $iconSet . ':' . $file['@id'],
+                    'url' => $file['@id'],
+                    'label' => $file['@id'],
+                ];
+            }
+
+            $data['loadedSpriteSheets'][$spriteSheet] = $files;
+        }
+
+        return $data;
+    }
+
+    public function fetchIconsForFont($fontFile)
+    {
+        $settings = IconPicker::$plugin->getSettings();
+        $iconSetsPath = $settings->iconSetsPath;
+
+        $data = [];
+
+        $fonts = $this->_getFiles($iconSetsPath, [
+            'only' => [$fontFile],
+            'recursive' => false,
+        ]);
+
+        foreach ($fonts as $key => $file) {
+            $glyphs = $this->_fetchFontGlyphs($file);
+
+            $iconSet = pathinfo($fontFile, PATHINFO_FILENAME);
+
+            foreach ($glyphs as $i => $glyph) {
+                $name = pathinfo($file, PATHINFO_FILENAME);
+
+                $data['icons'][] = [
+                    'type' => 'glyph',
+                    'name' =>  $name,
+                    'value' => 'glyph:' . $iconSet . ':' . $glyph['glyphId'] . ':' . $glyph['name'],
+                    'url' => '&#x' . dechex($glyph['glyphId']),
+                    'label' => $glyph['name'],
+                ];
+            }
+
+            $data['loadedFonts'][] = [
+                'type' => 'local',
+                'name' => 'font-face-' . $iconSet,
+                'url' => $this->_getUrlForPath($file),
+            ];
+        }
+
+        return $data;
     }
 
     public function getModel($icon)
@@ -319,6 +330,27 @@ class Service extends Component
         return $iconSets;
     }
 
+    public function getEnabledIconSets($field)
+    {
+        $allIconSets = IconPicker::$plugin->getService()->getIconSets();
+        
+        // For each enabled icon set, generate a cache
+        if ($field->iconSets === '*' || $field->iconSets === '') {
+            return $allIconSets;
+        }
+
+        // Always include '[root]'
+        $iconSets = ['[root]' => '[root]'];
+
+        foreach ($allIconSets as $allIconSetKey => $allIconSetName) {
+            if (in_array($allIconSetKey, $field->iconSets)) {
+                $iconSets[$allIconSetKey] = $allIconSetName;
+            }
+        }
+
+        return $iconSets;
+    }
+
 
     // Private Methods
     // =========================================================================
@@ -422,12 +454,9 @@ class Service extends Component
         return str_replace([$filename, $iconSetsPath], ['', ''], $file);
     }
 
-    private function _getFiles($options)
+    private function _getFiles($path, $options)
     {
-        $settings = IconPicker::$plugin->getSettings();
-        $iconSetsPath = $settings->iconSetsPath;
-
-        $files = FileHelper::findFiles($iconSetsPath, $options);
+        $files = FileHelper::findFiles($path, $options);
 
         // Sort alphabetically
         uasort($files, function($a, $b) {

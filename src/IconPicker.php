@@ -9,10 +9,12 @@ use verbb\iconpicker\variables\IconPickerVariable;
 
 use Craft;
 use craft\base\Plugin;
+use craft\events\RegisterCacheOptionsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\UrlHelper;
 use craft\services\Fields;
+use craft\utilities\ClearCaches;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
@@ -49,6 +51,7 @@ class IconPicker extends Plugin
         $this->_registerCpRoutes();
         $this->_registerVariables();
         $this->_registerFieldTypes();
+        $this->_registerCacheTypes();
 
         // Provide a cache of loaded spritesheets for the CP
         if (Craft::$app->getRequest()->getIsCpRequest()) {
@@ -94,6 +97,17 @@ class IconPicker extends Plugin
     {
         Event::on(Fields::class, Fields::EVENT_REGISTER_FIELD_TYPES, function(RegisterComponentTypesEvent $event) {
             $event->types[] = IconPickerField::class;
+        });
+    }
+
+    private function _registerCacheTypes()
+    {
+        Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, function(RegisterCacheOptionsEvent $e) {
+            $e->options[] = [
+                'key' => 'icon-picker',
+                'label' => Craft::t('icon-picker', 'Icon Picker cache'),
+                'action' => [IconPicker::$plugin->getCache(), 'clearAndRegenerate'],
+            ];
         });
     }
 }

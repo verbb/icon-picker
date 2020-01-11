@@ -4,6 +4,7 @@ namespace verbb\iconpicker\fields;
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\assetbundles\IconPickerAsset;
 use verbb\iconpicker\models\IconModel;
+use verbb\iconpicker\queue\jobs\GenerateIconSetCache;
 
 use Craft;
 use craft\base\ElementInterface;
@@ -55,8 +56,12 @@ class IconPickerField extends Field
 
         Craft::$app->getView()->registerAssetBundle(IconPickerAsset::class);
 
-        $iconSets = IconPicker::$plugin->getService()->getIcons($this->iconSets, $this->remoteSets);
+        $enabledIconSets = IconPicker::$plugin->getService()->getEnabledIconSets($this);
 
+        // Fetch the actual icons (from the cache)
+        $iconSets = IconPicker::$plugin->getService()->getIcons($enabledIconSets, $this->remoteSets);
+
+        // Fetch any fonts or spritesheets that are extra and once-off
         $spriteSheets = IconPicker::$plugin->getService()->getSpriteSheets();
         $fonts = IconPicker::$plugin->getService()->getLoadedFonts();
 
@@ -159,6 +164,23 @@ class IconPickerField extends Field
         }
 
         return $value;
+    }
+
+    public function afterSave(bool $isNew)
+    {
+        $iconSets = IconPicker::$plugin->getService()->getEnabledIconSets($this);
+
+        // When saving the field, fire off queue jobs to prime the icon cache
+        foreach ($iconSets as $iconSetKey => $iconSetName) {
+            // Craft::$app->getQueue()->push(new GenerateIconSetCache([
+            //     'iconSet' => $iconSetKey,
+            // ]));
+
+            // Testing
+            IconPicker::$plugin->getCache()->generateIconSetCache($iconSetKey);
+        }
+
+        parent::afterSave($isNew);
     }
 
     public function getContentGqlType()
