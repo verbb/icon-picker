@@ -15,6 +15,7 @@ Craft.IconPicker.Input = Garnish.Base.extend({
     $container: null,
     $selectize: null,
     $spinner: null,
+    $errorText: null,
 
     iconData: null,
     preppedIconData: {},
@@ -30,6 +31,7 @@ Craft.IconPicker.Input = Garnish.Base.extend({
         this.$container = $('#' + options.inputId + '-field');
         this.$selectize = this.$container.find('.icon-picker-select');
         this.$spinner = this.$container.find('.spinner');
+        this.$errorText = this.$container.find('.error-text');
 
         // Fix up some CSS for parent fields that might have overflow clipping setup
         this.fixClipping();
@@ -91,6 +93,7 @@ Craft.IconPicker.Input = Garnish.Base.extend({
 
             load: function(query, callback) {
                 self.$spinner.removeClass('hidden');
+                self.$errorText.html('');
 
                 if (!$.isEmptyObject(self.preppedIconData)) {
                     self.$spinner.addClass('hidden');
@@ -106,7 +109,10 @@ Craft.IconPicker.Input = Garnish.Base.extend({
                 $.ajax({
                     url: Craft.getActionUrl('icon-picker/icons/icons-for-field', { fieldId: options.fieldId }),
                     type: 'GET',
-                    error: function() {
+                    error: function(response) {
+                        self.$spinner.addClass('hidden');
+                        self.$errorText.html(response.statusText)
+
                         callback();
                     },
                     success: function(iconData) {

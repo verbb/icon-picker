@@ -3,6 +3,7 @@
 {% set iconModel = value.getSerializedValues() %}
 
 <div class="icon-picker {{ showLabels ? 'show-labels' }}">
+    <span class="error-text error"></span>
     <span class="spinner hidden"></span>
 
     <select class="icon-picker-select" name="{{ name ~ '[icon]' }}" data-placeholder="{{ 'Select Icon...' | t('icon-picker') }}">

@@ -44,6 +44,13 @@ select.icon-picker-select {
     z-index: 2;
 }
 
+.icon-picker .error-text {
+    position: absolute;
+    top: -24px;
+    right: 0;
+    z-index: 2;
+    text-align: right;
+}
 
 //
 // Dropdown
