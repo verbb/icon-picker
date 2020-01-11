@@ -59,7 +59,7 @@ class IconPickerField extends Field
         $enabledIconSets = IconPicker::$plugin->getService()->getEnabledIconSets($this);
 
         // Fetch the actual icons (from the cache)
-        $iconSets = IconPicker::$plugin->getService()->getIcons($enabledIconSets, $this->remoteSets);
+        IconPicker::$plugin->getService()->getIcons($enabledIconSets, $this->remoteSets);
 
         // Fetch any fonts or spritesheets that are extra and once-off
         $spriteSheets = IconPicker::$plugin->getService()->getSpriteSheets();
@@ -74,6 +74,7 @@ class IconPickerField extends Field
             'fonts' => $fonts,
             'spriteSheets' => $spriteSheets,
             'settings' => $settings,
+            'fieldId' => $this->id,
         ]) . ');');
 
         return Craft::$app->getView()->renderTemplate('icon-picker/_field/input', [
@@ -81,7 +82,6 @@ class IconPickerField extends Field
             'name' => $this->handle,
             'namespaceId' => $nameSpacedId,
             'value' => $value,
-            'iconSets' => $iconSets,
             'showLabels' => $this->showLabels,
         ]);
     }

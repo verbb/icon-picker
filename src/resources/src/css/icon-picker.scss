@@ -37,6 +37,13 @@ select.icon-picker-select {
     height: 23px;
 }
 
+.icon-picker .spinner {
+    position: absolute;
+    top: 1px;
+    right: 2rem;
+    z-index: 2;
+}
+
 
 //
 // Dropdown

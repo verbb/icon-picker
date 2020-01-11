@@ -59,6 +59,9 @@ class IconPicker extends Plugin
         // Provide a cache of loaded spritesheets for the CP
         if (Craft::$app->getRequest()->getIsCpRequest()) {
             Craft::$app->getView()->registerAssetBundle(IconPickerCacheAsset::class);
+
+            // Try to intelligently check to see if any icons have changed
+            $this->getCache()->checkToInvalidate();
         }
     }
 

@@ -63,6 +63,8 @@ class Cache extends Component
         $cacheKey = 'icon-picker:' . $iconSetKey;
 
         Craft::$app->getCache()->set($cacheKey, Json::encode($icons));
+
+        return $icons;
     }
 
     public function getFilesFromCache($iconSetKey)
@@ -73,10 +75,34 @@ class Cache extends Component
 
         $cacheKey = 'icon-picker:' . $iconSetKey;
 
+        // Fetch from the cache, otherwise, fetch it (which saves to cache for next time)
         if ($cache = Craft::$app->getCache()->get($cacheKey)) {
             return Json::decode($cache);
+        } else {
+            return $this->generateIconSetCache($iconSetKey);
         }
 
         return [];
+    }
+
+    public function checkToInvalidate()
+    {
+        $iconSetsPath = IconPicker::$plugin->getSettings()->iconSetsPath;
+
+        // A pretty basic check on whether the root folder has been modified
+        $modifiedTime = filemtime($iconSetsPath);
+
+        $cacheKey = 'icon-picker:modified-time';
+
+        // Has this been cached already?
+        if ($cache = Craft::$app->getCache()->get($cacheKey)) {
+            // If it has, check to see if the cache time is different to now
+            if ($cache != $modifiedTime) {
+                $this->clearAndRegenerate();
+            }
+        }
+
+        // Update the cache
+        Craft::$app->getCache()->set($cacheKey, $modifiedTime);
     }
 }

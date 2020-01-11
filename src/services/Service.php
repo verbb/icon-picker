@@ -39,25 +39,23 @@ class Service extends Component
         $icons = [];
 
         // Make sure to always check the directory first, otherwise will throw errors
-        if (!is_dir($iconSetsPath) || !$iconSets) {
-            return [];
-        }
+        if (is_dir($iconSetsPath) && $iconSets) {
+            foreach ($iconSets as $iconSetKey => $iconSetName) {
+                $iconSetName = $this->_prettyIconSetName($iconSetName);
 
-        foreach ($iconSets as $iconSetKey => $iconSetName) {
-            $iconSetName = $this->_prettyIconSetName($iconSetName);
+                $cachedIconData = IconPicker::$plugin->getCache()->getFilesFromCache($iconSetKey);
 
-            $cachedIconData = IconPicker::$plugin->getCache()->getFilesFromCache($iconSetKey);
+                if ($cachedIconData) {
+                    // Grab any additional resources like spritesheets, fonts, etc
+                    $loadedFonts = $cachedIconData['loadedFonts'] ?? [];
+                    $loadedSpriteSheets = $cachedIconData['loadedSpriteSheets'] ?? [];
 
-            if ($cachedIconData) {
-                // Grab any additional resources like spritesheets, fonts, etc
-                $loadedFonts = $cachedIconData['loadedFonts'] ?? [];
-                $loadedSpriteSheets = $cachedIconData['loadedSpriteSheets'] ?? [];
+                    $this->_loadedFonts = array_merge($this->_loadedFonts, $loadedFonts);
+                    $this->_loadedSpriteSheets = array_merge($this->_loadedSpriteSheets, $loadedSpriteSheets);
 
-                $this->_loadedFonts = array_merge($this->_loadedFonts, $loadedFonts);
-                $this->_loadedSpriteSheets = array_merge($this->_loadedSpriteSheets, $loadedSpriteSheets);
-
-                // Return the actual icon info
-                $icons[$iconSetName] = $cachedIconData['icons'] ?? [];
+                    // Return the actual icon info
+                    $icons[$iconSetName] = $cachedIconData['icons'] ?? [];
+                }
             }
         }
 
@@ -74,14 +72,12 @@ class Service extends Component
                         foreach ($remoteSet['icons'] as $i => $icon) {
                             $name = pathinfo($remoteSet['url'], PATHINFO_FILENAME);
 
-                            $icons[$remoteSet['label']][] = [
+                            // Return with `getSerializedValues` for a minimal IconModel
+                            $icons[$remoteSet['label']][] = (new IconModel([
                                 'type' => 'css',
-                                'name' => $remoteSet['fontName'],
-                                'value' => 'css:' . $remoteSetHandle . ':' . $icon,
-                                'classes' => $remoteSet['classes'] . $icon,
-                                'url' => '',
-                                'label' => $icon,
-                            ];
+                                'iconSet' => $remoteSetHandle,
+                                'css' => $icon,
+                            ]))->getSerializedValues();
                         }
                     }
 
@@ -121,12 +117,11 @@ class Service extends Component
 
             $item = str_replace($iconSetsPath, '', $file);
 
-            $data['icons'][] = [
+            // Return with `getSerializedValues` for a minimal IconModel
+            $data['icons'][] = (new IconModel([
                 'type' => 'svg',
-                'value' => $item,
-                'url' => $url,
-                'label' => pathinfo($file, PATHINFO_FILENAME),
-            ];
+                'icon' => $item,
+            ]))->getSerializedValues();
         }
 
         return $data;
@@ -150,13 +145,12 @@ class Service extends Component
             $iconSet = pathinfo($spriteFile, PATHINFO_FILENAME);
 
             foreach ($files as $i => $file) {
-                $data['icons'][] = [
+                // Return with `getSerializedValues` for a minimal IconModel
+                $data['icons'][] = (new IconModel([
                     'type' => 'sprite',
-                    'name' =>  pathinfo($spriteSheet, PATHINFO_FILENAME),
-                    'value' => 'sprite:' . $iconSet . ':' . $file['@id'],
-                    'url' => $file['@id'],
-                    'label' => $file['@id'],
-                ];
+                    'iconSet' => $iconSet,
+                    'sprite' => $file['@id'],
+                ]))->getSerializedValues();
             }
 
             $data['loadedSpriteSheets'][$spriteSheet] = $files;
@@ -183,15 +177,13 @@ class Service extends Component
             $iconSet = pathinfo($fontFile, PATHINFO_FILENAME);
 
             foreach ($glyphs as $i => $glyph) {
-                $name = pathinfo($file, PATHINFO_FILENAME);
-
-                $data['icons'][] = [
+                // Return with `getSerializedValues` for a minimal IconModel
+                $data['icons'][] = (new IconModel([
                     'type' => 'glyph',
-                    'name' =>  $name,
-                    'value' => 'glyph:' . $iconSet . ':' . $glyph['glyphId'] . ':' . $glyph['name'],
-                    'url' => '&#x' . dechex($glyph['glyphId']),
-                    'label' => $glyph['name'],
-                ];
+                    'iconSet' => $iconSet,
+                    'glyphId' => $glyph['glyphId'],
+                    'glyphName' => $glyph['name'],
+                ]))->getSerializedValues();
             }
 
             $data['loadedFonts'][] = [
@@ -333,9 +325,13 @@ class Service extends Component
     public function getEnabledIconSets($field)
     {
         $allIconSets = IconPicker::$plugin->getService()->getIconSets();
+
+        if ($field->iconSets === '') {
+            return [];
+        }
         
         // For each enabled icon set, generate a cache
-        if ($field->iconSets === '*' || $field->iconSets === '') {
+        if ($field->iconSets === '*') {
             return $allIconSets;
         }
 

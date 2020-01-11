@@ -1,15 +1,13 @@
 {% import '_includes/forms' as forms %}
 
-<div class="icon-picker {{ showLabels ? 'show-labels' }}">
-    <select class="icon-picker-select" name="{{ name ~ '[icon]' }}" data-placeholder="{{ (iconSets | length) ? 'Select Icon...' | t('icon-picker') : 'No icons available' | t('icon-picker') }}">
-        <option value="">None</option>
+{% set iconModel = value.getSerializedValues() %}
 
-        {% for optgroup, icons in iconSets %}
-            <optgroup label="{{ optgroup == 'root' ? '' : optgroup }}">
-                {% for icon in icons %}
-                    <option data-data="{{ icon | json_encode }}" value="{{ icon.value }}"{% if icon.value == value.getSerializedValue() %} selected{% endif %}>{{ icon.label }}</option>
-                {% endfor %}
-            </optgroup>
-        {% endfor %}
+<div class="icon-picker {{ showLabels ? 'show-labels' }}">
+    <span class="spinner hidden"></span>
+
+    <select class="icon-picker-select" name="{{ name ~ '[icon]' }}" data-placeholder="{{ 'Select Icon...' | t('icon-picker') }}">
+        <option selected value="{{ iconModel.value }}" data-data="{{ iconModel | json_encode }}">
+            {{ iconModel.label ?? '' }}
+        </option>
     </select>
 </div>

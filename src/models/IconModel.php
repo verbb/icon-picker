@@ -82,17 +82,50 @@ class IconModel extends Model
         return (bool)$this->icon;
     }
 
-    public function getSerializedValue()
+    public function getRemoteSet()
     {
+        return IconPicker::$plugin->getIconSources()->getRegisteredIconSourceByHandle($this->iconSet);
+    }
+
+    public function getSerializedValues()
+    {
+        // Return content saved in icon caches, and used for the field. Basically a cut-down version of the model
+        // with a few extra properties handy
         if ($this->type === 'sprite') {
-            return implode(':', [$this->type, $this->iconSet, $this->sprite]);
+            return [
+                'type' => 'sprite',
+                'name' => $this->iconSet,
+                'value' => 'sprite:' . $this->iconSet . ':' . $this->sprite,
+                'url' => $this->sprite,
+                'label' => $this->sprite,
+            ];
         } else if ($this->type === 'glyph') {
-            return implode(':', [$this->type, $this->iconSet, $this->glyphId, $this->glyphName]);
+            return [
+                'type' => 'glyph',
+                'name' => $this->iconSet,
+                'value' => 'glyph:' . $this->iconSet . ':' . $this->glyphId . ':' . $this->glyphName,
+                'url' => $this->getGlyph(),
+                'label' => $this->glyphName,
+            ];
         } else if ($this->type === 'css') {
-            return implode(':', [$this->type, $this->iconSet, $this->css]);
+            $remoteSet = $this->getRemoteSet();
+
+            return [
+                'type' => 'css',
+                'name' => $remoteSet['fontName'],
+                'value' => 'css:' . $this->iconSet . ':' . $this->css,
+                'url' => '',
+                'classes' => $remoteSet['classes'] . $this->css,
+                'label' => $this->css,
+            ];
         }
 
-        return $this->icon;
+        return [
+            'type' => 'svg',
+            'value' => $this->icon,
+            'url' => $this->url,
+            'label' => $this->iconName,
+        ];
     }
 
     public function getGlyph($format = 'charHex')
