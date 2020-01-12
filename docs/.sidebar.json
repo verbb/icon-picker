@@ -14,7 +14,9 @@
         "children": [
             "feature-tour/svg-icons",
             "feature-tour/svg-sprites",
-            "feature-tour/icon-fonts"
+            "feature-tour/icon-fonts",
+            "feature-tour/redactor",
+            "feature-tour/caching"
         ]
     },
     {

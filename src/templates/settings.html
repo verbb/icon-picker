@@ -36,6 +36,33 @@
         required: true,
         warning: macros.configWarning('iconSetsPath', 'icon-picker'),
     }) }}
+
+    {{ forms.textField({
+        label: 'Maximum Icons Shown' | t('icon-picker'),
+        instructions: 'Enter the number of icons to be shown in the icon picker dropdown. Keep this number as low as possible for performance. All icons in a set will be searchable.' | t('icon-picker'),
+        name: 'maxIconsShown',
+        value: settings.maxIconsShown,
+        errors: settings.getErrors('maxIconsShown'),
+        warning: macros.configWarning('maxIconsShown', 'icon-picker'),
+    }) }}
+
+    {% set options = { '': 'Select a field' | t('icon-picker') } %}
+
+    {% for field in craft.app.fields.getAllFields() %}
+        {% if className(field) == 'verbb\\iconpicker\\fields\\IconPickerField' %}
+            {% set options = options | merge({ (field.handle): field.name }) %}
+        {% endif %}
+    {% endfor %}
+
+    {{ forms.selectField({
+        label: 'Redactor Field' | t('icon-picker'),
+        instructions: 'Select a Icon Picker field to be used for Redactor fields.' | t('icon-picker'),
+        name: 'redactorFieldHandle',
+        value: settings.redactorFieldHandle,
+        errors: settings.getErrors('redactorFieldHandle'),
+        warning: macros.configWarning('redactorFieldHandle', 'icon-picker'),
+        options: options,
+    }) }}
 {% endnamespace %}
 
 <hr>

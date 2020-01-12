@@ -111,7 +111,7 @@ Craft.IconPicker.Input = Garnish.Base.extend({
                     type: 'GET',
                     error: function(response) {
                         self.$spinner.addClass('hidden');
-                        self.$errorText.html(response.statusText)
+                        self.$errorText.html(response.statusText);
 
                         callback();
                     },
