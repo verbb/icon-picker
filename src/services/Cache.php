@@ -47,6 +47,8 @@ class Cache extends Component
 
     public function generateIconSetCache($iconSetKey)
     {
+        $icons = [];
+        
         // Special-case for root folder
         if ($iconSetKey === '[root]') {
             $icons = IconPicker::$plugin->getService()->fetchIconsForFolder('', false);
