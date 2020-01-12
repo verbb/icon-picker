@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.1.0 - 2020-01-12
+
+### Added
+- Add GraphQL support for field. Now returns an IconModel.
+- Add cache for each icon set. Icons for each set are now cached when the Icon Picker field is saved.
+- Add controller action to lazy-load icon set content.
+- Add utility to re-generate icon set caches.
+- Improve performance for large icon sets.
+- Add Redactor support. See [docs](https://verbb.io/craft-plugins/icon-picker/docs/feature-tour/redactor).
+- Add support for [Google Material Design Icons](https://github.com/google/material-design-icons), which need some special-handling.
+
+### Changed
+- Major refactor, bringing performance improvements and caching.
+- Update the icon selection field to lazy-load icons, rather than loading on page load. This brings significant performance benefits
+
+### Fixed
+- Fix `craft.iconPicker.spritesheet` not always returning content.
+
 ## 1.0.10 - 2019-09-04
 
 ### Fixed
