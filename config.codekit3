@@ -447,6 +447,14 @@
 		"oO": 0,
 		"oS": 1
 		},
+	"/src/json/material.json": {
+		"ft": 524288,
+		"oA": 1,
+		"oAP": "/src/json/material-min.json",
+		"oF": 0,
+		"oO": 0,
+		"oS": 1
+		},
 	"/src/migrations": {
 		"ft": 65536,
 		"oA": 1,

@@ -402,6 +402,7 @@ class Service extends Component
     private function _fetchFontGlyphs($file)
     {
         $items = [];
+        $exclusions = [];
 
         try {
             $font = Font::load($file);
@@ -411,7 +412,22 @@ class Service extends Component
                 $glyphs = $font->getUnicodeCharMap();
                 $names = $font->getData('post', 'names');
 
+                // Support specific icon kits where they don't contain names
+                if (!$names) {
+                    if ($font->getFontName() == 'Material Icons') {
+                        // Fetch the glyphId-keyed map
+                        $names = IconPicker::$plugin->getIconSources()->getJsonData('material.json');
+
+                        // There's also a bunch of things we want to exclude
+                        $exclusions = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39];
+                    }
+                }
+
                 foreach ($glyphs as $id => $gid) {
+                    if (in_array($gid, $exclusions)) {
+                        continue;
+                    }
+
                     $items[] = [
                         'name' => isset($names[$gid]) ? $names[$gid] : sprintf("uni%04x", $id),
                         'glyphIndex' => $gid,

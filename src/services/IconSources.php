@@ -29,9 +29,7 @@ class IconSources extends Component
 
     public function getRegisteredIconSources()
     {
-        $iconPath = __DIR__ . '/../json/font-awesome.json';
-
-        $icons = Json::decode(file_get_contents($iconPath));
+        $icons = $this->getJsonData('font-awesome.json');
 
         $sources = [
             'font-awesome-all' => [
@@ -69,6 +67,13 @@ class IconSources extends Component
         $sources = $this->getRegisteredIconSources();
 
         return $sources[$handle] ?? [];
+    }
+
+    public function getJsonData($file)
+    {
+        $iconPath = __DIR__ . '/../json/' . $file;
+
+        return Json::decode(file_get_contents($iconPath));
     }
 
 }
