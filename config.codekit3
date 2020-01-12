@@ -448,6 +448,19 @@
 		"oS": 3,
 		"uL": 1
 		},
+	"/src/resources/src/css/icon-picker-redactor.scss": {
+		"aP": 1,
+		"bl": 0,
+		"dP": 10,
+		"dS": 0,
+		"ft": 4,
+		"ma": 0,
+		"oA": 0,
+		"oAP": "/src/resources/dist/css/icon-picker-redactor.css",
+		"oF": 0,
+		"oS": 3,
+		"uL": 1
+		},
 	"/src/resources/src/css/icon-picker.scss": {
 		"aP": 1,
 		"bl": 0,
@@ -468,6 +481,17 @@
 		"mi": 1,
 		"oA": 0,
 		"oAP": "/src/resources/dist/js/icon-picker-cache.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/resources/src/js/icon-picker-redactor.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 1,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "/src/resources/dist/js/icon-picker-redactor.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0

@@ -2,6 +2,7 @@
 namespace verbb\iconpicker;
 
 use verbb\iconpicker\assetbundles\IconPickerCacheAsset;
+use verbb\iconpicker\assetbundles\IconPickerRedactorAsset;
 use verbb\iconpicker\base\PluginTrait;
 use verbb\iconpicker\fields\IconPickerField;
 use verbb\iconpicker\models\Settings;
@@ -14,6 +15,8 @@ use craft\events\RegisterCacheOptionsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\UrlHelper;
+use craft\redactor\events\RegisterPluginPathsEvent;
+use craft\redactor\Field as RichText;
 use craft\services\Fields;
 use craft\services\Utilities;
 use craft\utilities\ClearCaches;
@@ -55,6 +58,7 @@ class IconPicker extends Plugin
         $this->_registerFieldTypes();
         $this->_registerCacheTypes();
         $this->_registerUtilities();
+        $this->_registerRedactorPlugins();
 
         // Provide a cache of loaded spritesheets for the CP
         if (Craft::$app->getRequest()->getIsCpRequest()) {
@@ -123,4 +127,17 @@ class IconPicker extends Plugin
             $event->types[] = CacheUtility::class;
         });
     }
+
+    private function _registerRedactorPlugins()
+    {
+        if (Craft::$app->getPlugins()->getPlugin('redactor')) {
+            Event::on(RichText::class, RichText::EVENT_REGISTER_PLUGIN_PATHS, function(RegisterPluginPathsEvent $event) {
+                $event->paths[] = Craft::getAlias('@verbb/iconpicker/resources/dist/js');
+        
+                Craft::$app->getView()->registerAssetBundle(IconPickerRedactorAsset::class);
+            });
+        }
+    }
+
+
 }

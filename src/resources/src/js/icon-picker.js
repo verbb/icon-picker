@@ -28,7 +28,7 @@ Craft.IconPicker.Input = Garnish.Base.extend({
         this.loadSpriteSheets();
         this.loadFonts();
 
-        this.$container = $('#' + options.inputId + '-field');
+        this.$container = $('#' + options.inputId);
         this.$selectize = this.$container.find('.icon-picker-select');
         this.$spinner = this.$container.find('.spinner');
         this.$errorText = this.$container.find('.error-text');
