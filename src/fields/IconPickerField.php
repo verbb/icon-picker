@@ -57,9 +57,10 @@ class IconPickerField extends Field
         Craft::$app->getView()->registerAssetBundle(IconPickerAsset::class);
 
         $enabledIconSets = IconPicker::$plugin->getService()->getEnabledIconSets($this);
+        $remoteIconSets = IconPicker::$plugin->getService()->getEnabledRemoteSets($this);
 
         // Fetch the actual icons (from the cache)
-        IconPicker::$plugin->getService()->getIcons($enabledIconSets, $this->remoteSets);
+        IconPicker::$plugin->getService()->getIcons($enabledIconSets, $remoteIconSets);
 
         // Fetch any fonts or spritesheets that are extra and once-off
         $spriteSheets = IconPicker::$plugin->getService()->getSpriteSheets();

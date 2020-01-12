@@ -60,33 +60,25 @@ class Service extends Component
         }
 
         if ($remoteSets) {
-            if ($remoteSets === '*') {
-                $remoteSets = IconPicker::$plugin->getIconSources()->getRegisteredIconSources();
-            }
+            foreach ($remoteSets as $remoteSetKey => $remoteSet) {
+                if (is_array($remoteSet['icons'])) {
+                    foreach ($remoteSet['icons'] as $i => $icon) {
+                        $name = pathinfo($remoteSet['url'], PATHINFO_FILENAME);
 
-            foreach ($remoteSets as $remoteSetHandle) {
-                $remoteSet = IconPicker::$plugin->getIconSources()->getRegisteredIconSourceByHandle($remoteSetHandle);
-
-                if ($remoteSet) {
-                    if (is_array($remoteSet['icons'])) {
-                        foreach ($remoteSet['icons'] as $i => $icon) {
-                            $name = pathinfo($remoteSet['url'], PATHINFO_FILENAME);
-
-                            // Return with `getSerializedValues` for a minimal IconModel
-                            $icons[$remoteSet['label']][] = (new IconModel([
-                                'type' => 'css',
-                                'iconSet' => $remoteSetHandle,
-                                'css' => $icon,
-                            ]))->getSerializedValues();
-                        }
+                        // Return with `getSerializedValues` for a minimal IconModel
+                        $icons[$remoteSet['label']][] = (new IconModel([
+                            'type' => 'css',
+                            'iconSet' => $remoteSetKey,
+                            'css' => $icon,
+                        ]))->getSerializedValues();
                     }
-
-                    $this->_loadedFonts[] = [
-                        'type' => 'remote',
-                        'name' => $remoteSet['fontName'],
-                        'url' => $remoteSet['url'],
-                    ];
                 }
+
+                $this->_loadedFonts[] = [
+                    'type' => 'remote',
+                    'name' => $remoteSet['fontName'],
+                    'url' => $remoteSet['url'],
+                ];
             }
         }
 
@@ -347,6 +339,30 @@ class Service extends Component
         return $iconSets;
     }
 
+    public function getEnabledRemoteSets($field)
+    {
+        $allRemoteSets = IconPicker::$plugin->getIconSources()->getRegisteredIconSources();
+
+        if ($field->remoteSets === '') {
+            return [];
+        }
+        
+        // For each enabled icon set, generate a cache
+        if ($field->remoteSets === '*') {
+            return $allRemoteSets;
+        }
+
+        $remoteSets = [];
+
+        foreach ($allRemoteSets as $allRemoteSetKey => $allRemoteSetName) {
+            if (in_array($allRemoteSetKey, $field->remoteSets)) {
+                $remoteSets[$allRemoteSetKey] = $allRemoteSetName;
+            }
+        }
+
+        return $remoteSets;
+    }
+
 
     // Private Methods
     // =========================================================================
@@ -468,6 +484,13 @@ class Service extends Component
 
     private function _getFiles($path, $options)
     {
+        $settings = IconPicker::$plugin->getSettings();
+        $iconSetsPath = $settings->iconSetsPath;
+
+        if (!is_dir($iconSetsPath)) {
+            return [];
+        }
+
         $files = FileHelper::findFiles($path, $options);
 
         // Sort alphabetically

@@ -22,7 +22,8 @@ class IconsController extends Controller
         $field = Craft::$app->getFields()->getFieldById($fieldId);
 
         $enabledIconSets = IconPicker::$plugin->getService()->getEnabledIconSets($field);
-        $json = IconPicker::$plugin->getService()->getIcons($enabledIconSets, $field->remoteSets);
+        $enabledRemoteSets = IconPicker::$plugin->getService()->getEnabledRemoteSets($field);
+        $json = IconPicker::$plugin->getService()->getIcons($enabledIconSets, $enabledRemoteSets);
 
         return $this->asJson($json);
     }
