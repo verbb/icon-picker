@@ -91,6 +91,11 @@ class Cache extends Component
     {
         $iconSetsPath = IconPicker::$plugin->getSettings()->iconSetsPath;
 
+        // Prevent failure when installing
+        if (!is_dir($iconSetsPath)) {
+            return;
+        }
+
         // A pretty basic check on whether the root folder has been modified
         $modifiedTime = filemtime($iconSetsPath);
 

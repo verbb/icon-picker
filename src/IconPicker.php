@@ -139,5 +139,4 @@ class IconPicker extends Plugin
         }
     }
 
-
 }
