@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1 - 2020-01-12
+
+### Fixed
+- Fix error with remote sets set to “All”.
+- Fix error when installing for the first time.
+
 ## 1.1.0 - 2020-01-12
 
 ### Added
