@@ -6,6 +6,8 @@ use craft\redactor\assets\redactor\RedactorAsset;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
+use verbb\base\assetbundles\CpAsset as VerbbCpAsset;
+
 class IconPickerRedactorAsset extends AssetBundle
 {
     // Public Methods
@@ -16,6 +18,7 @@ class IconPickerRedactorAsset extends AssetBundle
         $this->sourcePath = "@verbb/iconpicker/resources/dist";
 
         $this->depends = [
+            VerbbCpAsset::class,
             CpAsset::class,
             RedactorAsset::class,
         ];

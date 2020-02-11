@@ -1,12 +1,13 @@
 {% extends 'icon-picker/_layouts' %}
 {% import '_includes/forms' as forms %}
-{% import 'icon-picker/_macros' as macros %}
+{% import 'verbb-base/_macros' as macros %}
 
 {% set crumbs = [
     { label: 'Icon Picker' | t('icon-picker'), url: url('icon-picker/settings') },
     { label: 'Settings' | t('app'), url: url('icon-picker/settings') }
 ] %}
 
+{% set selectedTab = 'settings' %}
 {% set fullPageForm = true %}
 
 {% block blockContent %}
@@ -17,52 +18,55 @@
 <input type="hidden" name="pluginHandle" value="icon-picker">
 
 {% namespace 'settings' %}
-    {{ forms.textField({
-        label: 'Icons URL' | t('icon-picker'),
-        instructions: 'Provide the full, or relative URL to your icon files. Also supports aliases.' | t('icon-picker'),
-        name: 'iconSetsUrl',
-        value: settings.iconSetsUrl,
-        errors: settings.getErrors('iconSetsUrl'),
-        required: true,
-        warning: macros.configWarning('iconSetsUrl', 'icon-picker'),
-    }) }}
 
-    {{ forms.textField({
-        label: 'Icons Path' | t('icon-picker'),
-        instructions: 'Provide the full path to your icon files.' | t('icon-picker'),
-        name: 'iconSetsPath',
-        value: settings.iconSetsPath,
-        errors: settings.getErrors('iconSetsPath'),
-        required: true,
-        warning: macros.configWarning('iconSetsPath', 'icon-picker'),
-    }) }}
+{{ forms.textField({
+    first: true,
+    label: 'Icons URL' | t('icon-picker'),
+    instructions: 'Provide the full, or relative URL to your icon files. Also supports aliases.' | t('icon-picker'),
+    name: 'iconSetsUrl',
+    value: settings.iconSetsUrl,
+    errors: settings.getErrors('iconSetsUrl'),
+    required: true,
+    warning: macros.configWarning('iconSetsUrl', 'icon-picker'),
+}) }}
 
-    {{ forms.textField({
-        label: 'Maximum Icons Shown' | t('icon-picker'),
-        instructions: 'Enter the number of icons to be shown in the icon picker dropdown. Keep this number as low as possible for performance. All icons in a set will be searchable.' | t('icon-picker'),
-        name: 'maxIconsShown',
-        value: settings.maxIconsShown,
-        errors: settings.getErrors('maxIconsShown'),
-        warning: macros.configWarning('maxIconsShown', 'icon-picker'),
-    }) }}
+{{ forms.textField({
+    label: 'Icons Path' | t('icon-picker'),
+    instructions: 'Provide the full path to your icon files.' | t('icon-picker'),
+    name: 'iconSetsPath',
+    value: settings.iconSetsPath,
+    errors: settings.getErrors('iconSetsPath'),
+    required: true,
+    warning: macros.configWarning('iconSetsPath', 'icon-picker'),
+}) }}
 
-    {% set options = { '': 'Select a field' | t('icon-picker') } %}
+{{ forms.textField({
+    label: 'Maximum Icons Shown' | t('icon-picker'),
+    instructions: 'Enter the number of icons to be shown in the icon picker dropdown. Keep this number as low as possible for performance. All icons in a set will be searchable.' | t('icon-picker'),
+    name: 'maxIconsShown',
+    value: settings.maxIconsShown,
+    errors: settings.getErrors('maxIconsShown'),
+    warning: macros.configWarning('maxIconsShown', 'icon-picker'),
+}) }}
 
-    {% for field in craft.app.fields.getAllFields() %}
-        {% if className(field) == 'verbb\\iconpicker\\fields\\IconPickerField' %}
-            {% set options = options | merge({ (field.handle): field.name }) %}
-        {% endif %}
-    {% endfor %}
+{% set options = { '': 'Select a field' | t('icon-picker') } %}
 
-    {{ forms.selectField({
-        label: 'Redactor Field' | t('icon-picker'),
-        instructions: 'Select a Icon Picker field to be used for Redactor fields.' | t('icon-picker'),
-        name: 'redactorFieldHandle',
-        value: settings.redactorFieldHandle,
-        errors: settings.getErrors('redactorFieldHandle'),
-        warning: macros.configWarning('redactorFieldHandle', 'icon-picker'),
-        options: options,
-    }) }}
+{% for field in craft.app.fields.getAllFields() %}
+    {% if className(field) == 'verbb\\iconpicker\\fields\\IconPickerField' %}
+        {% set options = options | merge({ (field.handle): field.name }) %}
+    {% endif %}
+{% endfor %}
+
+{{ forms.selectField({
+    label: 'Redactor Field' | t('icon-picker'),
+    instructions: 'Select a Icon Picker field to be used for Redactor fields.' | t('icon-picker'),
+    name: 'redactorFieldHandle',
+    value: settings.redactorFieldHandle,
+    errors: settings.getErrors('redactorFieldHandle'),
+    warning: macros.configWarning('redactorFieldHandle', 'icon-picker'),
+    options: options,
+}) }}
+
 {% endnamespace %}
 
 <hr>

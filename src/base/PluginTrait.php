@@ -13,6 +13,8 @@ use craft\web\View;
 use yii\base\Event;
 use yii\log\Logger;
 
+use verbb\base\BaseHelper;
+
 trait PluginTrait
 {
     // Static Properties
@@ -60,6 +62,8 @@ trait PluginTrait
             'iconSources' => IconSources::class,
             'service' => Service::class,
         ]);
+
+        BaseHelper::registerModule();
     }
 
     private function _setLogging()
