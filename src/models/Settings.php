@@ -5,6 +5,7 @@ use verbb\iconpicker\IconPicker;
 
 use Craft;
 use craft\base\Model;
+use craft\helpers\FileHelper;
 
 class Settings extends Model
 {
@@ -15,5 +16,16 @@ class Settings extends Model
     public $iconSetsUrl = '/icons/';
     public $maxIconsShown = 100;
     public $redactorFieldHandle = '';
+    
+    
+    // Public Methods
+    // =========================================================================
+
+    public function __construct()
+    {
+        if ($this->iconSetsPath) {
+            $this->iconSetsPath = FileHelper::normalizePath($this->iconSetsPath);
+        }
+    }
 
 }

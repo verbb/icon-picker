@@ -20,7 +20,11 @@ class IconPickerHelper
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsUrl = $settings->iconSetsUrl;
 
-        $normalizer = new Normalizer($iconSetsUrl . DIRECTORY_SEPARATOR . $path);
+        // Deal with Windows paths
+        $path = str_replace('\\', '/', $path);
+
+        // This is for a URL - a string `/` is okay
+        $normalizer = new Normalizer($iconSetsUrl . '/' . $path);
         $url = $normalizer->normalize();
         $url = Craft::getAlias($url);
 
