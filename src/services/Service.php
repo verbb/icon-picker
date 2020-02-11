@@ -318,7 +318,7 @@ class Service extends Component
     {
         $allIconSets = IconPicker::$plugin->getService()->getIconSets();
 
-        if ($field->iconSets === '') {
+        if ($field->iconSets === '' || $field->iconSets === null) {
             return [];
         }
         
