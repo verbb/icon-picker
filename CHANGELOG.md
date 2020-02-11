@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.2 - 2020-02-11
+
+### Fixed
+- Fix windows path issues.
+- Fix another potential error for field settings and icon sets.
+
 ## 1.1.1 - 2020-01-12
 
 ### Fixed
