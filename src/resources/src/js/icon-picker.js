@@ -125,9 +125,11 @@ Craft.IconPicker.Input = Garnish.Base.extend({
                             selectize.addOptionGroup(optgroup.id, optgroup);
 
                             $.each(icons, function(j, icon) {
-                                icon.parent_id = optgroup.id;
+                                if (i < self.options.settings.maxIconsShown) {
+                                    icon.parent_id = optgroup.id;
 
-                                items.push(icon);
+                                    items.push(icon);
+                                }
                             });
 
                             i++;
