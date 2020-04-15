@@ -68,10 +68,7 @@ trait PluginTrait
 
     private function _setLogging()
     {
-        Craft::getLogger()->dispatcher->targets[] = new FileTarget([
-            'logFile' => Craft::getAlias('@storage/logs/icon-picker.log'),
-            'categories' => ['icon-picker'],
-        ]);
+        BaseHelper::setFileLogging('icon-picker');
     }
 
 }
