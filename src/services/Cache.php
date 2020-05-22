@@ -28,6 +28,8 @@ class Cache extends Component
 
     public function clearAndRegenerate()
     {
+        $settings = IconPicker::getInstance()->getSettings();
+
         // Clear and regenerate caches
         $iconSets = IconPicker::$plugin->getService()->getIconSets();
 
@@ -36,12 +38,13 @@ class Cache extends Component
         }
 
         foreach ($iconSets as $iconSetKey => $iconSetName) {
-            Craft::$app->getQueue()->push(new GenerateIconSetCache([
-                'iconSetKey' => $iconSetKey,
-            ]));
-
-            // Testing
-            // IconPicker::$plugin->getCache()->generateIconSetCache($iconSetKey);
+            if ($settings->enableCache) {
+                Craft::$app->getQueue()->push(new GenerateIconSetCache([
+                    'iconSetKey' => $iconSetKey,
+                ]));
+            } else {
+                IconPicker::$plugin->getCache()->generateIconSetCache($iconSetKey);
+            }
         }
     }
 

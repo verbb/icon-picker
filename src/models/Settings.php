@@ -16,6 +16,7 @@ class Settings extends Model
     public $iconSetsUrl = '/icons/';
     public $maxIconsShown = 100;
     public $redactorFieldHandle = '';
+    public $enableCache = true;
     
     
     // Public Methods
