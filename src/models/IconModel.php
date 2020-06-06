@@ -41,7 +41,11 @@ class IconModel extends Model
             return $this->css;
         }
 
-        return $this->getUrl();
+        if ($this->icon) {
+            return $this->getUrl();
+        }
+
+        return '';
     }
 
     public function getDimensions($height = null)
