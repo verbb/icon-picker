@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.5 - 2020-06-06
+
+### Added
+- Add `enableCache` setting.
+
+### Fixed
+- Fix `entry.iconField` direct output showing URL, even when an icon isn’t picked.
+
 ## 1.1.4 - 2020-04-16
 
 ### Fixed
