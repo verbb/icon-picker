@@ -16,6 +16,8 @@ class IconSources extends Component
 
     const EVENT_REGISTER_ICON_SOURCE = 'registerIconSource';
 
+    private $_remoteSources;
+
 
     // Public Methods
     // =========================================================================
@@ -29,25 +31,28 @@ class IconSources extends Component
 
     public function getRegisteredIconSources()
     {
-        $icons = $this->getJsonData('font-awesome.json');
+        if (null === $this->_remoteSources) {
 
-        $sources = [
-            'font-awesome-all' => [
-                'label' => Craft::t('icon-picker', 'Font Awesome 5 (All)'),
-                'url' => 'https://use.fontawesome.com/releases/v5.7.2/css/all.css',
-                'icons' => $icons,
-                'classes' => 'fa fa-',
-                'fontName' => 'Font Awesome 5 Free',
-            ],
-        ];
+            $icons = $this->getJsonData('font-awesome.json');
+            $sources = [
+                'font-awesome-all' => [
+                    'label' => Craft::t('icon-picker', 'Font Awesome 5 (All)'),
+                    'url' => 'https://use.fontawesome.com/releases/v5.7.2/css/all.css',
+                    'icons' => $icons,
+                    'classes' => 'fa fa-',
+                    'fontName' => 'Font Awesome 5 Free',
+                ],
+            ];
 
-        $event = new RegisterIconSourceEvent([
-            'sources' => $sources,
-        ]);
+            $event = new RegisterIconSourceEvent([
+                'sources' => $sources,
+            ]);
 
-        $this->trigger(self::EVENT_REGISTER_ICON_SOURCE, $event);
-
-        return $event->sources;
+            $this->trigger(self::EVENT_REGISTER_ICON_SOURCE, $event);
+            $this->_remoteSources = $event->sources;
+        }
+        
+        return $this->_remoteSources;
     }
 
     public function getRegisteredOptions()
