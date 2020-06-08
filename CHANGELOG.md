@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.6 - 2020-06-08
+
+### Fixed
+- Improve performance of remote icon sets. (thanks @bertoost).
+
 ## 1.1.5 - 2020-06-06
 
 ### Added
