@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.7 - 2020-06-09
+
+### Fixed
+- Fix error when only a single sprite existed in a sprite sheet.
+
 ## 1.1.6 - 2020-06-08
 
 ### Fixed
