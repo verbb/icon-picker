@@ -412,6 +412,11 @@ class Service extends Component
             IconPicker::error('Error processing SVG spritesheet ' . $file . ': ' . $parseErrors . ': ' . $e->getMessage());
         }
 
+        // Normalise the sprites - there might only be a single sprite.
+        if (Hash::dimensions($items) === 1) {
+            $items = [$items];
+        }
+
         return $items;
     }
 
