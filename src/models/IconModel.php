@@ -48,6 +48,22 @@ class IconModel extends Model
         return '';
     }
 
+    public function getLength()
+    {
+        // TODO: deprecate this at the next major breakpoint
+        if ((string)$this === '') {
+            return 0;
+        }
+
+        return (string)$this;
+    }
+
+    public function getIsEmpty()
+    {
+        // TODO: deprecate this at the next major breakpoint
+        return !$this->getLength();
+    }
+
     public function getDimensions($height = null)
     {
         return IconPicker::$plugin->getService()->getDimensions($this->icon, $height);
