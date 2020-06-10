@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.8 - 2020-06-10
+
+### Fixed
+- Added `iconPickerField.length` and `iconPickerField.getLength()`.
+- Added `iconPickerField.isEmpty` and `iconPickerField.getIsEmpty()`.
+
 ## 1.1.7 - 2020-06-09
 
 ### Fixed

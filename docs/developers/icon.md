@@ -16,6 +16,8 @@ Attribute | Description
 `type` | What type of icon this is: `svg`, `sprite`, `glyph` or `css`.
 `width` | The width of the icon.
 `height` | The height of the icon.
+`length` | Return the string length of the icon for the field.
+`isEmpty` | Returns whether or not there's an icon selected for this field.
 
 ## Methods
 
