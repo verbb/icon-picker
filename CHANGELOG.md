@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.9 - 2020-08-11
+
+### Added
+- Allow `iconSetsPath` settings to use environment variables or aliases.
+- Allow `iconSetsUrl` settings to use environment variables or aliases.
+
 ## 1.1.8 - 2020-06-10
 
 ### Added
