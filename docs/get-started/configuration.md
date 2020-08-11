@@ -7,8 +7,8 @@ Create an `icon-picker.php` file under your `/config` directory with the followi
 
 return [
     '*' => [
-        'iconSetsPath' => CRAFT_BASE_PATH . '/web/icons/',
-        'iconSetsUrl' => '/icons/',
+        'iconSetsPath' => '@webroot/icons/',
+        'iconSetsUrl' => '@web/icons/',
         'maxIconsShown' => 100,
         'redactorFieldHandle' => '',
     ]
@@ -17,8 +17,8 @@ return [
 
 ### Configuration options
 
-- `iconSetsPath` - File system path to the base folder for your icons. The default is an `icons` folder in your web root directory (named `web`).
-- `iconSetsUrl` - The base URL prepended to the path and filename of the icon. The default is an `icons` folder in your web root.
+- `iconSetsPath` - File system path to the base folder for your icons. The default is an `icons` folder in your web root directory. This also accepts environment variables or aliases.
+- `iconSetsUrl` - The base URL prepended to the path and filename of the icon. The default is an `icons` folder in your web root. This also accepts environment variables or aliases.
 - `maxIconsShown` - Set the maximum number of icons shown to pick from in the icon selection pane. This will not effect searching.
 - `redactorFieldHandle` - To enable Icon Picker for use with Redactor, supply the field handle for an Icon Picker field.
 

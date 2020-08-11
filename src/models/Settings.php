@@ -12,8 +12,8 @@ class Settings extends Model
     // Public Properties
     // =========================================================================
 
-    public $iconSetsPath = CRAFT_BASE_PATH . '/web/icons/';
-    public $iconSetsUrl = '/icons/';
+    public $iconSetsPath = '@webroot/icons/';
+    public $iconSetsUrl = '@web/icons/';
     public $maxIconsShown = 100;
     public $redactorFieldHandle = '';
     public $enableCache = true;
@@ -22,11 +22,18 @@ class Settings extends Model
     // Public Methods
     // =========================================================================
 
-    public function __construct()
+    public function getIconSetsPath()
     {
         if ($this->iconSetsPath) {
-            $this->iconSetsPath = FileHelper::normalizePath($this->iconSetsPath);
+            $this->iconSetsPath = FileHelper::normalizePath(Craft::parseEnv($this->iconSetsPath));
         }
+
+        return $this->iconSetsPath;
+    }
+
+    public function getIconSetsUrl()
+    {
+        return Craft::parseEnv($this->iconSetsUrl);
     }
 
 }

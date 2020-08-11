@@ -18,7 +18,7 @@ class IconPickerHelper
     public static function getIconUrl($path)
     {
         $settings = IconPicker::$plugin->getSettings();
-        $iconSetsUrl = $settings->iconSetsUrl;
+        $iconSetsUrl = $settings->getIconSetsUrl();
 
         // Deal with Windows paths
         $path = str_replace('\\', '/', $path);
@@ -26,7 +26,6 @@ class IconPickerHelper
         // This is for a URL - a string `/` is okay
         $normalizer = new Normalizer($iconSetsUrl . '/' . $path);
         $url = $normalizer->normalize();
-        $url = Craft::getAlias($url);
 
         return UrlHelper::siteUrl($url);
     }

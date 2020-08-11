@@ -77,8 +77,9 @@ class IconModel extends Model
     public function getPath()
     {
         $settings = IconPicker::$plugin->getSettings();
-        
-        $path = FileHelper::normalizePath($settings->iconSetsPath . DIRECTORY_SEPARATOR . $this->icon);
+        $iconSetsPath = $settings->getIconSetsPath();
+
+        $path = FileHelper::normalizePath($iconSetsPath . DIRECTORY_SEPARATOR . $this->icon);
 
         if (!file_exists($path)) {
             return '';

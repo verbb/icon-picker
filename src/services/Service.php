@@ -33,8 +33,8 @@ class Service extends Component
     public function getIcons($iconSets, $remoteSets)
     {
         $settings = IconPicker::$plugin->getSettings();
-        $iconSetsPath = $settings->iconSetsPath;
-        $iconSetsUrl = $settings->iconSetsUrl;
+        $iconSetsPath = $settings->getIconSetsPath();
+        $iconSetsUrl = $settings->getIconSetsUrl();
 
         $icons = [];
 
@@ -88,7 +88,7 @@ class Service extends Component
     public function fetchIconsForFolder($folderName, $recursive = true)
     {
         $settings = IconPicker::$plugin->getSettings();
-        $iconSetsPath = $settings->iconSetsPath;
+        $iconSetsPath = $settings->getIconSetsPath();
 
         // We only store a reference to the outer folder name without the path. Add it here
         $folderPath = FileHelper::normalizePath($iconSetsPath . DIRECTORY_SEPARATOR . $folderName);
@@ -122,7 +122,7 @@ class Service extends Component
     public function fetchIconsForSprite($spriteFile)
     {
         $settings = IconPicker::$plugin->getSettings();
-        $iconSetsPath = $settings->iconSetsPath;
+        $iconSetsPath = $settings->getIconSetsPath();
 
         $data = [];
 
@@ -154,7 +154,7 @@ class Service extends Component
     public function fetchIconsForFont($fontFile)
     {
         $settings = IconPicker::$plugin->getSettings();
-        $iconSetsPath = $settings->iconSetsPath;
+        $iconSetsPath = $settings->getIconSetsPath();
 
         $data = [];
 
@@ -205,10 +205,12 @@ class Service extends Component
     public function getDimensions($icon, $height = null)
     {
         $settings = IconPicker::$plugin->getSettings();
+        $iconSetsPath = $settings->getIconSetsPath();
+
         $model = $this->getModel($icon);
 
         if ($model) {
-            $path = FileHelper::normalizePath($settings->iconSetsPath . DIRECTORY_SEPARATOR . $model->icon);
+            $path = FileHelper::normalizePath($iconSetsPath . DIRECTORY_SEPARATOR . $model->icon);
 
             if (file_exists($path)) {
                 if ($height) {
@@ -228,8 +230,9 @@ class Service extends Component
     public function inline($icon)
     {
         $settings = IconPicker::$plugin->getSettings();
-        
-        $path = FileHelper::normalizePath($settings->iconSetsPath . DIRECTORY_SEPARATOR . $icon);
+        $iconSetsPath = $settings->getIconSetsPath();
+
+        $path = FileHelper::normalizePath($iconSetsPath . DIRECTORY_SEPARATOR . $icon);
 
         if (!file_exists($path)) {
             return '';
@@ -261,7 +264,7 @@ class Service extends Component
     public function getIconSets()
     {
         $settings = IconPicker::$plugin->getSettings();
-        $iconSetsPath = $settings->iconSetsPath;
+        $iconSetsPath = $settings->getIconSetsPath();
 
         $iconSets = [];
 
@@ -466,7 +469,7 @@ class Service extends Component
     private function _getUrlForPath($file)
     {
         $settings = IconPicker::$plugin->getSettings();
-        $iconSetsPath = $settings->iconSetsPath;
+        $iconSetsPath = $settings->getIconSetsPath();
 
         // This is the path, relative to the config variable, including the filename
         $relativeFilePath = str_replace($iconSetsPath, '', $file);
@@ -480,7 +483,7 @@ class Service extends Component
     private function _getRelativePathForFile($file)
     {
         $settings = IconPicker::$plugin->getSettings();
-        $iconSetsPath = $settings->iconSetsPath;
+        $iconSetsPath = $settings->getIconSetsPath();
 
         $filename = basename($file);
 
@@ -490,7 +493,7 @@ class Service extends Component
     private function _getFiles($path, $options)
     {
         $settings = IconPicker::$plugin->getSettings();
-        $iconSetsPath = $settings->iconSetsPath;
+        $iconSetsPath = $settings->getIconSetsPath();
 
         if (!is_dir($iconSetsPath)) {
             return [];

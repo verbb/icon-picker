@@ -92,7 +92,7 @@ class Cache extends Component
 
     public function checkToInvalidate()
     {
-        $iconSetsPath = IconPicker::$plugin->getSettings()->iconSetsPath;
+        $iconSetsPath = IconPicker::$plugin->getSettings()->getIconSetsPath();
 
         // Prevent failure when installing
         if (!is_dir($iconSetsPath)) {

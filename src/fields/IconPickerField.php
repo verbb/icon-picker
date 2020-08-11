@@ -90,7 +90,7 @@ class IconPickerField extends Field
     public function getSettingsHtml()
     {
         $settings = IconPicker::getInstance()->getSettings();
-        $iconSetsPath = $settings->iconSetsPath;
+        $iconSetsPath = $settings->getIconSetsPath();
 
         $errors = [];
 
