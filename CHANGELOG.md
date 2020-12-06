@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.10 - 2020-12-07
+
+### Changed
+- Update Font Awesome remote source to 5.15.1.
+
+### Fixed
+- Ensure icons load in Super Table and other nesting fields.
+
 ## 1.1.9 - 2020-08-11
 
 ### Added
