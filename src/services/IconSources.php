@@ -39,7 +39,7 @@ class IconSources extends Component
         $sources = [
             'font-awesome-all' => [
                 'label' => Craft::t('icon-picker', 'Font Awesome 5 (All)'),
-                'url' => 'https://use.fontawesome.com/releases/v5.7.2/css/all.css',
+                'url' => 'https://use.fontawesome.com/releases/v5.15.1/css/all.css',
                 'icons' => $icons,
                 'classes' => 'fa fa-',
                 'fontName' => 'Font Awesome 5 Free',
