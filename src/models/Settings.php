@@ -25,7 +25,7 @@ class Settings extends Model
     public function getIconSetsPath()
     {
         if ($this->iconSetsPath) {
-            $this->iconSetsPath = FileHelper::normalizePath(Craft::parseEnv($this->iconSetsPath));
+            return FileHelper::normalizePath(Craft::parseEnv($this->iconSetsPath));
         }
 
         return $this->iconSetsPath;
