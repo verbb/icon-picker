@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.11 - 2021-09-07
+
+### Fixed
+- Fix Icons Path plugin setting not working correctly when using aliases.
+
 ## 1.1.10 - 2020-12-07
 
 ### Changed
