@@ -11,7 +11,7 @@ Attribute | Description
 `sprite` | The filename and relative path of the icon. Set only if using [SVG Sprites](docs:feature-tour/svg-icons).
 `glyphId` | Set only if using an [Icon Font](docs:feature-tour/icon-fonts).
 `glyphName` | Set only if using an [Icon Font](docs:feature-tour/icon-fonts).
-`css` | Set only if using an [Remote Icon](docs:feature-tour/remote-icon-sets).
+`css` | Set only if using an Remote Icon.
 `iconSet` | The icon set this icon belongs to.
 `type` | What type of icon this is: `svg`, `sprite`, `glyph` or `css`.
 `width` | The width of the icon.
