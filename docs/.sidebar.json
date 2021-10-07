@@ -32,7 +32,8 @@
         "collapsable": false,
         "children": [
             "developers/icon",
-            "developers/icon-sources"
+            "developers/icon-sources",
+            "developers/graphql"
         ]
     },
     {
