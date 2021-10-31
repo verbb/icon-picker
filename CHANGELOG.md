@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.12 - 2021-11-01
+
+### Fixed
+- Fix JS Redactor plugin not installing correctly in some instances.
+
 ## 1.1.11 - 2021-09-07
 
 ### Fixed
