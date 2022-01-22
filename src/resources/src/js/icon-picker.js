@@ -178,7 +178,14 @@ Craft.IconPicker.Input = Garnish.Base.extend({
 
                     $('head').append('<style type="text/css">' + css + '</style>');
                 } else if (font.type == 'remote') {
-                    $('head').append('<link rel="stylesheet" type="text/css" href="' + font.url + '">');
+                    // Support multiple remote stylesheets
+                    if (!Array.isArray(font.url)) {
+                        font.url = [font.url];
+                    }
+
+                    font.url.forEach(function(url) {
+                        $('head').append('<link rel="stylesheet" type="text/css" href="' + url + '">');
+                    });
                 }
             }
         }

@@ -63,8 +63,6 @@ class Service extends Component
             foreach ($remoteSets as $remoteSetKey => $remoteSet) {
                 if (is_array($remoteSet['icons'])) {
                     foreach ($remoteSet['icons'] as $i => $icon) {
-                        $name = pathinfo($remoteSet['url'], PATHINFO_FILENAME);
-
                         // Return with `getSerializedValues` for a minimal IconModel
                         $icons[$remoteSet['label']][] = (new IconModel([
                             'type' => 'css',
