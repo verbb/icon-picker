@@ -129,16 +129,16 @@ class IconModel extends Model
                 'label' => $this->glyphName,
             ];
         } else if ($this->type === 'css') {
-            $remoteSet = $this->getRemoteSet();
-
-            return [
-                'type' => 'css',
-                'name' => $remoteSet['fontName'],
-                'value' => 'css:' . $this->iconSet . ':' . $this->css,
-                'url' => '',
-                'classes' => $remoteSet['classes'] . $this->css,
-                'label' => $this->css,
-            ];
+            if ($remoteSet = $this->getRemoteSet()) {
+                return [
+                    'type' => 'css',
+                    'name' => $remoteSet['fontName'] ?? '',
+                    'value' => 'css:' . $this->iconSet . ':' . $this->css,
+                    'url' => '',
+                    'classes' => $remoteSet['classes'] . $this->css,
+                    'label' => $this->css,
+                ];
+            }
         }
 
         return [
