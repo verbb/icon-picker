@@ -198,15 +198,23 @@ Craft.IconPicker.Input = Garnish.Base.extend({
             if ($.inArray(sheet.name, Craft.IconPicker.Cache.stylesheets) == -1) {
                 Craft.IconPicker.Cache.stylesheets.push(sheet.name);
 
-                $.get(sheet.url, function(data) {
-                    var div = document.createElement('div');
-                    div.innerHTML = new XMLSerializer().serializeToString(data.documentElement);
-                    $svg = $(div).find('> svg');
-                    $svg.attr('id', 'icon-picker-spritesheet-' + sheet.name);
-                    $svg.css('display', 'none').prependTo('body');
+                $.ajax({
+                    url: sheet.url,
+                    success: this.injectSpriteSheet(sheet),
                 });
             }
         }
+    },
+
+    injectSpriteSheet: function(sheet) {
+        return function(data) {
+            var div = document.createElement('div');
+            div.innerHTML = new XMLSerializer().serializeToString(data.documentElement);
+            
+            var $svg = $(div).find('> svg');
+            $svg.attr('id', 'icon-picker-spritesheet-' + sheet.name);
+            $svg.css('display', 'none').prependTo('body');
+        };
     },
 });
 
