@@ -4,31 +4,31 @@ namespace verbb\iconpicker\variables;
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\helpers\IconPickerHelper;
 
-use Craft;
-use craft\helpers\FileHelper;
 use craft\helpers\Template;
+
+use Twig\Markup;
 
 class IconPickerVariable
 {
     // Public Methods
     // =========================================================================
 
-    public function getIcon($icon)
+    public function getIcon($icon): \verbb\iconpicker\models\IconModel
     {
         return IconPicker::$plugin->getService()->getModel($icon);
     }
 
-    public function getDimensions($icon, $height = null)
+    public function getDimensions($icon, $height = null): array
     {
         return $this->getIcon($icon)->getDimensions($height);
     }
 
-    public function inline($icon)
+    public function inline($icon): string|Markup
     {
         return $this->getIcon($icon)->getInline();
     }
 
-    public function spritesheet($path)
+    public function spritesheet($path): Markup
     {
         $url = IconPickerHelper::getIconUrl($path);
         $sheet = IconPickerHelper::getFileContents($url);
@@ -36,7 +36,7 @@ class IconPickerVariable
         return Template::raw($sheet);
     }
 
-    public function fontUrl($path)
+    public function fontUrl($path): string
     {
         return IconPickerHelper::getIconUrl($path);
     }

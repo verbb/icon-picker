@@ -5,32 +5,31 @@ use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\helpers\IconPickerHelper;
 use verbb\iconpicker\models\IconModel;
 
-use Craft;
 use craft\base\Component;
 use craft\helpers\FileHelper;
 use craft\helpers\Image;
-use craft\helpers\StringHelper;
+use craft\helpers\Json;
 use craft\helpers\Template;
-use craft\helpers\UrlHelper;
 
-use yii\base\Event;
 use Cake\Utility\Xml as XmlParser;
 use Cake\Utility\Hash;
 use FontLib\Font;
+use Twig\Markup;
+use Throwable;
 
 class Service extends Component
 {
     // Properties
     // =========================================================================
 
-    private $_loadedFonts = [];
-    private $_loadedSpriteSheets = [];
+    private array $_loadedFonts = [];
+    private array $_loadedSpriteSheets = [];
 
 
     // Public Methods
     // =========================================================================
 
-    public function getIcons($iconSets, $remoteSets)
+    public function getIcons($iconSets, $remoteSets): array
     {
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->getIconSetsPath();
@@ -83,7 +82,7 @@ class Service extends Component
         return $icons;
     }
 
-    public function fetchIconsForFolder($folderName, $recursive = true)
+    public function fetchIconsForFolder($folderName, $recursive = true): array
     {
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->getIconSetsPath();
@@ -117,7 +116,7 @@ class Service extends Component
         return $data;
     }
 
-    public function fetchIconsForSprite($spriteFile)
+    public function fetchIconsForSprite($spriteFile): array
     {
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->getIconSetsPath();
@@ -149,7 +148,7 @@ class Service extends Component
         return $data;
     }
 
-    public function fetchIconsForFont($fontFile)
+    public function fetchIconsForFont($fontFile): array
     {
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->getIconSetsPath();
@@ -186,7 +185,7 @@ class Service extends Component
         return $data;
     }
 
-    public function getModel($icon)
+    public function getModel($icon): IconModel
     {
         if ($icon instanceof IconModel) {
             return $icon;
@@ -195,12 +194,12 @@ class Service extends Component
         $model = new IconModel();
         $model->icon = $icon;
 
-        list($model->width, $model->height) = $this->getDimensions($model);
+        [$model->width, $model->height] = $this->getDimensions($model);
 
         return $model;
     }
 
-    public function getDimensions($icon, $height = null)
+    public function getDimensions($icon, $height = null): array
     {
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->getIconSetsPath();
@@ -216,16 +215,16 @@ class Service extends Component
                         'width' => ceil(($model->width / $model->height) * $height),
                         'height' => $height,
                     ];
-                } else {
-                    return Image::imageSize($path);
                 }
+
+                return Image::imageSize($path);
             }
         }
 
         return [0, 0];
     }
 
-    public function inline($icon)
+    public function inline($icon): string|Markup
     {
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->getIconSetsPath();
@@ -239,7 +238,7 @@ class Service extends Component
         return Template::raw(@file_get_contents($path));
     }
 
-    public function getSpriteSheets()
+    public function getSpriteSheets(): array
     {
         $spriteSheets = [];
 
@@ -254,12 +253,12 @@ class Service extends Component
         return $spriteSheets;
     }
 
-    public function getLoadedFonts()
+    public function getLoadedFonts(): array
     {
         return $this->_loadedFonts;
     }
 
-    public function getIconSets()
+    public function getIconSets(): array
     {
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->getIconSetsPath();
@@ -315,7 +314,7 @@ class Service extends Component
         return $iconSets;
     }
 
-    public function getEnabledIconSets($field)
+    public function getEnabledIconSets($field): array
     {
         $allIconSets = IconPicker::$plugin->getService()->getIconSets();
 
@@ -340,7 +339,7 @@ class Service extends Component
         return $iconSets;
     }
 
-    public function getEnabledRemoteSets($field)
+    public function getEnabledRemoteSets($field): array
     {
         $allRemoteSets = IconPicker::$plugin->getIconSources()->getRegisteredIconSources();
 
@@ -368,20 +367,20 @@ class Service extends Component
     // Private Methods
     // =========================================================================
 
-    private function _getFolderName($path, $fullPath = true, $suppressErrors = true)
+    private function _getFolderName($path, $fullPath = true, $suppressErrors = true): array|string
     {
         $path = FileHelper::normalizePath($path);
 
         if ($fullPath) {
             $folder = FileHelper::normalizePath($suppressErrors ? @pathinfo($path, PATHINFO_DIRNAME) : pathinfo($path, PATHINFO_DIRNAME));
             return rtrim($folder, '/').'/';
-        } else {
-            if ($suppressErrors ? !@is_dir($path) : !is_dir($path)) {
-                $path = $suppressErrors ? @pathinfo($path, PATHINFO_DIRNAME) : pathinfo($path, PATHINFO_DIRNAME);
-            }
-
-            return $suppressErrors ? @pathinfo($path, PATHINFO_BASENAME) : pathinfo($path, PATHINFO_BASENAME);
         }
+
+        if ($suppressErrors ? !@is_dir($path) : !is_dir($path)) {
+            $path = $suppressErrors ? @pathinfo($path, PATHINFO_DIRNAME) : pathinfo($path, PATHINFO_DIRNAME);
+        }
+
+        return $suppressErrors ? @pathinfo($path, PATHINFO_BASENAME) : pathinfo($path, PATHINFO_BASENAME);
     }
 
     private function _fetchSvgsFromSprites($file)
@@ -407,10 +406,10 @@ class Service extends Component
                 $items = Hash::get($xml, 'svg.defs');
             }
 
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Get a more useful error from parsing - if available
             $parseErrors = libxml_get_errors();
-            IconPicker::error('Error processing SVG spritesheet ' . $file . ': ' . $parseErrors . ': ' . $e->getMessage());
+            IconPicker::error('Error processing SVG spritesheet ' . $file . ': ' . Json::encode($parseErrors) . ': ' . $e->getMessage());
         }
 
         // Normalise the sprites - there might only be a single sprite.
@@ -421,7 +420,7 @@ class Service extends Component
         return $items;
     }
 
-    private function _fetchFontGlyphs($file)
+    private function _fetchFontGlyphs($file): array
     {
         $items = [];
         $exclusions = [];
@@ -435,14 +434,12 @@ class Service extends Component
                 $names = $font->getData('post', 'names');
 
                 // Support specific icon kits where they don't contain names
-                if (!$names) {
-                    if ($font->getFontName() == 'Material Icons') {
-                        // Fetch the glyphId-keyed map
-                        $names = IconPicker::$plugin->getIconSources()->getJsonData('material.json');
+                if (!$names && $font->getFontName() == 'Material Icons') {
+                    // Fetch the glyphId-keyed map
+                    $names = IconPicker::$plugin->getIconSources()->getJsonData('material.json');
 
-                        // There's also a bunch of things we want to exclude
-                        $exclusions = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39];
-                    }
+                    // There's also a bunch of things we want to exclude
+                    $exclusions = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39];
                 }
 
                 foreach ($glyphs as $id => $gid) {
@@ -451,20 +448,20 @@ class Service extends Component
                     }
 
                     $items[] = [
-                        'name' => isset($names[$gid]) ? $names[$gid] : sprintf("uni%04x", $id),
+                        'name' => $names[$gid] ?? sprintf("uni%04x", $id),
                         'glyphIndex' => $gid,
                         'glyphId' => $id,
                     ];
                 }
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             IconPicker::error('Error processing icon font ' . $file . ': ' . $e->getMessage());
         }
 
         return $items;
     }
 
-    private function _getUrlForPath($file)
+    private function _getUrlForPath($file): string
     {
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->getIconSetsPath();
@@ -473,12 +470,10 @@ class Service extends Component
         $relativeFilePath = str_replace($iconSetsPath, '', $file);
 
         // Get the resulting URL
-        $url = IconPickerHelper::getIconUrl($relativeFilePath);
-
-        return $url;
+        return IconPickerHelper::getIconUrl($relativeFilePath);
     }
 
-    private function _getRelativePathForFile($file)
+    private function _getRelativePathForFile($file): array|string
     {
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->getIconSetsPath();
@@ -488,7 +483,7 @@ class Service extends Component
         return str_replace([$filename, $iconSetsPath], ['', ''], $file);
     }
 
-    private function _getFiles($path, $options)
+    private function _getFiles($path, $options): array
     {
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->getIconSetsPath();
@@ -507,12 +502,8 @@ class Service extends Component
         return $files;
     }
 
-    private function _prettyIconSetName($string)
+    private function _prettyIconSetName($string): string
     {
-        $string = str_replace('-', ' ', $string);
-        $string = str_replace('/', ' - ', $string);
-        $string = str_replace('[root]', '', $string);
-
-        return $string;
+        return str_replace(['-', '/', '[root]'], [' ', ' - ', ''], $string);
     }
 }

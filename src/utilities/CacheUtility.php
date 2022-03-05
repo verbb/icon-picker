@@ -1,14 +1,12 @@
 <?php
 namespace verbb\iconpicker\utilities;
 
-use verbb\iconpicker\IconPicker;
-
 use Craft;
 use craft\base\Utility;
 
 class CacheUtility extends Utility
 {
-    // Static
+    // Static Methods
     // =========================================================================
 
     public static function displayName(): string
@@ -21,7 +19,7 @@ class CacheUtility extends Utility
         return 'icon-picker-cache';
     }
 
-    public static function iconPath()
+    public static function iconPath(): ?string
     {
         $iconPath = Craft::getAlias('@vendor/verbb/icon-picker/src/icon-mask.svg');
 

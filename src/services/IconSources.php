@@ -1,9 +1,7 @@
 <?php
 namespace verbb\iconpicker\services;
 
-use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\events\RegisterIconSourceEvent;
-use verbb\iconpicker\helpers\IconPickerHelper;
 
 use Craft;
 use craft\base\Component;
@@ -16,20 +14,20 @@ class IconSources extends Component
 
     const EVENT_REGISTER_ICON_SOURCE = 'registerIconSource';
 
-    private $_remoteSources = null;
+    private ?array $_remoteSources = null;
 
 
     // Public Methods
     // =========================================================================
 
-    public function init()
+    public function init(): void
     {
         parent::init();
 
         $this->getRegisteredIconSources();
     }
 
-    public function getRegisteredIconSources()
+    public function getRegisteredIconSources(): ?array
     {
         if ($this->_remoteSources !== null) {
             return $this->_remoteSources;
@@ -56,7 +54,7 @@ class IconSources extends Component
         return $this->_remoteSources;
     }
 
-    public function getRegisteredOptions()
+    public function getRegisteredOptions(): array
     {
         $options = [];
         $sources = $this->getRegisteredIconSources();

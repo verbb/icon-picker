@@ -4,7 +4,6 @@ namespace verbb\iconpicker\models;
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\helpers\IconPickerHelper;
 
-use Craft;
 use craft\base\Model;
 use craft\helpers\FileHelper;
 
@@ -13,32 +12,32 @@ class IconModel extends Model
     // Properties
     // =========================================================================
 
-    public $icon;
-    public $sprite;
-    public $glyphId;
-    public $glyphName;
-    public $iconSet;
-    public $type;
-    public $css;
-    public $width;
-    public $height;
+    public ?string $icon = null;
+    public ?string $sprite = null;
+    public ?string $glyphId = null;
+    public ?string $glyphName = null;
+    public ?string $iconSet = null;
+    public ?string $type = null;
+    public ?string $css = null;
+    public ?string $width = null;
+    public ?string $height = null;
 
 
     // Public Methods
     // =========================================================================
 
-    public function __toString()
+    public function __toString(): string
     {
         if ($this->sprite) {
-            return $this->sprite;
+            return (string) $this->sprite;
         }
 
         if ($this->glyphId) {
-            return $this->glyph;
+            return (string) $this->glyph;
         }
 
         if ($this->css) {
-            return $this->css;
+            return (string) $this->css;
         }
 
         if ($this->icon) {
@@ -48,7 +47,7 @@ class IconModel extends Model
         return '';
     }
 
-    public function getLength()
+    public function getLength(): int|string
     {
         // TODO: deprecate this at the next major breakpoint
         if ((string)$this === '') {
@@ -58,23 +57,23 @@ class IconModel extends Model
         return (string)$this;
     }
 
-    public function getIsEmpty()
+    public function getIsEmpty(): bool
     {
         // TODO: deprecate this at the next major breakpoint
         return !$this->getLength();
     }
 
-    public function getDimensions($height = null)
+    public function getDimensions($height = null): array
     {
         return IconPicker::$plugin->getService()->getDimensions($this->icon, $height);
     }
 
-    public function getUrl()
+    public function getUrl(): string
     {
         return IconPickerHelper::getIconUrl($this->icon);
     }
 
-    public function getPath()
+    public function getPath(): string
     {
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->getIconSetsPath();
@@ -88,17 +87,17 @@ class IconModel extends Model
         return $path;
     }
 
-    public function getInline()
+    public function getInline(): string|\Twig\Markup
     {
         return IconPicker::$plugin->getService()->inline($this->icon);
     }
 
-    public function getIconName()
+    public function getIconName(): string
     {
         return ($this->icon) ? pathinfo($this->icon, PATHINFO_FILENAME) : '';
     }
 
-    public function getHasIcon()
+    public function getHasIcon(): bool
     {
         return (bool)$this->icon;
     }
@@ -108,7 +107,7 @@ class IconModel extends Model
         return IconPicker::$plugin->getIconSources()->getRegisteredIconSourceByHandle($this->iconSet);
     }
 
-    public function getSerializedValues()
+    public function getSerializedValues(): array
     {
         // Return content saved in icon caches, and used for the field. Basically a cut-down version of the model
         // with a few extra properties handy
@@ -120,7 +119,9 @@ class IconModel extends Model
                 'url' => $this->sprite,
                 'label' => $this->sprite,
             ];
-        } else if ($this->type === 'glyph') {
+        }
+
+        if ($this->type === 'glyph') {
             return [
                 'type' => 'glyph',
                 'name' => $this->iconSet,
@@ -128,7 +129,9 @@ class IconModel extends Model
                 'url' => $this->getGlyph(),
                 'label' => $this->glyphName,
             ];
-        } else if ($this->type === 'css') {
+        }
+
+        if ($this->type === 'css') {
             if ($remoteSet = $this->getRemoteSet()) {
                 return [
                     'type' => 'css',
@@ -149,13 +152,17 @@ class IconModel extends Model
         ];
     }
 
-    public function getGlyph($format = 'charHex')
+    public function getGlyph($format = 'charHex'): string
     {
         if ($format === 'decimal') {
             return $this->glyphId;
-        } else if ($format === 'hex') {
+        }
+
+        if ($format === 'hex') {
             return dechex($this->glyphId);
-        } else if ($format === 'char') {
+        }
+
+        if ($format === 'char') {
             return '&#' . $this->glyphId;
         }
 

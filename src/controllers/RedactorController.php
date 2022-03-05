@@ -2,7 +2,6 @@
 namespace verbb\iconpicker\controllers;
 
 use verbb\iconpicker\IconPicker;
-use verbb\iconpicker\migrations\SvgIconsPlugin;
 
 use Craft;
 use craft\web\Controller;
@@ -14,7 +13,7 @@ class RedactorController extends Controller
     // Public Methods
     // =========================================================================
 
-    public function actionIndex()
+    public function actionIndex(): Response
     {
         $settings = IconPicker::$plugin->getSettings();
         $request = Craft::$app->getRequest();

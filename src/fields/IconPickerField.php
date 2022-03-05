@@ -11,9 +11,7 @@ use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\gql\GqlEntityRegistry;
 use craft\gql\TypeLoader;
-use craft\helpers\FileHelper;
 use craft\helpers\Json;
-use craft\helpers\UrlHelper;
 
 use yii\db\Schema;
 
@@ -34,16 +32,16 @@ class IconPickerField extends Field
     // Properties
     // =========================================================================
 
-    public $columnType = Schema::TYPE_TEXT;
-    public $showLabels = false;
-    public $iconSets;
-    public $remoteSets = [];
+    public string $columnType = Schema::TYPE_TEXT;
+    public bool $showLabels = false;
+    public ?array $iconSets = [];
+    public array $remoteSets = [];
 
 
     // Public Methods
     // =========================================================================
 
-    public function getInputHtml($value, ElementInterface $element = null): string
+    public function getInputHtml(mixed $value, ?ElementInterface $element = null): string
     {
         if (!$value) {
             $value = new IconModel();
@@ -68,7 +66,7 @@ class IconPickerField extends Field
 
         $settings = array_merge($this->settings, $pluginSettings->toArray());
 
-        Craft::$app->getView()->registerJs('new Craft.IconPicker.Input(' . json_encode([
+        Craft::$app->getView()->registerJs('new Craft.IconPicker.Input(' . Json::encode([
             'id' => $id,
             'inputId' => $nameSpacedId,
             'name' => $this->handle,
@@ -87,7 +85,7 @@ class IconPickerField extends Field
         ]);
     }
 
-    public function getSettingsHtml()
+    public function getSettingsHtml(): ?string
     {
         $settings = IconPicker::getInstance()->getSettings();
         $iconSetsPath = $settings->getIconSetsPath();
@@ -114,7 +112,7 @@ class IconPickerField extends Field
         ]);
     }
 
-    public function normalizeValue($value, ElementInterface $element = null)
+    public function normalizeValue(mixed $value, ?ElementInterface $element = null): IconModel
     {
         if ($value instanceof IconModel) {
             return $value;
@@ -139,10 +137,10 @@ class IconPickerField extends Field
         return $model;
     }
 
-    public function serializeValue($value, ElementInterface $element = null)
+    public function serializeValue(mixed $value, ?ElementInterface $element = null): mixed
     {
         // If saving a sprite, we need to sort out the type - although easier than front-end input changing.
-        if (strstr($value['icon'], 'sprite:')) {
+        if (str_contains($value['icon'], 'sprite:')) {
             $explode = explode(':', $value['icon']);
 
             $value['icon'] = null;
@@ -151,7 +149,7 @@ class IconPickerField extends Field
             $value['sprite'] = $explode[2];
         }
 
-        if (strstr($value['icon'], 'glyph:')) {
+        if (str_contains($value['icon'], 'glyph:')) {
             $explode = explode(':', $value['icon']);
 
             $value['icon'] = null;
@@ -161,7 +159,7 @@ class IconPickerField extends Field
             $value['glyphName'] = $explode[3];
         }
 
-        if (strstr($value['icon'], 'css:')) {
+        if (str_contains($value['icon'], 'css:')) {
             $explode = explode(':', $value['icon']);
 
             $value['icon'] = null;
@@ -173,7 +171,7 @@ class IconPickerField extends Field
         return $value;
     }
 
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
         $settings = IconPicker::getInstance()->getSettings();
         $iconSets = IconPicker::$plugin->getService()->getEnabledIconSets($this);
@@ -192,7 +190,7 @@ class IconPickerField extends Field
         parent::afterSave($isNew);
     }
 
-    public function getContentGqlType()
+    public function getContentGqlType(): array|Type
     {
         $typeName = 'Icon_Dimensions';
 

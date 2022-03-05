@@ -4,8 +4,6 @@ namespace verbb\iconpicker\queue\jobs;
 use verbb\iconpicker\IconPicker;
 
 use Craft;
-use craft\base\Element;
-use craft\base\ElementInterface;
 use craft\queue\BaseJob;
 
 class GenerateIconSetCache extends BaseJob
@@ -13,13 +11,13 @@ class GenerateIconSetCache extends BaseJob
     // Properties
     // =========================================================================
 
-    public $iconSetKey;
+    public ?string $iconSetKey = null;
 
 
     // Public Methods
     // =========================================================================
 
-    public function execute($queue)
+    public function execute($queue): void
     {
         $this->setProgress($queue, 0);
 
@@ -28,7 +26,7 @@ class GenerateIconSetCache extends BaseJob
         $this->setProgress($queue, 1);
     }
 
-    protected function defaultDescription(): string
+    protected function defaultDescription(): ?string
     {
         return Craft::t('icon-picker', 'Generating icon cache for "{iconSetKey}"', ['iconSetKey' => $this->iconSetKey]);
     }

@@ -10,6 +10,7 @@ use verbb\iconpicker\utilities\CacheUtility;
 use verbb\iconpicker\variables\IconPickerVariable;
 
 use Craft;
+use craft\base\Model;
 use craft\base\Plugin;
 use craft\events\RegisterCacheOptionsEvent;
 use craft\events\RegisterComponentTypesEvent;
@@ -22,18 +23,16 @@ use craft\services\Utilities;
 use craft\utilities\ClearCaches;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
-use craft\web\View;
 
 use yii\base\Event;
-use yii\base\Module;
 
 class IconPicker extends Plugin
 {
     // Public Properties
     // =========================================================================
 
-    public $schemaVersion = '1.0.1';
-    public $hasCpSettings = true;
+    public string $schemaVersion = '1.0.1';
+    public bool $hasCpSettings = true;
 
 
     // Traits
@@ -45,7 +44,7 @@ class IconPicker extends Plugin
     // Public Methods
     // =========================================================================
 
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -69,16 +68,16 @@ class IconPicker extends Plugin
         }
     }
 
-    public function getSettingsResponse()
+    public function getSettingsResponse(): mixed
     {
-        Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('icon-picker/settings'));
+        return Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('icon-picker/settings'));
     }
 
 
     // Protected Methods
     // =========================================================================
 
-    protected function createSettingsModel(): Settings
+    protected function createSettingsModel(): ?Model
     {
         return new Settings();
     }
@@ -87,7 +86,7 @@ class IconPicker extends Plugin
     // Private Methods
     // =========================================================================
 
-    private function _registerCpRoutes()
+    private function _registerCpRoutes(): void
     {
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
             $event->rules = array_merge($event->rules, [
@@ -96,24 +95,24 @@ class IconPicker extends Plugin
         });
     }
 
-    private function _registerVariables()
+    private function _registerVariables(): void
     {
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event) {
             $event->sender->set('iconPicker', IconPickerVariable::class);
         });
     }
 
-    private function _registerFieldTypes()
+    private function _registerFieldTypes(): void
     {
         Event::on(Fields::class, Fields::EVENT_REGISTER_FIELD_TYPES, function(RegisterComponentTypesEvent $event) {
             $event->types[] = IconPickerField::class;
         });
     }
 
-    private function _registerCacheTypes()
+    private function _registerCacheTypes(): void
     {
-        Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, function(RegisterCacheOptionsEvent $e) {
-            $e->options[] = [
+        Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, function(RegisterCacheOptionsEvent $event) {
+            $event->options[] = [
                 'key' => 'icon-picker',
                 'label' => Craft::t('icon-picker', 'Icon Picker cache'),
                 'action' => [IconPicker::$plugin->getCache(), 'clearAndRegenerate'],
@@ -121,14 +120,14 @@ class IconPicker extends Plugin
         });
     }
 
-    private function _registerUtilities()
+    private function _registerUtilities(): void
     {
         Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITY_TYPES, function(RegisterComponentTypesEvent $event) {
             $event->types[] = CacheUtility::class;
         });
     }
 
-    private function _registerRedactorPlugins()
+    private function _registerRedactorPlugins(): void
     {
         if (class_exists(RichText::class) && $this->getSettings()->redactorFieldHandle) {
             Event::on(RichText::class, RichText::EVENT_REGISTER_PLUGIN_PATHS, function(RegisterPluginPathsEvent $event) {

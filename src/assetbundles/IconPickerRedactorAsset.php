@@ -1,7 +1,6 @@
 <?php
 namespace verbb\iconpicker\assetbundles;
 
-use Craft;
 use craft\redactor\assets\redactor\RedactorAsset;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
@@ -13,7 +12,7 @@ class IconPickerRedactorAsset extends AssetBundle
     // Public Methods
     // =========================================================================
 
-    public function init()
+    public function init(): void
     {
         $this->sourcePath = "@verbb/iconpicker/resources/dist";
 

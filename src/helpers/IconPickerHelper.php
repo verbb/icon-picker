@@ -4,18 +4,17 @@ namespace verbb\iconpicker\helpers;
 use verbb\iconpicker\IconPicker;
 
 use Craft;
-use craft\helpers\FileHelper;
-use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 
 use URL\Normalizer;
+use Throwable;
 
 class IconPickerHelper
 {
     // Public Methods
     // =========================================================================
 
-    public static function getIconUrl($path)
+    public static function getIconUrl($path): string
     {
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsUrl = $settings->getIconSetsUrl();
@@ -30,7 +29,7 @@ class IconPickerHelper
         return UrlHelper::siteUrl($url);
     }
 
-    public static function getFileContents($url)
+    public static function getFileContents($url): string
     {
         try {
             $options = [];
@@ -45,7 +44,7 @@ class IconPickerHelper
             $response = $client->get($url);
 
             return $response->getBody()->getContents();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             IconPicker::error('Error getting file content for ' . $url . ': ' . $e->getMessage());
         }
 

@@ -8,5 +8,5 @@ class RegisterIconSourceEvent extends Event
     // Properties
     // =========================================================================
 
-    public $sources = [];
+    public array $sources = [];
 }

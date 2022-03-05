@@ -2,7 +2,6 @@
 namespace verbb\iconpicker\controllers;
 
 use verbb\iconpicker\IconPicker;
-use verbb\iconpicker\migrations\SvgIconsPlugin;
 
 use Craft;
 use craft\helpers\ArrayHelper;
@@ -15,7 +14,7 @@ class IconsController extends Controller
     // Public Methods
     // =========================================================================
 
-    public function actionIconsForField()
+    public function actionIconsForField(): Response
     {
         $request = Craft::$app->getRequest();
 

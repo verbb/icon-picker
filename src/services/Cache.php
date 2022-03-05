@@ -2,31 +2,18 @@
 namespace verbb\iconpicker\services;
 
 use verbb\iconpicker\IconPicker;
-use verbb\iconpicker\fields\IconPickerField;
-use verbb\iconpicker\helpers\IconPickerHelper;
 use verbb\iconpicker\queue\jobs\GenerateIconSetCache;
-use verbb\iconpicker\models\IconModel;
 
 use Craft;
 use craft\base\Component;
-use craft\helpers\FileHelper;
-use craft\helpers\Image;
 use craft\helpers\Json;
-use craft\helpers\StringHelper;
-use craft\helpers\Template;
-use craft\helpers\UrlHelper;
-
-use yii\base\Event;
-use Cake\Utility\Xml as XmlParser;
-use Cake\Utility\Hash;
-use FontLib\Font;
 
 class Cache extends Component
 {
     // Public Methods
     // =========================================================================
 
-    public function clearAndRegenerate()
+    public function clearAndRegenerate(): void
     {
         $settings = IconPicker::getInstance()->getSettings();
 
@@ -48,10 +35,8 @@ class Cache extends Component
         }
     }
 
-    public function generateIconSetCache($iconSetKey)
+    public function generateIconSetCache($iconSetKey): array
     {
-        $icons = [];
-        
         // Special-case for root folder
         if ($iconSetKey === '[root]') {
             $icons = IconPicker::$plugin->getService()->fetchIconsForFolder('', false);
@@ -83,14 +68,12 @@ class Cache extends Component
         // Fetch from the cache, otherwise, fetch it (which saves to cache for next time)
         if ($cache = Craft::$app->getCache()->get($cacheKey)) {
             return Json::decode($cache);
-        } else {
-            return $this->generateIconSetCache($iconSetKey);
         }
 
-        return [];
+        return $this->generateIconSetCache($iconSetKey);
     }
 
-    public function checkToInvalidate()
+    public function checkToInvalidate(): void
     {
         $iconSetsPath = IconPicker::$plugin->getSettings()->getIconSetsPath();
 
@@ -105,11 +88,9 @@ class Cache extends Component
         $cacheKey = 'icon-picker:modified-time';
 
         // Has this been cached already?
-        if ($cache = Craft::$app->getCache()->get($cacheKey)) {
-            // If it has, check to see if the cache time is different to now
-            if ($cache != $modifiedTime) {
-                $this->clearAndRegenerate();
-            }
+        // If it has, check to see if the cache time is different to now
+        if (($cache = Craft::$app->getCache()->get($cacheKey)) && $cache != $modifiedTime) {
+            $this->clearAndRegenerate();
         }
 
         // Update the cache

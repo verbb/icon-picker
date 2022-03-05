@@ -10,12 +10,14 @@ class SvgIconsPlugin extends Migration
     // Public Methods
     // =========================================================================
 
-    public function safeUp()
+    public function safeUp(): bool
     {
         $this->update('{{%fields}}', ['type' => IconPickerField::class], ['type' => 'SvgIcons']);
+
+        return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         return false;
     }

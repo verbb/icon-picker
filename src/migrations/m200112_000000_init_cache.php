@@ -3,19 +3,18 @@ namespace verbb\iconpicker\migrations;
 
 use verbb\iconpicker\IconPicker;
 
-use Craft;
 use craft\db\Migration;
-use craft\db\Query;
-use craft\queue\jobs\ResaveElements;
 
 class m200112_000000_init_cache extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         IconPicker::$plugin->getCache()->clearAndRegenerate();
+
+        return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m200112_000000_init_cache cannot be reverted.\n";
         return false;

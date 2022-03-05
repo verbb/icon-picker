@@ -2,7 +2,7 @@
     "name": "verbb/icon-picker",
     "description": "Provide content editors a field to pick an icon from a public directory.",
     "type": "craft-plugin",
-    "version": "1.1.12",
+    "version": "2.0.0-beta.1",
     "keywords": [
         "craft",
         "cms",
@@ -25,8 +25,9 @@
         }
     ],
     "require": {
-        "craftcms/cms": "^3.4.0-RC1",
-        "verbb/base": "^1.0.2",
+        "php": "^8.0.2",
+        "craftcms/cms": "^4.0.0-alpha",
+        "verbb/base": "^2.0.0-beta",
         "cakephp/core": "^3.5",
         "cakephp/utility": "^3.3.12",
         "phenx/php-font-lib": "^0.5.0",
@@ -40,7 +41,7 @@
     "extra": {
         "name": "Icon Picker",
         "handle": "icon-picker",
-        "changelogUrl": "https://raw.githubusercontent.com/verbb/icon-picker/craft-3/CHANGELOG.md",
+        "changelogUrl": "https://raw.githubusercontent.com/verbb/icon-picker/craft-4/CHANGELOG.md",
         "class": "verbb\\iconpicker\\IconPicker"
     }
 }

@@ -1,8 +1,6 @@
 <?php
 namespace verbb\iconpicker\models;
 
-use verbb\iconpicker\IconPicker;
-
 use Craft;
 use craft\base\Model;
 use craft\helpers\FileHelper;
@@ -12,17 +10,17 @@ class Settings extends Model
     // Public Properties
     // =========================================================================
 
-    public $iconSetsPath = '@webroot/icons/';
-    public $iconSetsUrl = '@web/icons/';
-    public $maxIconsShown = 100;
-    public $redactorFieldHandle = '';
-    public $enableCache = true;
+    public string $iconSetsPath = '@webroot/icons/';
+    public string $iconSetsUrl = '@web/icons/';
+    public int $maxIconsShown = 100;
+    public string $redactorFieldHandle = '';
+    public bool $enableCache = true;
     
     
     // Public Methods
     // =========================================================================
 
-    public function getIconSetsPath()
+    public function getIconSetsPath(): string
     {
         if ($this->iconSetsPath) {
             return FileHelper::normalizePath(Craft::parseEnv($this->iconSetsPath));
@@ -31,7 +29,7 @@ class Settings extends Model
         return $this->iconSetsPath;
     }
 
-    public function getIconSetsUrl()
+    public function getIconSetsUrl(): bool|string|null
     {
         return Craft::parseEnv($this->iconSetsUrl);
     }

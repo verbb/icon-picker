@@ -14,7 +14,7 @@ class DefaultController extends Controller
     // Public Methods
     // =========================================================================
 
-    public function actionMigrate()
+    public function actionMigrate(): Response
     {
         // Backup!
         Craft::$app->getDb()->backup();
@@ -23,15 +23,14 @@ class DefaultController extends Controller
 
         ob_start();
         $migration->up();
-        $output = ob_get_contents();
-        ob_end_clean();
+        $output = ob_get_clean();
 
         Craft::$app->getSession()->setNotice(Craft::t('icon-picker', 'SVG Icons fields migrated.'));
 
         return $this->redirect('icon-picker/settings');
     }
 
-    public function actionClearCache()
+    public function actionClearCache(): Response
     {
         IconPicker::$plugin->getCache()->clearAndRegenerate();
 
@@ -40,7 +39,7 @@ class DefaultController extends Controller
         return $this->redirectToPostedUrl();
     }
 
-    public function actionSettings()
+    public function actionSettings(): Response
     {
         $settings = IconPicker::$plugin->getSettings();
 

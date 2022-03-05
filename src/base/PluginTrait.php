@@ -7,55 +7,56 @@ use verbb\iconpicker\services\IconSources;
 use verbb\iconpicker\services\Service;
 
 use Craft;
-use craft\log\FileTarget;
-use craft\web\View;
 
-use yii\base\Event;
 use yii\log\Logger;
 
 use verbb\base\BaseHelper;
 
 trait PluginTrait
 {
-    // Static Properties
+    // Properties
     // =========================================================================
 
-    public static $plugin;
+    public static IconPicker $plugin;
+
+
+    // Static Methods
+    // =========================================================================
+
+    public static function log($message): void
+    {
+        Craft::getLogger()->log($message, Logger::LEVEL_INFO, 'icon-picker');
+    }
+
+    public static function error($message): void
+    {
+        Craft::getLogger()->log($message, Logger::LEVEL_ERROR, 'icon-picker');
+    }
 
 
     // Public Methods
     // =========================================================================
 
-    public function getCache()
+    public function getCache(): Cache
     {
         return $this->get('cache');
     }
 
-    public function getIconSources()
+    public function getIconSources(): IconSources
     {
         return $this->get('iconSources');
     }
 
-    public function getService()
+    public function getService(): Service
     {
         return $this->get('service');
-    }
-
-    public static function log($message)
-    {
-        Craft::getLogger()->log($message, Logger::LEVEL_INFO, 'icon-picker');
-    }
-
-    public static function error($message)
-    {
-        Craft::getLogger()->log($message, Logger::LEVEL_ERROR, 'icon-picker');
     }
 
 
     // Private Methods
     // =========================================================================
 
-    private function _setPluginComponents()
+    private function _setPluginComponents(): void
     {
         $this->setComponents([
             'cache' => Cache::class,
@@ -66,7 +67,7 @@ trait PluginTrait
         BaseHelper::registerModule();
     }
 
-    private function _setLogging()
+    private function _setLogging(): void
     {
         BaseHelper::setFileLogging('icon-picker');
     }
