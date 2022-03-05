@@ -10,13 +10,13 @@ class Settings extends Model
     // Public Properties
     // =========================================================================
 
+    public bool $enableCache = true;
     public string $iconSetsPath = '@webroot/icons/';
     public string $iconSetsUrl = '@web/icons/';
     public int $maxIconsShown = 100;
     public string $redactorFieldHandle = '';
-    public bool $enableCache = true;
-    
-    
+
+
     // Public Methods
     // =========================================================================
 

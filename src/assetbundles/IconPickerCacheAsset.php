@@ -23,7 +23,7 @@ class IconPickerCacheAsset extends AssetBundle
         $this->js = [
             'js/icon-picker-cache.js',
         ];
-        
+
         parent::init();
     }
 }

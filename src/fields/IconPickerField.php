@@ -67,14 +67,14 @@ class IconPickerField extends Field
         $settings = array_merge($this->settings, $pluginSettings->toArray());
 
         Craft::$app->getView()->registerJs('new Craft.IconPicker.Input(' . Json::encode([
-            'id' => $id,
-            'inputId' => $nameSpacedId,
-            'name' => $this->handle,
-            'fonts' => $fonts,
-            'spriteSheets' => $spriteSheets,
-            'settings' => $settings,
-            'fieldId' => $this->id,
-        ]) . ');');
+                'id' => $id,
+                'inputId' => $nameSpacedId,
+                'name' => $this->handle,
+                'fonts' => $fonts,
+                'spriteSheets' => $spriteSheets,
+                'settings' => $settings,
+                'fieldId' => $this->id,
+            ]) . ');');
 
         return Craft::$app->getView()->renderTemplate('icon-picker/_field/input', [
             'id' => $id,
@@ -118,7 +118,7 @@ class IconPickerField extends Field
             return $value;
         }
 
-        $model = new IconModel();            
+        $model = new IconModel();
 
         if (is_string($value) && !empty($value)) {
             $value = Json::decodeIfJson($value);
@@ -199,7 +199,7 @@ class IconPickerField extends Field
             'fields' => [
                 'width' => Type::string(),
                 'height' => Type::string(),
-            ]
+            ],
         ]));
 
         TypeLoader::registerType($typeName, static function() use ($dimensionType) {
@@ -230,11 +230,11 @@ class IconPickerField extends Field
                 'glyph' => Type::string(),
             ],
         ]));
-        
+
         TypeLoader::registerType($typeName, static function() use ($iconType) {
             return $iconType;
         });
-        
+
         return $iconType;
     }
 }

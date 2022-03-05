@@ -3,6 +3,7 @@ namespace verbb\iconpicker\variables;
 
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\helpers\IconPickerHelper;
+use verbb\iconpicker\models\IconModel;
 
 use craft\helpers\Template;
 
@@ -13,7 +14,7 @@ class IconPickerVariable
     // Public Methods
     // =========================================================================
 
-    public function getIcon($icon): \verbb\iconpicker\models\IconModel
+    public function getIcon($icon): IconModel
     {
         return IconPicker::$plugin->getService()->getModel($icon);
     }

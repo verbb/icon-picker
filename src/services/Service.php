@@ -272,7 +272,7 @@ class Service extends Component
             $folders = FileHelper::findDirectories($iconSetsPath, [
                 'recursive' => false,
             ]);
-            
+
             foreach ($folders as $folder) {
                 $path = str_replace($iconSetsPath, '', $folder);
                 $iconSets['folder:' . $path] = $path;
@@ -321,7 +321,7 @@ class Service extends Component
         if ($field->iconSets === '' || $field->iconSets === null) {
             return [];
         }
-        
+
         // For each enabled icon set, generate a cache
         if ($field->iconSets === '*') {
             return $allIconSets;
@@ -346,7 +346,7 @@ class Service extends Component
         if ($field->remoteSets === '') {
             return [];
         }
-        
+
         // For each enabled icon set, generate a cache
         if ($field->remoteSets === '*') {
             return $allRemoteSets;
@@ -373,7 +373,7 @@ class Service extends Component
 
         if ($fullPath) {
             $folder = FileHelper::normalizePath($suppressErrors ? @pathinfo($path, PATHINFO_DIRNAME) : pathinfo($path, PATHINFO_DIRNAME));
-            return rtrim($folder, '/').'/';
+            return rtrim($folder, '/') . '/';
         }
 
         if ($suppressErrors ? !@is_dir($path) : !is_dir($path)) {
@@ -405,7 +405,6 @@ class Service extends Component
             if (!$items) {
                 $items = Hash::get($xml, 'svg.defs');
             }
-
         } catch (Throwable $e) {
             // Get a more useful error from parsing - if available
             $parseErrors = libxml_get_errors();

@@ -50,7 +50,7 @@ class IconSources extends Component
 
         $this->trigger(self::EVENT_REGISTER_ICON_SOURCE, $event);
         $this->_remoteSources = $event->sources;
-        
+
         return $this->_remoteSources;
     }
 

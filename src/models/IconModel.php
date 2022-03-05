@@ -6,6 +6,7 @@ use verbb\iconpicker\helpers\IconPickerHelper;
 
 use craft\base\Model;
 use craft\helpers\FileHelper;
+use Twig\Markup;
 
 class IconModel extends Model
 {
@@ -29,15 +30,15 @@ class IconModel extends Model
     public function __toString(): string
     {
         if ($this->sprite) {
-            return (string) $this->sprite;
+            return (string)$this->sprite;
         }
 
         if ($this->glyphId) {
-            return (string) $this->glyph;
+            return (string)$this->glyph;
         }
 
         if ($this->css) {
-            return (string) $this->css;
+            return (string)$this->css;
         }
 
         if ($this->icon) {
@@ -87,7 +88,7 @@ class IconModel extends Model
         return $path;
     }
 
-    public function getInline(): string|\Twig\Markup
+    public function getInline(): string|Markup
     {
         return IconPicker::$plugin->getService()->inline($this->icon);
     }
