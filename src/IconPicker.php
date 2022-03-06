@@ -28,7 +28,7 @@ use yii\base\Event;
 
 class IconPicker extends Plugin
 {
-    // Public Properties
+    // Properties
     // =========================================================================
 
     public bool $hasCpSettings = true;

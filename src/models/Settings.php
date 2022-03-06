@@ -7,7 +7,7 @@ use craft\helpers\FileHelper;
 
 class Settings extends Model
 {
-    // Public Properties
+    // Properties
     // =========================================================================
 
     public bool $enableCache = true;
