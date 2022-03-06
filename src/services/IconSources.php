@@ -12,7 +12,7 @@ class IconSources extends Component
     // Constants
     // =========================================================================
 
-    const EVENT_REGISTER_ICON_SOURCE = 'registerIconSource';
+    public const EVENT_REGISTER_ICON_SOURCE = 'registerIconSource';
 
     private ?array $_remoteSources = null;
 
