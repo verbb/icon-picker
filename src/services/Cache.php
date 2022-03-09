@@ -15,7 +15,7 @@ class Cache extends Component
 
     public function clearAndRegenerate(): void
     {
-        $settings = IconPicker::getInstance()->getSettings();
+        $settings = IconPicker::$plugin->getSettings();
 
         // Clear and regenerate caches
         $iconSets = IconPicker::$plugin->getService()->getIconSets();

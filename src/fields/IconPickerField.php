@@ -87,7 +87,7 @@ class IconPickerField extends Field
 
     public function getSettingsHtml(): ?string
     {
-        $settings = IconPicker::getInstance()->getSettings();
+        $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->getIconSetsPath();
 
         $errors = [];
@@ -173,7 +173,7 @@ class IconPickerField extends Field
 
     public function afterSave(bool $isNew): void
     {
-        $settings = IconPicker::getInstance()->getSettings();
+        $settings = IconPicker::$plugin->getSettings();
         $iconSets = IconPicker::$plugin->getService()->getEnabledIconSets($this);
 
         // When saving the field, fire off queue jobs to prime the icon cache
