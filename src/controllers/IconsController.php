@@ -28,7 +28,7 @@ class IconsController extends Controller
         $field = Craft::$app->getFields()->getFieldById($fieldId);
 
         if (!$field) {
-            return $this->asErrorJson('Unable to find field #' . $fieldId);
+            return $this->asFailure('Unable to find field #' . $fieldId);
         }
 
         $enabledIconSets = IconPicker::$plugin->getService()->getEnabledIconSets($field);

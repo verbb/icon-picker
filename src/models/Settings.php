@@ -3,6 +3,7 @@ namespace verbb\iconpicker\models;
 
 use Craft;
 use craft\base\Model;
+use craft\helpers\App;
 use craft\helpers\FileHelper;
 
 class Settings extends Model
@@ -23,7 +24,7 @@ class Settings extends Model
     public function getIconSetsPath(): string
     {
         if ($this->iconSetsPath) {
-            return FileHelper::normalizePath(Craft::parseEnv($this->iconSetsPath));
+            return FileHelper::normalizePath(App::parseEnv($this->iconSetsPath));
         }
 
         return $this->iconSetsPath;
@@ -31,7 +32,7 @@ class Settings extends Model
 
     public function getIconSetsUrl(): bool|string|null
     {
-        return Craft::parseEnv($this->iconSetsUrl);
+        return App::parseEnv($this->iconSetsUrl);
     }
 
 }

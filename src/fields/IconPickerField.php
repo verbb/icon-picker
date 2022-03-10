@@ -17,6 +17,7 @@ use yii\db\Schema;
 
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\ObjectType;
+use craft\helpers\Html;
 
 class IconPickerField extends Field
 {
@@ -47,7 +48,7 @@ class IconPickerField extends Field
             $value = new IconModel();
         }
 
-        $id = Craft::$app->getView()->formatInputId($this->handle);
+        $id = Html::id($this->handle);
         $nameSpacedId = Craft::$app->getView()->namespaceInputId($id);
 
         $pluginSettings = IconPicker::$plugin->getSettings();
