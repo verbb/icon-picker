@@ -35,12 +35,5 @@
             "developers/icon-sources",
             "developers/graphql"
         ]
-    },
-    {
-        "title": "Support",
-        "collapsable": false,
-        "children": [
-            "support/get-support"
-        ]
     }
 ]
