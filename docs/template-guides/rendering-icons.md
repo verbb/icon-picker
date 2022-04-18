@@ -47,7 +47,7 @@ First, you'll want to output the spritesheet on your page. You can either do thi
 {{ craft.iconPicker.spritesheet('path/regular.svg') }}
 ```
 
-Then, every time you want to reference an icon, you use its id. Note that Icon Picker will automatically know whether this field is using a SVG sprite or not, so you don't have to specifically use `.sprite`.
+Then, every time you want to reference an icon, you use its id. Note that Icon Picker will automatically know whether this field is using an SVG sprite or not, so you don't have to specifically use `.sprite`.
 
 ```twig
 <svg width="20" height="20"><use xlink:href="#{{ entry.iconPickerField }}"></use></svg>
@@ -60,7 +60,7 @@ Then, every time you want to reference an icon, you use its id. Note that Icon P
 ```
 
 ## Icon Fonts
-You can also use an icon font for your icon source. Icon Picker will extract the available icons in font file, for you to pick. These are refered to as 'glyphs'. From your field, you have two main options on how to display the icon, depending on what works for your project.
+You can also use an icon font for your icon source. Icon Picker will extract the available icons in font file, for you to pick. These are referred to as 'glyphs'. From your field, you have two main options on how to display the icon, depending on what works for your project.
 
 It's also largely up to you to implement the required CSS required for either of these approaches. An example might be for the Font Awesome 5 Free pack:
 

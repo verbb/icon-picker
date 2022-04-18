@@ -1,5 +1,5 @@
 # Icon
-Whenever you're dealing with a icon in your template, you're actually working with a `Icon` object.
+Whenever you're dealing with an icon in your template, you're actually working with a `Icon` object.
 
 ## Attributes
 

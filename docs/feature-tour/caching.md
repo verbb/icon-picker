@@ -4,7 +4,7 @@ Icon Picker features a caching mechanism for all icon sets. This helps with part
 Whenever you save an Icon Picker field, the cache of all enabled icon sets are built. Subsequent saves to this field rebuilds this cache.
 
 ## Lazy-loading
-In addition, icons are lazy-loaded for additional performance, rather than loading all icons when you load an element page. This provides signficant performance improvements. When opening the dropdown to pick an icon, a small loading spinner will appear to the right of the dropdown. Depending on the size of your icon sets, this may take a second or two.
+In addition, icons are lazy-loaded for additional performance, rather than loading all icons when you load an element page. This provides significant performance improvements. When opening the dropdown to pick an icon, a small loading spinner will appear to the right of the dropdown. Depending on the size of your icon sets, this may take a second or two.
 
 ## Adding new icons
 If you add new icons to your folders, you'll likely notice that they won't show in the Icon Picker field. This is because Icon Picker doesn't know about these new icons, and is instead using the cached icons. You'll either need to:
