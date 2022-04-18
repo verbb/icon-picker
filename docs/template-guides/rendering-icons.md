@@ -1,12 +1,10 @@
 # Rendering Icons
-
 Icon Picker supports SVGs, SVG Spritesheets, and Icon Fonts for picking icons with. As each method requires the need for a different way of outputting, you'll want to consult the guide below on how best to handle outputting your icon in your templates.
 
 ## SVG Icons
 You have two main options when rendering a single SVG icon:
 
 ### URL
-
 A URL can be generated for a direct link to the SVG file. This is most commonly used when using SVGs are an `<img>` `src` attribute.
 
 ```twig
@@ -39,7 +37,6 @@ You can use Craft's own `svg()` Twig function by using the path. [Read more](htt
 Note that this cannot be used for SVG Sprites, only singular SVG icons.
 
 ## SVG Sprites
-
 You can also use an SVG Spritesheet for your icons. The general concept of a sprite sheet is that it saves adding duplicate content to the page body. For example, you might have 50 'check' icons on a page, and using the above inline code, 50 lots of SVG code would need to be output.
 
 Instead, with SVG Sprites, you output your SVG Spritesheet only once, and then every instance on the page you want to use the icon, you reference it via id.
@@ -88,7 +85,6 @@ It's also largely up to you to implement the required CSS required for either of
 Note the use of the `{{ craft.iconPicker.fontUrl() }}` function, which retrieves the URL to the font file.
 
 ### Icon Glyph
-
 You can output the actual glyph unicode character representation on the page, and then ensure you style the HTML node with the correct font.
 
 ```twig
@@ -109,7 +105,6 @@ It's fairly common for font icon providers to have named classes for each icon, 
 ```
 
 ## Remote Icon Sets
-
 Remote icon sets are often CDN-based icon kits, hosted offsite. Icon Picker comes built in with [Font Awesome 5](https://fontawesome.com/), but you can also [register your own](docs:developers/icon-sources).
 
 Because these kits are CSS-based, they act similar to the icon fonts above, but won't contain any glyph information. Instead, the name of the icon will be available in a `css` property.

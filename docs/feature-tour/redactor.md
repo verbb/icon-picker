@@ -1,5 +1,4 @@
 # Redactor
-
 Icon Picker has native support for [Redactor](https://plugins.craftcms.com/redactor). You're required to nominate an Icon Picker field to be used in your Redactor fields, so that you can configure the appropriate icon sets available.
 
 Firstly, you'll want to edit your [Redactor config files](https://github.com/craftcms/redactor#redactor-configs), and be sure to add `icon-picker` to the plugins array.
