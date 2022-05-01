@@ -53,15 +53,16 @@ class IconPicker extends Plugin
 
         $this->_registerComponents();
         $this->_registerLogTarget();
-        $this->_registerCpRoutes();
         $this->_registerVariables();
         $this->_registerFieldTypes();
         $this->_registerCacheTypes();
-        $this->_registerUtilities();
-        $this->_registerRedactorPlugins();
 
-        // Provide a cache of loaded spritesheets for the CP
         if (Craft::$app->getRequest()->getIsCpRequest()) {
+            $this->_registerCpRoutes();
+            $this->_registerUtilities();
+            $this->_registerRedactorPlugins();
+            
+            // Provide a cache of loaded spritesheets for the CP
             Craft::$app->getView()->registerAssetBundle(IconPickerCacheAsset::class);
 
             // Try to intelligently check to see if any icons have changed
