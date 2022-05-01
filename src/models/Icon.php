@@ -8,7 +8,7 @@ use craft\base\Model;
 use craft\helpers\FileHelper;
 use Twig\Markup;
 
-class IconModel extends Model
+class Icon extends Model
 {
     // Properties
     // =========================================================================

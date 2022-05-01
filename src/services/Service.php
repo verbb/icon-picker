@@ -3,7 +3,7 @@ namespace verbb\iconpicker\services;
 
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\helpers\IconPickerHelper;
-use verbb\iconpicker\models\IconModel;
+use verbb\iconpicker\models\Icon;
 
 use craft\base\Component;
 use craft\helpers\FileHelper;
@@ -62,8 +62,8 @@ class Service extends Component
             foreach ($remoteSets as $remoteSetKey => $remoteSet) {
                 if (is_array($remoteSet['icons'])) {
                     foreach ($remoteSet['icons'] as $i => $icon) {
-                        // Return with `getSerializedValues` for a minimal IconModel
-                        $icons[$remoteSet['label']][] = (new IconModel([
+                        // Return with `getSerializedValues` for a minimal Icon
+                        $icons[$remoteSet['label']][] = (new Icon([
                             'type' => 'css',
                             'iconSet' => $remoteSetKey,
                             'css' => $icon,
@@ -106,8 +106,8 @@ class Service extends Component
 
             $item = str_replace($iconSetsPath, '', $file);
 
-            // Return with `getSerializedValues` for a minimal IconModel
-            $data['icons'][] = (new IconModel([
+            // Return with `getSerializedValues` for a minimal Icon
+            $data['icons'][] = (new Icon([
                 'type' => 'svg',
                 'icon' => $item,
             ]))->getSerializedValues();
@@ -134,8 +134,8 @@ class Service extends Component
             $iconSet = pathinfo($spriteFile, PATHINFO_FILENAME);
 
             foreach ($files as $i => $file) {
-                // Return with `getSerializedValues` for a minimal IconModel
-                $data['icons'][] = (new IconModel([
+                // Return with `getSerializedValues` for a minimal Icon
+                $data['icons'][] = (new Icon([
                     'type' => 'sprite',
                     'iconSet' => $iconSet,
                     'sprite' => $file['@id'],
@@ -166,8 +166,8 @@ class Service extends Component
             $iconSet = pathinfo($fontFile, PATHINFO_FILENAME);
 
             foreach ($glyphs as $i => $glyph) {
-                // Return with `getSerializedValues` for a minimal IconModel
-                $data['icons'][] = (new IconModel([
+                // Return with `getSerializedValues` for a minimal Icon
+                $data['icons'][] = (new Icon([
                     'type' => 'glyph',
                     'iconSet' => $iconSet,
                     'glyphId' => $glyph['glyphId'],
@@ -185,13 +185,13 @@ class Service extends Component
         return $data;
     }
 
-    public function getModel($icon): IconModel
+    public function getModel($icon): Icon
     {
-        if ($icon instanceof IconModel) {
+        if ($icon instanceof Icon) {
             return $icon;
         }
 
-        $model = new IconModel();
+        $model = new Icon();
         $model->icon = $icon;
 
         [$model->width, $model->height] = $this->getDimensions($model);
