@@ -48,20 +48,14 @@ class Icon extends Model
         return '';
     }
 
-    public function getLength(): int|string
+    public function count(): bool|int
     {
-        // TODO: deprecate this at the next major breakpoint
-        if ((string)$this === '') {
-            return 0;
-        }
-
-        return (string)$this;
+        return mb_strlen((string)$this);
     }
 
-    public function getIsEmpty(): bool
+    public function isEmpty(): bool
     {
-        // TODO: deprecate this at the next major breakpoint
-        return !$this->getLength();
+        return (bool)$this->count();
     }
 
     public function getDimensions($height = null): array
@@ -88,7 +82,7 @@ class Icon extends Model
         return $path;
     }
 
-    public function getInline(): string|Markup
+    public function getInline(): Markup
     {
         return IconPicker::$plugin->getService()->inline($this->icon);
     }

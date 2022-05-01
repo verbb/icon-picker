@@ -129,12 +129,6 @@ class IconPickerField extends Field
             $model->setAttributes($value, false);
         }
 
-        // Return null only if the string equivalent of the model is empty
-        // TODO: apply at the next breakpoint
-        // if ((string)$model === '') {
-        //     return null;
-        // }
-
         return $model;
     }
 
