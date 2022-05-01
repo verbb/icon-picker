@@ -3,7 +3,7 @@ namespace verbb\iconpicker\fields;
 
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\assetbundles\IconPickerAsset;
-use verbb\iconpicker\models\IconModel;
+use verbb\iconpicker\models\Icon;
 use verbb\iconpicker\queue\jobs\GenerateIconSetCache;
 
 use Craft;
@@ -45,7 +45,7 @@ class IconPickerField extends Field
     public function getInputHtml(mixed $value, ?ElementInterface $element = null): string
     {
         if (!$value) {
-            $value = new IconModel();
+            $value = new Icon();
         }
 
         $id = Html::id($this->handle);
@@ -113,13 +113,13 @@ class IconPickerField extends Field
         ]);
     }
 
-    public function normalizeValue(mixed $value, ?ElementInterface $element = null): IconModel
+    public function normalizeValue(mixed $value, ?ElementInterface $element = null): Icon
     {
-        if ($value instanceof IconModel) {
+        if ($value instanceof Icon) {
             return $value;
         }
 
-        $model = new IconModel();
+        $model = new Icon();
 
         if (is_string($value) && !empty($value)) {
             $value = Json::decodeIfJson($value);
