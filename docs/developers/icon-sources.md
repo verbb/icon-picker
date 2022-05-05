@@ -1,5 +1,4 @@
 # Icon Sources
-
 Icon Picker can support remote sources for icons, and by default, works with [Font Awesome 5](https://fontawesome.com). When registering a remote icon set source, these icons will be available to pick within the field. You can add your own sources for icons using events.
 
 The below shows an example of using [Ionicons](https://ionicons.com).

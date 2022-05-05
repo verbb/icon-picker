@@ -1,6 +1,5 @@
 # Icon
-
-Whenever you're dealing with a icon in your template, you're actually working with a `Icon` object.
+Whenever you're dealing with an icon in your template, you're actually working with a `Icon` object.
 
 ## Attributes
 
@@ -30,7 +29,8 @@ Method | Description
 `getIconName()` | Returns the name of the icon, without the extension.
 `getGlyph(format)` | Returns the character representation of an individual icon glyph, for when an icon font is used.
 
-#### Glyph formats
+## Glyph formats
+
 Format | Example
 --- | ---
 `getGlyph('decimal')` | Get the icon unicode (decimal).
