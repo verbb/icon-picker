@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.13 - 2022-06-08
+
+### Added
+- Add `icon-picker-svg` and `icon-picker-sprite` classes to Redactor-chosen icons.
+- Add support for multiple URLs for remote icon sets.
+
+### Fixed
+- Fix sprite sheets getting incorrect `id` attributes.
+- Fix an error when a field contained an icon from a remote icon set that no longer exists.
+
 ## 1.1.12 - 2021-11-01
 
 ### Fixed
