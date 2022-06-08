@@ -50,9 +50,9 @@ Craft.IconPicker.Input = Garnish.Base.extend({
             render: {
                 item: function(item, escape) {
                     if (item.type == 'svg') {
-                        var content = '<img src="' + item.url + '" alt="' + escape(item.label) + '" />';
+                        var content = '<img class="icon-picker-svg" src="' + item.url + '" alt="' + escape(item.label) + '" />';
                     } else if (item.type == 'sprite') {
-                        var content = '<svg viewBox="0 0 1000 1000"><use xlink:href="#' + item.url + '" /></svg>';
+                        var content = '<svg class="icon-picker-sprite" viewBox="0 0 1000 1000"><use xlink:href="#' + item.url + '" /></svg>';
                     } else if (item.type == 'glyph') {
                         var content = '<span class="icon-picker-font font-face-' + item.name + '">' + item.url + '</span>';
                     } else if (item.type == 'css') {
@@ -69,9 +69,9 @@ Craft.IconPicker.Input = Garnish.Base.extend({
 
                 option: function(item, escape) {
                     if (item.type == 'svg') {
-                        var content = '<img src="' + item.url + '" alt="' + escape(item.label) + '" title="' + escape(item.label) + '" />';
+                        var content = '<img class="icon-picker-svg" src="' + item.url + '" alt="' + escape(item.label) + '" title="' + escape(item.label) + '" />';
                     } else if (item.type == 'sprite') {
-                        var content = '<svg viewBox="0 0 1000 1000"><use xlink:href="#' + item.url + '" /></svg>';
+                        var content = '<svg class="icon-picker-sprite" viewBox="0 0 1000 1000"><use xlink:href="#' + item.url + '" /></svg>';
                     } else if (item.type == 'glyph') {
                         var content = '<span class="icon-picker-font font-face-' + item.name + '">' + item.url + '</span>';
                     } else if (item.type == 'css') {
