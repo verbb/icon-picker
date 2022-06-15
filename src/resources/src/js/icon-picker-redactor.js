@@ -47,7 +47,8 @@
                         type: 'GET',
                         error: function(response) {
                             $spinner.addClass('hidden');
-                            $errorText.html(response.statusText);
+                            
+                            console.error(response.statusText);
                         },
 
                         success: function(fieldData) {

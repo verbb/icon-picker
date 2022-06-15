@@ -352,6 +352,10 @@ class Service extends Component
             return $allRemoteSets;
         }
 
+        if (!is_array($field->remoteSets)) {
+            $field->remoteSets = [];
+        }
+
         $remoteSets = [];
 
         foreach ($allRemoteSets as $allRemoteSetKey => $allRemoteSetName) {
