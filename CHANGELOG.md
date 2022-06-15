@@ -3,7 +3,7 @@
 ## 2.0.0-beta.5 - 2022-06-15
 
 ### Fixed
-- Fix field settings not saving.
+- Fix an error when editing a field.
 
 ## 2.0.0-beta.4 - 2022-06-15
 
