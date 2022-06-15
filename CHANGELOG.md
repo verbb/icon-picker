@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.0-beta.4 - 2022-06-15
+
+### Fixed
+- Fix field settings not saving.
+
 ## 2.0.0-beta.3 - 2022-06-15
 
 ### Added
