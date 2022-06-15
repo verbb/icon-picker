@@ -35,8 +35,8 @@ class IconPickerField extends Field
 
     public string $columnType = Schema::TYPE_TEXT;
     public bool $showLabels = false;
-    public array $iconSets = [];
-    public array $remoteSets = [];
+    public mixed $iconSets = null;
+    public mixed $remoteSets = null;
 
 
     // Public Methods
