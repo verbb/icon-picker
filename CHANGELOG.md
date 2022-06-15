@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.0.0-beta.3 - 2022-06-15
+
+### Added
+- Add checks for registering events for performance.
+
+### Changed
+- Rename model classes.
+- Rename base plugin methods.
+
+### Fixed
+- Fix empty field checks.
+
 ## 2.0.0-beta.2 - 2022-03-24
 
 ### Changed
