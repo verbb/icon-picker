@@ -41,10 +41,14 @@ You can also use an SVG Spritesheet for your icons. The general concept of a spr
 
 Instead, with SVG Sprites, you output your SVG Spritesheet only once, and then every instance on the page you want to use the icon, you reference it via id.
 
+:::tip
+SVG Sprites should be placed in the root of your `iconSetsPath` folder and have the suffix of `-sprites.svg`.
+:::
+
 First, you'll want to output the spritesheet on your page. You can either do this yourself in your templates, or use the following to output it for you. Its advisable this is done at the top of your template, ideally just below the `<body>` tag.
 
 ```twig
-{{ craft.iconPicker.spritesheet('path/regular.svg') }}
+{{ craft.iconPicker.spritesheet('path/regular-sprites.svg') }}
 ```
 
 Then, every time you want to reference an icon, you use its id. Note that Icon Picker will automatically know whether this field is using an SVG sprite or not, so you don't have to specifically use `.sprite`.
