@@ -68,14 +68,14 @@ class IconPickerField extends Field
         $settings = array_merge($this->settings, $pluginSettings->toArray());
 
         Craft::$app->getView()->registerJs('new Craft.IconPicker.Input(' . Json::encode([
-                'id' => $id,
-                'inputId' => $nameSpacedId,
-                'name' => $this->handle,
-                'fonts' => $fonts,
-                'spriteSheets' => $spriteSheets,
-                'settings' => $settings,
-                'fieldId' => $this->id,
-            ]) . ');');
+            'id' => $id,
+            'inputId' => $nameSpacedId,
+            'name' => $this->handle,
+            'fonts' => $fonts,
+            'spriteSheets' => $spriteSheets,
+            'settings' => $settings,
+            'fieldId' => $this->id,
+        ]) . ');');
 
         return Craft::$app->getView()->renderTemplate('icon-picker/_field/input', [
             'id' => $id,
@@ -106,6 +106,7 @@ class IconPickerField extends Field
         }
 
         return Craft::$app->getView()->renderTemplate('icon-picker/_field/settings', [
+            'field' => $this,
             'settings' => $this->getSettings(),
             'iconSets' => $iconSets,
             'remoteSets' => $remoteSets,

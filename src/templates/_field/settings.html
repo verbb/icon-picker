@@ -14,7 +14,7 @@
         id: 'svgicons',
         name: 'iconSets',
         options: iconSets,
-        values: settings.iconSets ?? '*',
+        values: settings.iconSets ?? (field.id ? '' : '*'),
         showAllOption: true,
     }) }}
 {% else %}
