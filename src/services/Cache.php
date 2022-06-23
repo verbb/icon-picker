@@ -30,13 +30,15 @@ class Cache extends Component
                     'iconSetKey' => $iconSetKey,
                 ]));
             } else {
-                IconPicker::$plugin->getCache()->generateIconSetCache($iconSetKey);
+                $this->generateIconSetCache($iconSetKey);
             }
         }
     }
 
     public function generateIconSetCache($iconSetKey): array
     {
+        $settings = IconPicker::$plugin->getSettings();
+
         // Special-case for root folder
         if ($iconSetKey === '[root]') {
             $icons = IconPicker::$plugin->getService()->fetchIconsForFolder('', false);
@@ -52,22 +54,30 @@ class Cache extends Component
         // Save to the cache
         $cacheKey = 'icon-picker:' . $iconSetKey;
 
-        Craft::$app->getCache()->set($cacheKey, Json::encode($icons));
+        // Save to cache, if using
+        if ($settings->enableCache) {
+            Craft::$app->getCache()->set($cacheKey, Json::encode($icons));
+        }
 
         return $icons;
     }
 
     public function getFilesFromCache($iconSetKey)
     {
+        $settings = IconPicker::$plugin->getSettings();
+
         if (!$iconSetKey) {
             return [];
         }
 
         $cacheKey = 'icon-picker:' . $iconSetKey;
 
-        // Fetch from the cache, otherwise, fetch it (which saves to cache for next time)
-        if ($cache = Craft::$app->getCache()->get($cacheKey)) {
-            return Json::decode($cache);
+        // Check if the cache is enabled, otherwise just fetch
+        if ($settings->enableCache) {
+            // Fetch from the cache, otherwise, fetch it (which saves to cache for next time)
+            if ($cache = Craft::$app->getCache()->get($cacheKey)) {
+                return Json::decode($cache);
+            }
         }
 
         return $this->generateIconSetCache($iconSetKey);
