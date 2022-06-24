@@ -17,8 +17,8 @@ class Settings extends Model
     public $maxIconsShown = 100;
     public $redactorFieldHandle = '';
     public $enableCache = true;
-    
-    
+
+
     // Public Methods
     // =========================================================================
 

@@ -133,7 +133,7 @@ class IconPicker extends Plugin
         if (class_exists(RichText::class) && $this->getSettings()->redactorFieldHandle) {
             Event::on(RichText::class, RichText::EVENT_REGISTER_PLUGIN_PATHS, function(RegisterPluginPathsEvent $event) {
                 $event->paths[] = Craft::getAlias('@verbb/iconpicker/resources/dist/js');
-        
+
                 Craft::$app->getView()->registerAssetBundle(IconPickerRedactorAsset::class);
             });
         }

@@ -30,7 +30,7 @@ class IconPickerRedactorAsset extends AssetBundle
 
         $this->css = [
             'css/icon-picker.css',
-            'css/icon-picker-redactor.css'
+            'css/icon-picker-redactor.css',
         ];
 
         parent::init();
