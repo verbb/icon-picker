@@ -28,7 +28,7 @@ Rendering an SVG inline, will directly render the contents of the SVG file on th
 ```
 
 ### SVG function
-You can use Craft's own `svg()` Twig function by using the path. [Read more](https://docs.craftcms.com/v3/dev/functions.html#svg).
+You can use Craft's own `svg()` Twig function by using the path. [Read more](https://craftcms.com/docs/4.x/functions.html#svg).
 
 ```twig
 {{ svg(entry.iconPickerField.path, class='lemon-icon') }}
