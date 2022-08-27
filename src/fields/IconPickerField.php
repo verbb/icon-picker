@@ -43,6 +43,15 @@ class IconPickerField extends Field
     // Public Methods
     // =========================================================================
 
+    public function isValueEmpty($value, ElementInterface $element): bool
+    {
+        if ($value instanceof IconModel) {
+            return $value->getIsEmpty();
+        }
+
+        return parent::isValueEmpty($value, $element);
+    }
+
     public function getInputHtml($value, ElementInterface $element = null): string
     {
         if (!$value) {
