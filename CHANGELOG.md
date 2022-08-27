@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.14 - 2022-08-27
+
+### Fixed
+- Fix empty or required fields not validating correctly.
+
 ## 1.1.13 - 2022-06-08
 
 ### Added
