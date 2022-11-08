@@ -2,7 +2,7 @@
 namespace verbb\iconpicker\fields;
 
 use verbb\iconpicker\IconPicker;
-use verbb\iconpicker\assetbundles\IconPickerAsset;
+use verbb\iconpicker\helpers\Plugin;
 use verbb\iconpicker\models\Icon;
 use verbb\iconpicker\queue\jobs\GenerateIconSetCache;
 
@@ -48,26 +48,29 @@ class IconPickerField extends Field
             $value = new Icon();
         }
 
-        $id = Html::id($this->handle);
-        $nameSpacedId = Craft::$app->getView()->namespaceInputId($id);
+        $view = Craft::$app->getView();
+        $iconPickerService = IconPicker::$plugin->getService();
 
+        $id = Html::id($this->handle);
+        $nameSpacedId = $view->namespaceInputId($id);
         $pluginSettings = IconPicker::$plugin->getSettings();
 
-        Craft::$app->getView()->registerAssetBundle(IconPickerAsset::class);
-
-        $enabledIconSets = IconPicker::$plugin->getService()->getEnabledIconSets($this);
-        $remoteIconSets = IconPicker::$plugin->getService()->getEnabledRemoteSets($this);
+        $enabledIconSets = $iconPickerService->getEnabledIconSets($this);
+        $remoteIconSets = $iconPickerService->getEnabledRemoteSets($this);
 
         // Fetch the actual icons (from the cache)
-        IconPicker::$plugin->getService()->getIcons($enabledIconSets, $remoteIconSets);
+        $iconPickerService->getIcons($enabledIconSets, $remoteIconSets);
 
         // Fetch any fonts or spritesheets that are extra and once-off
-        $spriteSheets = IconPicker::$plugin->getService()->getSpriteSheets();
-        $fonts = IconPicker::$plugin->getService()->getLoadedFonts();
+        $spriteSheets = $iconPickerService->getSpriteSheets();
+        $fonts = $iconPickerService->getLoadedFonts();
 
         $settings = array_merge($this->settings, $pluginSettings->toArray());
 
-        Craft::$app->getView()->registerJs('new Craft.IconPicker.Input(' . Json::encode([
+        Plugin::registerAsset('field/src/js/icon-picker.js');
+
+        // Create the IconPicker Input Vue component
+        $js = 'new Craft.IconPicker.Input(' . Json::encode([
             'id' => $id,
             'inputId' => $nameSpacedId,
             'name' => $this->handle,
@@ -75,9 +78,15 @@ class IconPickerField extends Field
             'spriteSheets' => $spriteSheets,
             'settings' => $settings,
             'fieldId' => $this->id,
-        ]) . ');');
+        ]) . ');';
 
-        return Craft::$app->getView()->renderTemplate('icon-picker/_field/input', [
+        // Wait for IconPicker JS to be loaded, either through an event listener, or by a flag.
+        // This covers if this script is run before, or after the IconPicker JS has loaded
+        $view->registerJs('document.addEventListener("vite-script-loaded", function(e) {' .
+            'if (e.detail.path === "field/src/js/icon-picker.js") {' . $js . '}' .
+        '}); if (Craft.IconPickerReady) {' . $js . '}');
+
+        return $view->renderTemplate('icon-picker/_field/input', [
             'id' => $id,
             'name' => $this->handle,
             'namespaceId' => $nameSpacedId,

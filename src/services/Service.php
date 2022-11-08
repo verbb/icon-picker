@@ -53,7 +53,10 @@ class Service extends Component
                     $this->_loadedSpriteSheets = array_merge($this->_loadedSpriteSheets, $loadedSpriteSheets);
 
                     // Return the actual icon info
-                    $icons[$iconSetName] = $cachedIconData['icons'] ?? [];
+                    $icons[] = [
+                        'name' => $iconSetName,
+                        'icons' => $cachedIconData['icons'] ?? [],
+                    ];
                 }
             }
         }
@@ -61,14 +64,21 @@ class Service extends Component
         if ($remoteSets) {
             foreach ($remoteSets as $remoteSetKey => $remoteSet) {
                 if (is_array($remoteSet['icons'])) {
+                    $remoteSetIcons = [];
+
                     foreach ($remoteSet['icons'] as $i => $icon) {
                         // Return with `getSerializedValues` for a minimal Icon
-                        $icons[$remoteSet['label']][] = (new Icon([
+                        $remoteSetIcons[] = (new Icon([
                             'type' => 'css',
                             'iconSet' => $remoteSetKey,
                             'css' => $icon,
                         ]))->getSerializedValues();
                     }
+
+                    $icons[] = [
+                        'name' => $remoteSet['label'],
+                        'icons' => $remoteSetIcons,
+                    ];
                 }
 
                 $this->_loadedFonts[] = [

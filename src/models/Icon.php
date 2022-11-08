@@ -6,6 +6,8 @@ use verbb\iconpicker\helpers\IconPickerHelper;
 
 use craft\base\Model;
 use craft\helpers\FileHelper;
+use craft\helpers\Template;
+
 use Twig\Markup;
 
 class Icon extends Model
@@ -84,7 +86,7 @@ class Icon extends Model
 
     public function getInline(): Markup
     {
-        return IconPicker::$plugin->getService()->inline($this->icon);
+        return Template::raw(IconPicker::$plugin->getService()->inline($this->icon));
     }
 
     public function getIconName(): string
@@ -144,6 +146,7 @@ class Icon extends Model
             'value' => $this->icon,
             'url' => $this->url,
             'label' => $this->iconName,
+            'svg' => $this->getInline(),
         ];
     }
 

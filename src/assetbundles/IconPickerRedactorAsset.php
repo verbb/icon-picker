@@ -23,12 +23,12 @@ class IconPickerRedactorAsset extends AssetBundle
         ];
 
         $this->js = [
-            'js/icon-picker.js',
+            // 'js/icon-picker.js',
             'js/icon-picker-redactor.js',
         ];
 
         $this->css = [
-            'css/icon-picker.css',
+            // 'css/icon-picker.css',
             'css/icon-picker-redactor.css',
         ];
 

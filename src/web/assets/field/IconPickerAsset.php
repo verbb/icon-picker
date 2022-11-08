@@ -1,5 +1,5 @@
 <?php
-namespace verbb\iconpicker\assetbundles;
+namespace verbb\iconpicker\web\assets\field;
 
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
@@ -13,19 +13,11 @@ class IconPickerAsset extends AssetBundle
 
     public function init(): void
     {
-        $this->sourcePath = "@verbb/iconpicker/resources/dist";
+        $this->sourcePath = __DIR__ . '/dist/';
 
         $this->depends = [
             VerbbCpAsset::class,
             CpAsset::class,
-        ];
-
-        $this->js = [
-            'js/icon-picker.js',
-        ];
-
-        $this->css = [
-            'css/icon-picker.css',
         ];
 
         parent::init();

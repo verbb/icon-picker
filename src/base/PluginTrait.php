@@ -5,11 +5,14 @@ use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\services\Cache;
 use verbb\iconpicker\services\IconSources;
 use verbb\iconpicker\services\Service;
+use verbb\iconpicker\web\assets\field\IconPickerAsset;
 use verbb\base\BaseHelper;
 
 use Craft;
 
 use yii\log\Logger;
+
+use nystudio107\pluginvite\services\VitePluginService;
 
 trait PluginTrait
 {
@@ -55,6 +58,11 @@ trait PluginTrait
         return $this->get('service');
     }
 
+    public function getVite(): VitePluginService
+    {
+        return $this->get('vite');
+    }
+
 
     // Private Methods
     // =========================================================================
@@ -65,6 +73,17 @@ trait PluginTrait
             'cache' => Cache::class,
             'iconSources' => IconSources::class,
             'service' => Service::class,
+            'vite' => [
+                'class' => VitePluginService::class,
+                'assetClass' => IconPickerAsset::class,
+                'useDevServer' => true,
+                'devServerPublic' => 'http://localhost:4005/',
+                'errorEntry' => 'js/main.js',
+                'cacheKeySuffix' => '',
+                'devServerInternal' => 'http://localhost:4005/',
+                'checkDevServer' => true,
+                'includeReactRefreshShim' => false,
+            ],
         ]);
 
         BaseHelper::registerModule();

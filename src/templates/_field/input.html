@@ -1,14 +1,5 @@
-{% import '_includes/forms' as forms %}
-
 {% set iconModel = value.getSerializedValues() %}
 
-<div id="{{ id }}" class="icon-picker {{ showLabels ? 'show-labels' }}">
-    <span class="error-text error"></span>
-    <span class="spinner hidden"></span>
-
-    <select class="icon-picker-select" name="{{ name ~ '[icon]' }}" data-placeholder="{{ 'Select Icon...' | t('icon-picker') }}">
-        <option selected value="{{ iconModel.value }}" data-data="{{ iconModel | json_encode }}">
-            {{ iconModel.label ?? '' }}
-        </option>
-    </select>
+<div class="icon-picker-input-component">
+    <icon-picker-input value="{{ iconModel | json_encode }}" name="{{ name }}"></icon-picker-input>
 </div>
