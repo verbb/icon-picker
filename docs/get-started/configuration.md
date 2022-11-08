@@ -11,7 +11,6 @@ return [
         'enableCache' => true,
         'iconSetsPath' => '@webroot/icons/',
         'iconSetsUrl' => '@web/icons/',
-        'maxIconsShown' => 100,
         'redactorFieldHandle' => '',
     ]
 ];
@@ -21,7 +20,6 @@ return [
 - `enableCache` - Whether the cache icons. This should **only** be set to `false` for testing purposes, as this can be resource-intensive.
 - `iconSetsPath` - File system path to the base folder for your icons. The default is an `icons` folder in your web root directory. This also accepts environment variables or aliases.
 - `iconSetsUrl` - The base URL prepended to the path and filename of the icon. The default is an `icons` folder in your web root. This also accepts environment variables or aliases.
-- `maxIconsShown` - Set the maximum number of icons shown to pick from in the icon selection pane. This will not affect searching.
 - `redactorFieldHandle` - To enable Icon Picker for use with Redactor, supply the field handle for an Icon Picker field.
 
 ## Control Panel

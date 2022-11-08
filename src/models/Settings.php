@@ -14,12 +14,21 @@ class Settings extends Model
     public bool $enableCache = true;
     public string $iconSetsPath = '@webroot/icons/';
     public string $iconSetsUrl = '@web/icons/';
-    public int $maxIconsShown = 100;
     public string $redactorFieldHandle = '';
 
 
     // Public Methods
     // =========================================================================
+
+    public function __construct(array $config = [])
+    {
+        // Config normalization
+        if (array_key_exists('maxIconsShown', $config)) {
+            unset($config['maxIconsShown']);
+        }
+
+        parent::__construct($config);
+    }
 
     public function getIconSetsPath(): string
     {
