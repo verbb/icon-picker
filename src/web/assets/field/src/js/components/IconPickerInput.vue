@@ -139,6 +139,10 @@ export default {
     mounted() {
         const self = this;
 
+        // Modify the jQuery data for `ElementEditor.js`, otherwise a change will be detected, and the draft saved.
+        // This is due to jQuery kicking in and serializing the form before Vue kicks in.
+        this.updateInitialSerializedValue();
+
         const template = this.$el.querySelector('.js-ipui-tippy-template');
         template.style.display = 'block';
 
@@ -216,6 +220,22 @@ export default {
 
         getGlyphComponent(type) {
             return startCase(camelCase(`Icon ${type}`)).replace(/ /g, '');
+        },
+
+        updateInitialSerializedValue() {
+            const $mainForm = $('form#main-form');
+
+            if ($mainForm.length) {
+                const elementEditor = $mainForm.data('elementEditor');
+                if (elementEditor) {
+                    // Serialize the form again, now Vue is ready
+                    const formData = elementEditor.serializeForm(true);
+
+                    // Update the local cache, and the DOM cache
+                    elementEditor.lastSerializedValue = formData;
+                    $mainForm.data('initialSerializedValue', formData);
+                }
+            }
         },
 
         loadFonts() {
