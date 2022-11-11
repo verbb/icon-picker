@@ -31,9 +31,7 @@ class IconsController extends Controller
             return $this->asFailure('Unable to find field #' . $fieldId);
         }
 
-        $enabledIconSets = IconPicker::$plugin->getService()->getEnabledIconSets($field);
-        $enabledRemoteSets = IconPicker::$plugin->getService()->getEnabledRemoteSets($field);
-        $json = IconPicker::$plugin->getService()->getIcons($enabledIconSets, $enabledRemoteSets);
+        $json = IconPicker::$plugin->getService()->getIconsForField($field);
 
         return $this->asJson($json);
     }

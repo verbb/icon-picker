@@ -3,9 +3,12 @@ namespace verbb\iconpicker\services;
 
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\queue\jobs\GenerateIconSetCache;
+use verbb\iconpicker\models\Icon;
+use verbb\iconpicker\models\IconSet;
 
 use Craft;
 use craft\base\Component;
+use craft\helpers\ArrayHelper;
 use craft\helpers\Json;
 
 class Cache extends Component
@@ -13,74 +16,66 @@ class Cache extends Component
     // Public Methods
     // =========================================================================
 
-    public function clearAndRegenerate(): void
+    public function clearAndRegenerate(array $iconSets = []): void
     {
         $settings = IconPicker::$plugin->getSettings();
 
         // Clear and regenerate caches
-        $iconSets = IconPicker::$plugin->getService()->getIconSets();
+        if (!$iconSets) {
+            $iconSets = IconPicker::$plugin->getIconSets()->getIconSets();
+        }
 
         if (!$iconSets) {
             return;
         }
 
-        foreach ($iconSets as $iconSetKey => $iconSetName) {
+        foreach ($iconSets as $iconSet) {
             if ($settings->enableCache) {
                 Craft::$app->getQueue()->push(new GenerateIconSetCache([
-                    'iconSetKey' => $iconSetKey,
+                    'iconSetKey' => $iconSet->key,
                 ]));
             } else {
-                $this->generateIconSetCache($iconSetKey);
+                $this->generateIconSetCache($iconSet);
             }
         }
     }
 
-    public function generateIconSetCache($iconSetKey): array
+    public function populateIcons(IconSet $iconSet): void
     {
         $settings = IconPicker::$plugin->getSettings();
 
-        // Special-case for root folder
-        if ($iconSetKey === '[root]') {
-            $icons = IconPicker::$plugin->getService()->fetchIconsForFolder('', false);
-        } else {
-            $iconSetType = explode(':', $iconSetKey);
+        $cacheKey = 'icon-picker:' . $iconSet->key;
 
-            $functionName = 'fetchIconsFor' . $iconSetType[0];
-            $filePath = $iconSetType[1];
-
-            $icons = IconPicker::$plugin->getService()->$functionName($filePath);
-        }
-
-        // Save to the cache
-        $cacheKey = 'icon-picker:' . $iconSetKey;
-
-        // Save to cache, if using
+        // Check if the cache is enabled, and return that cached icon set
         if ($settings->enableCache) {
-            Craft::$app->getCache()->set($cacheKey, Json::encode($icons));
-        }
-
-        return $icons;
-    }
-
-    public function getFilesFromCache($iconSetKey)
-    {
-        $settings = IconPicker::$plugin->getSettings();
-
-        if (!$iconSetKey) {
-            return [];
-        }
-
-        $cacheKey = 'icon-picker:' . $iconSetKey;
-
-        // Check if the cache is enabled, otherwise just fetch
-        if ($settings->enableCache) {
-            // Fetch from the cache, otherwise, fetch it (which saves to cache for next time)
             if ($cache = Craft::$app->getCache()->get($cacheKey)) {
-                return Json::decode($cache);
+                $cachedSet = $this->unserializeFromCache($cache);
+
+                if ($cachedSet) {
+                    $iconSet->setAttributes($cachedSet->getAttributes(), false);
+
+                    return;
+                }
             }
         }
 
-        return $this->generateIconSetCache($iconSetKey);
+        // Populate the icons without the cache
+        $this->generateIconSetCache($iconSet);
+    }
+
+    public function generateIconSetCache(IconSet $iconSet): void
+    {
+        $settings = IconPicker::$plugin->getSettings();
+
+        $cacheKey = 'icon-picker:' . $iconSet->key;
+
+        // Fetch the icon set's icons. Don't call this method lightly, it'll be slow
+        $iconSet->fetchIcons();
+
+        // Save the icon set to the cache, if using
+        if ($settings->enableCache) {
+            Craft::$app->getCache()->set($cacheKey, $this->serializeToCache($iconSet));
+        }
     }
 
     public function checkToInvalidate(): void
@@ -105,5 +100,33 @@ class Cache extends Component
 
         // Update the cache
         Craft::$app->getCache()->set($cacheKey, $modifiedTime);
+    }
+
+
+    // Private Methods
+    // =========================================================================
+
+    private function serializeToCache(IconSet $iconSet): string
+    {
+        $icons = [];
+        $data = $iconSet->toArray();
+
+        foreach ($iconSet->icons as $key => $icon) {
+            $data['icons'][$key] = $icon->serializeValueForCache();
+        }
+
+        return Json::encode($data);
+    }
+
+    private function unserializeFromCache(string $data): IconSet
+    {
+        $data = Json::decode($data);
+        $icons = $data['icons'] ?? [];
+
+        foreach ($icons as $key => $icon) {
+            $data['icons'][$key] = new Icon($icon);
+        }
+
+        return new IconSet($data);
     }
 }

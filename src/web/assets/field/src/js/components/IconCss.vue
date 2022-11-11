@@ -1,5 +1,5 @@
 <template>
-    <span :class="['icon-picker-font', icon.classes]">{{ icon.url }}</span>
+    <span :class="['icon-picker-font', icon.classes]">{{ icon.displayValue }}</span>
 </template>
 
 <script>

@@ -1,5 +1,24 @@
 # Changelog
 
+## 2.0.0 - Unreleased
+
+### Changed
+- Migrate to Vue 3-based field input for more control and better client-side performance.
+- Reorganise `Icon` and `IconSet` models, and improve server-side performance.
+
+### Removed
+- Remove `maxIconsShown` plugin setting, as no longer required.
+- Remove `craft.iconPicker.getIcon()`.
+- Remove `craft.iconPicker.getDimensions()`.
+- Remove `craft.iconPicker.inline()`.
+- Remove `Icon::icon`. Use `Icon::value` instead.
+- Remove `Icon::sprite`. Use `Icon::value` instead.
+- Remove `Icon::css`. Use `Icon::value` instead.
+- Remove `Icon::glyphId`. Use `Icon::getGlyph()` instead.
+- Remove `Icon::glyphName`. Use `Icon::getGlyphName()` instead.
+- Remove `Icon::getIconName()`. Use `Icon::label` instead.
+- Remove `Icon::width` and `Icon::height`.
+
 ## 2.0.0-beta.5 - 2022-06-15
 
 ### Fixed

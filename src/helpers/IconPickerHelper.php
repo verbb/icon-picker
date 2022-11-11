@@ -50,4 +50,16 @@ class IconPickerHelper
 
         return '';
     }
+
+    public static function getUrlForPath(string $file): string
+    {
+        $settings = IconPicker::$plugin->getSettings();
+        $iconSetsPath = $settings->getIconSetsPath();
+
+        // This is the path, relative to the config variable, including the filename
+        $relativeFilePath = str_replace($iconSetsPath, '', $file);
+
+        // Get the resulting URL
+        return self::getIconUrl($relativeFilePath);
+    }
 }

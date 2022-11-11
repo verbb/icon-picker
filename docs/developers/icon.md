@@ -5,31 +5,34 @@ Whenever you're dealing with an icon in your template, you're actually working w
 
 Attribute | Description
 --- | ---
-`id` | ID of the icon.
-`icon` | The filename and relative path of the icon.
-`sprite` | The filename and relative path of the icon. Set only if using [SVG Sprites](docs:feature-tour/svg-icons).
-`glyphId` | Set only if using an [Icon Font](docs:feature-tour/icon-fonts).
-`glyphName` | Set only if using an [Icon Font](docs:feature-tour/icon-fonts).
-`css` | Set only if using an Remote Icon.
+`value` | The value of the icon. This will vary depending on the type of icon.
 `iconSet` | The icon set this icon belongs to.
+`label` | The named representation of the icon.
 `type` | What type of icon this is: `svg`, `sprite`, `glyph` or `css`.
-`width` | The width of the icon.
-`height` | The height of the icon.
 `length` | Return the string length of the icon for the field.
-`isEmpty` | Returns whether or not there's an icon selected for this field.
+
+### Value
+To normalise the behaviour of an `Icon` object, we use a `value` attribute as the main value to identify the icon within the icon set. This will vary depending on the type of icon this is.
+
+Type | Description | Example
+--- | --- | ---
+`svg` | The filename and relative path of the icon. | `/my-folder/twitter-square.svg`
+`sprite` | The name of the sprite within the spritesheet. | `twitter-square`
+`glyph` | The font glyph name and glyph decimal. | `twitter-square:61569`
+`css` | The name of the icon for the remote icon source. Commonly a CSS class. | `twitter-square`
 
 ## Methods
 
 Method | Description
 --- | ---
-`getDimensions(height)` | Returns an array of [width, height] for the icon. Pass in an optional height to restrict it by, while keeping the aspect ratio of the icon.
-`getUrl()` | Return the full URL to the icon.
-`getPath()` | Return the full path to the icon.
-`getInline()` | Returns the raw contents of the icon.
-`getIconName()` | Returns the name of the icon, without the extension.
-`getGlyph(format)` | Returns the character representation of an individual icon glyph, for when an icon font is used.
+`isEmpty()` | Returns whether or not there's an icon selected for this field.
+`getUrl()` | Return the full URL to the icon. [SVG Icons](docs:feature-tour/svg-icons) only.
+`getPath()` | Return the full path to the icon. [SVG Icons](docs:feature-tour/svg-icons) only.
+`getInline()` | Returns the raw contents of the icon. [SVG Icons](docs:feature-tour/svg-icons) only.
+`getGlyph(format)` | Returns the character representation of a font glyph. [Icon Font](docs:feature-tour/icon-fonts) only.
+`getGlyphName()` | Returns the named representation of a font glyph. [Icon Font](docs:feature-tour/icon-fonts) only.
 
-## Glyph formats
+### Glyph formats
 
 Format | Example
 --- | ---
@@ -37,3 +40,4 @@ Format | Example
 `getGlyph('hex')` | Get the icon unicode (hexadecimal).
 `getGlyph('char')` | Display the icon as html character - `&#00000`.
 `getGlyph('charHex')` | Display the icon as html character hex - `&#xf100`. Default
+

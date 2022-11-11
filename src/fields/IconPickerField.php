@@ -4,6 +4,7 @@ namespace verbb\iconpicker\fields;
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\helpers\Plugin;
 use verbb\iconpicker\models\Icon;
+use verbb\iconpicker\models\IconSet;
 use verbb\iconpicker\queue\jobs\GenerateIconSetCache;
 
 use Craft;
@@ -11,13 +12,14 @@ use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\gql\GqlEntityRegistry;
 use craft\gql\TypeLoader;
+use craft\helpers\ArrayHelper;
+use craft\helpers\Html;
 use craft\helpers\Json;
 
 use yii\db\Schema;
 
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\ObjectType;
-use craft\helpers\Html;
 
 class IconPickerField extends Field
 {
@@ -55,11 +57,8 @@ class IconPickerField extends Field
         $nameSpacedId = $view->namespaceInputId($id);
         $pluginSettings = IconPicker::$plugin->getSettings();
 
-        $enabledIconSets = $iconPickerService->getEnabledIconSets($this);
-        $remoteIconSets = $iconPickerService->getEnabledRemoteSets($this);
-
-        // Fetch the actual icons (from the cache)
-        $iconPickerService->getIcons($enabledIconSets, $remoteIconSets);
+        // Fetch the actual icons (from the cache), which preps any fonts and spritesheets
+        $iconPickerService->getIconsForField($this);
 
         // Fetch any fonts or spritesheets that are extra and once-off
         $spriteSheets = $iconPickerService->getSpriteSheets();
@@ -102,16 +101,11 @@ class IconPickerField extends Field
 
         $errors = [];
 
-        $iconSets = IconPicker::$plugin->getService()->getIconSets();
+        $iconSets = IconPicker::$plugin->getIconSets()->getIconSets();
         $remoteSets = IconPicker::$plugin->getIconSources()->getRegisteredOptions();
 
         if (!$iconSets) {
             $errors[] = 'Unable to locate SVG Icons source directory.</strong><br>Please ensure the directory <code>' . $iconSetsPath . '</code> exists.</p>';
-        }
-
-        // If it found the path, we'll always have the root folder - make sure to remove that
-        if (in_array('[root]', $iconSets)) {
-            unset($iconSets['[root]']);
         }
 
         return Craft::$app->getView()->renderTemplate('icon-picker/_field/settings', [
@@ -144,33 +138,8 @@ class IconPickerField extends Field
 
     public function serializeValue(mixed $value, ?ElementInterface $element = null): mixed
     {
-        // If saving a sprite, we need to sort out the type - although easier than front-end input changing.
-        if (str_contains($value['icon'], 'sprite:')) {
-            $explode = explode(':', $value['icon']);
-
-            $value['icon'] = null;
-            $value['type'] = $explode[0];
-            $value['iconSet'] = $explode[1];
-            $value['sprite'] = $explode[2];
-        }
-
-        if (str_contains($value['icon'], 'glyph:')) {
-            $explode = explode(':', $value['icon']);
-
-            $value['icon'] = null;
-            $value['type'] = $explode[0];
-            $value['iconSet'] = $explode[1];
-            $value['glyphId'] = $explode[2];
-            $value['glyphName'] = $explode[3];
-        }
-
-        if (str_contains($value['icon'], 'css:')) {
-            $explode = explode(':', $value['icon']);
-
-            $value['icon'] = null;
-            $value['type'] = $explode[0];
-            $value['iconSet'] = $explode[1];
-            $value['css'] = $explode[2];
+        if ($value instanceof Icon) {
+            $value = $value->serializeValueForDb();
         }
 
         return $value;
@@ -178,19 +147,9 @@ class IconPickerField extends Field
 
     public function afterSave(bool $isNew): void
     {
-        $settings = IconPicker::$plugin->getSettings();
-        $iconSets = IconPicker::$plugin->getService()->getEnabledIconSets($this);
-
         // When saving the field, fire off queue jobs to prime the icon cache
-        foreach ($iconSets as $iconSetKey => $iconSetName) {
-            if ($settings->enableCache) {
-                Craft::$app->getQueue()->push(new GenerateIconSetCache([
-                    'iconSetKey' => $iconSetKey,
-                ]));
-            } else {
-                IconPicker::$plugin->getCache()->generateIconSetCache($iconSetKey);
-            }
-        }
+        $iconSets = IconPicker::$plugin->getIconSets()->getEnabledIconSets($this);
+        IconPicker::$plugin->getCache()->clearAndRegenerate($iconSets);
 
         parent::afterSave($isNew);
     }

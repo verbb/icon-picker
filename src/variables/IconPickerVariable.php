@@ -14,21 +14,6 @@ class IconPickerVariable
     // Public Methods
     // =========================================================================
 
-    public function getIcon($icon): Icon
-    {
-        return IconPicker::$plugin->getService()->getModel($icon);
-    }
-
-    public function getDimensions($icon, $height = null): array
-    {
-        return $this->getIcon($icon)->getDimensions($height);
-    }
-
-    public function inline($icon): string|Markup
-    {
-        return $this->getIcon($icon)->getInline();
-    }
-
     public function spritesheet($path): Markup
     {
         $url = IconPickerHelper::getIconUrl($path);

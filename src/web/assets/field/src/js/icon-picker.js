@@ -32,7 +32,7 @@ Craft.IconPicker.Input = Garnish.Base.extend({
             },
         });
 
-        app.mount(`#${settings.inputId}-field`);
+        app.mount(`#${settings.inputId}-field .input`);
     },
 });
 

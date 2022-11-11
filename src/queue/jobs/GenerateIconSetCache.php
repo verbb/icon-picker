@@ -21,7 +21,11 @@ class GenerateIconSetCache extends BaseJob
     {
         $this->setProgress($queue, 0);
 
-        IconPicker::$plugin->getCache()->generateIconSetCache($this->iconSetKey);
+        $iconSet = IconPicker::$plugin->getIconSets()->getIconSetByKey($this->iconSetKey);
+
+        if ($iconSet) {
+            IconPicker::$plugin->getCache()->generateIconSetCache($iconSet);
+        }
 
         $this->setProgress($queue, 1);
     }

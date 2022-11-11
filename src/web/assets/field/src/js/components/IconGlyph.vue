@@ -1,5 +1,5 @@
 <template>
-    <span :class="['icon-picker-font', 'font-face-' + icon.name]" v-html="icon.url"></span>
+    <span :class="['icon-picker-font', 'font-face-' + icon.iconSet]" v-html="icon.displayValue"></span>
 </template>
 
 <script>

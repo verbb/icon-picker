@@ -57,7 +57,7 @@ Then, every time you want to reference an icon, you use its id. Note that Icon P
 <svg width="20" height="20"><use xlink:href="#{{ entry.iconPickerField }}"></use></svg>
 
 // Or
-<svg width="20" height="20"><use xlink:href="#{{ entry.iconPickerField.sprite }}"></use></svg>
+<svg width="20" height="20"><use xlink:href="#{{ entry.iconPickerField.value }}"></use></svg>
 
 // Renders
 <svg width="20" height="20"><use xlink:href="#address-book"></use></svg>
@@ -119,7 +119,7 @@ Using the built-in Font Awesome remote kit:
 <span class="fa fa-{{ entry.iconPickerField }}"></span>
 
 // Or
-<span class="fa fa-{{ entry.iconPickerField.css }}"></span>
+<span class="fa fa-{{ entry.iconPickerField.value }}"></span>
 
 // Renders
 <span class="fa fa-air-freshener"></span>

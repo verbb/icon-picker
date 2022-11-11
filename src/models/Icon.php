@@ -4,26 +4,33 @@ namespace verbb\iconpicker\models;
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\helpers\IconPickerHelper;
 
+use Craft;
 use craft\base\Model;
+use craft\helpers\ArrayHelper;
 use craft\helpers\FileHelper;
 use craft\helpers\Template;
 
 use Twig\Markup;
 
-class Icon extends Model
+class Icon extends Model implements \JsonSerializable, \Countable
 {
+    // Constants
+    // =========================================================================
+
+    public const TYPE_SVG = 'svg';
+    public const TYPE_SPRITE = 'sprite';
+    public const TYPE_GLYPH = 'glyph';
+    public const TYPE_CSS = 'css';
+
+
     // Properties
     // =========================================================================
 
-    public ?string $icon = null;
-    public ?string $sprite = null;
-    public ?string $glyphId = null;
-    public ?string $glyphName = null;
+    public ?string $value = null;
     public ?string $iconSet = null;
     public ?string $type = null;
-    public ?string $css = null;
-    public ?string $width = null;
-    public ?string $height = null;
+
+    private ?string $_displayValue = null;
 
 
     // Public Methods
@@ -31,28 +38,49 @@ class Icon extends Model
 
     public function __toString(): string
     {
-        if ($this->sprite) {
-            return (string)$this->sprite;
+        if ($this->type === self::TYPE_GLYPH) {
+            return (string)$this->getGlyph();
         }
 
-        if ($this->glyphId) {
-            return (string)$this->glyph;
+        if ($this->type === self::TYPE_SVG) {
+            return (string)$this->getUrl();
         }
 
-        if ($this->css) {
-            return (string)$this->css;
-        }
-
-        if ($this->icon) {
-            return $this->getUrl();
-        }
-
-        return '';
+        return (string)$this->value;
     }
 
-    public function count(): bool|int
+    public function serializeValueForDb(): ?array
     {
-        return mb_strlen((string)$this);
+        // For when saving the value from the field into the content table for an element
+        return $this->toArray();
+    }
+
+    public function serializeValueForCache(): ?array
+    {
+        // For when saving the field and building the icon cache
+        $array = $this->toArray();
+
+        // Save the `displayValue` to the cache for less disk IO (for SVGs)
+        $array['displayValue'] = $this->getDisplayValue();
+
+        return $array;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        // For when converting this model into JSON for the Vue picker to use in the CP
+        // (either a selected value or the icons to pick from)
+        $array = $this->toArray();
+        $array['label'] = $this->getLabel();
+        $array['keywords'] = $this->getKeywords();
+        $array['displayValue'] = $this->getDisplayValue();
+
+        return $array;
+    }
+
+    public function count(): mixed
+    {
+        return mb_strlen((string)$this, Craft::$app->charset);
     }
 
     public function isEmpty(): bool
@@ -60,111 +88,129 @@ class Icon extends Model
         return (bool)$this->count();
     }
 
-    public function getDimensions($height = null): array
+    public function getLabel(): ?string
     {
-        return IconPicker::$plugin->getService()->getDimensions($this->icon, $height);
+        if ($this->type === self::TYPE_CSS) {
+            return $this->value;
+        }
+
+        if ($this->type === self::TYPE_GLYPH) {
+            return $this->getGlyphName();
+        }
+
+        if ($this->type === self::TYPE_SPRITE) {
+            return $this->value;
+        }
+
+        if ($this->type === self::TYPE_SVG) {
+            return pathinfo($this->value, PATHINFO_FILENAME);
+        }
+
+        return null;
     }
 
-    public function getUrl(): string
+    public function getKeywords(): ?string
     {
-        return IconPickerHelper::getIconUrl($this->icon);
+        return $this->getLabel();
+    }
+
+    public function setDisplayValue(string $value): void
+    {
+        $this->_displayValue = $value;
+    }
+
+    public function getDisplayValue(): ?string
+    {
+        // Use the in-memory cache if available
+        if ($this->_displayValue) {
+            return $this->_displayValue;
+        }
+
+        // An inline SVG is used for the display value, not the URL
+        if ($this->type === self::TYPE_SVG) {
+            return $this->getInline();
+        }
+
+        return (string)$this;
+    }
+
+    public function getUrl(): ?string
+    {
+        if ($this->type === self::TYPE_SVG) {
+            return IconPickerHelper::getIconUrl($this->value);
+        }
+
+        return null;
     }
 
     public function getPath(): string
     {
-        $settings = IconPicker::$plugin->getSettings();
-        $iconSetsPath = $settings->getIconSetsPath();
+        if ($this->type === self::TYPE_SVG) {
+            $settings = IconPicker::$plugin->getSettings();
+            $iconSetsPath = $settings->getIconSetsPath();
 
-        $path = FileHelper::normalizePath($iconSetsPath . DIRECTORY_SEPARATOR . $this->icon);
+            $path = FileHelper::normalizePath($iconSetsPath . DIRECTORY_SEPARATOR . $this->value);
 
-        if (!file_exists($path)) {
-            return '';
+            if (!file_exists($path)) {
+                return '';
+            }
+
+            return $path;
         }
 
-        return $path;
+        return '';
     }
 
-    public function getInline(): Markup
+    public function getInline(): ?Markup
     {
-        return Template::raw(IconPicker::$plugin->getService()->inline($this->icon));
+        if ($this->type === self::TYPE_SVG) {
+            // Saved in the cache as the inline SVG to save disk IO
+            if ($this->_displayValue) {
+                return Template::raw($this->_displayValue);
+            }
+
+            return Template::raw(@file_get_contents($this->getPath()));
+        }
+
+        return null;
     }
 
-    public function getIconName(): string
+    public function getGlyph($format = 'charHex'): ?string
     {
-        return ($this->icon) ? pathinfo($this->icon, PATHINFO_FILENAME) : '';
+        if ($this->type === self::TYPE_GLYPH) {
+            [$glyphName, $glyphId] = explode(':', $this->value);
+
+            if ($format === 'decimal') {
+                return $glyphId;
+            }
+
+            if ($format === 'hex') {
+                return dechex($glyphId);
+            }
+
+            if ($format === 'char') {
+                return '&#' . $glyphId;
+            }
+
+            return '&#x' . dechex($glyphId);
+        }
+
+        return null;
     }
 
-    public function getHasIcon(): bool
+    public function getGlyphName(): ?string
     {
-        return (bool)$this->icon;
+        if ($this->type === self::TYPE_GLYPH) {
+            [$glyphName, $glyphId] = explode(':', $this->value);
+
+            return $glyphName;
+        }
+
+        return null;
     }
 
     public function getRemoteSet()
     {
         return IconPicker::$plugin->getIconSources()->getRegisteredIconSourceByHandle($this->iconSet);
     }
-
-    public function getSerializedValues(): array
-    {
-        // Return content saved in icon caches, and used for the field. Basically a cut-down version of the model
-        // with a few extra properties handy
-        if ($this->type === 'sprite') {
-            return [
-                'type' => 'sprite',
-                'name' => $this->iconSet,
-                'value' => 'sprite:' . $this->iconSet . ':' . $this->sprite,
-                'url' => $this->sprite,
-                'label' => $this->sprite,
-            ];
-        }
-
-        if ($this->type === 'glyph') {
-            return [
-                'type' => 'glyph',
-                'name' => $this->iconSet,
-                'value' => 'glyph:' . $this->iconSet . ':' . $this->glyphId . ':' . $this->glyphName,
-                'url' => $this->getGlyph(),
-                'label' => $this->glyphName,
-            ];
-        }
-
-        if ($this->type === 'css') {
-            if ($remoteSet = $this->getRemoteSet()) {
-                return [
-                    'type' => 'css',
-                    'name' => $remoteSet['fontName'] ?? '',
-                    'value' => 'css:' . $this->iconSet . ':' . $this->css,
-                    'url' => '',
-                    'classes' => $remoteSet['classes'] . $this->css,
-                    'label' => $this->css,
-                ];
-            }
-        }
-
-        return [
-            'type' => 'svg',
-            'value' => $this->icon,
-            'url' => $this->url,
-            'label' => $this->iconName,
-            'svg' => $this->getInline(),
-        ];
-    }
-
-    public function getGlyph($format = 'charHex'): string
-    {
-        if ($format === 'decimal') {
-            return $this->glyphId;
-        }
-
-        if ($format === 'hex') {
-            return dechex($this->glyphId);
-        }
-
-        if ($format === 'char') {
-            return '&#' . $this->glyphId;
-        }
-
-        return '&#x' . dechex($this->glyphId);
-    }
-
 }

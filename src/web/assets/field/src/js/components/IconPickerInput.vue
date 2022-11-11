@@ -9,17 +9,22 @@
                 <span class="ipui-icon-input-label">{{ selected.label }}</span>
             </div>
 
-            <input
-                :id="id"
-                v-model="search"
-                type="text"
-                autocomplete="off"
-                autocorrect="off"
-                autocapitalize="off"
-                :class="inputClasses"
-            >
+            <!-- Require wrapper for accessibility -->
+            <div>
+                <input
+                    :id="id"
+                    v-model="search"
+                    type="text"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    :class="inputClasses"
+                >
+            </div>
 
-            <input type="hidden" :name="name + '[icon]'" :value="selectedValue">
+            <input type="hidden" :name="name + '[value]'" :value="get(selected, 'value')">
+            <input type="hidden" :name="name + '[iconSet]'" :value="get(selected, 'iconSet')">
+            <input type="hidden" :name="name + '[type]'" :value="get(selected, 'type')">
 
             <button v-if="selected" type="button" class="ipui-icon-input-delete" @click.prevent="deleteIcon">
                 <!-- eslint-disable-next-line -->
@@ -56,7 +61,9 @@
 </template>
 
 <script>
-import { isEmpty, camelCase, startCase } from 'lodash-es';
+import {
+    isEmpty, camelCase, startCase, get,
+} from 'lodash-es';
 
 import IconCss from '@components/IconCss.vue';
 import IconGlyph from '@components/IconGlyph.vue';
@@ -118,15 +125,11 @@ export default {
 
             return this.icons.reduce((acc, iconGroup) => {
                 const icons = iconGroup.icons.filter((icon) => {
-                    return icon.label.toLowerCase().includes(this.search.toLowerCase());
+                    return icon.keywords.toLowerCase().includes(this.search.toLowerCase());
                 });
 
                 return !icons.length ? acc : acc.concat({ ...iconGroup, icons });
             }, []);
-        },
-
-        selectedValue() {
-            return this.selected ? this.selected.value : '';
         },
     },
 
@@ -220,6 +223,10 @@ export default {
 
         getGlyphComponent(type) {
             return startCase(camelCase(`Icon ${type}`)).replace(/ /g, '');
+        },
+
+        get(data, value) {
+            return get(data, value);
         },
 
         updateInitialSerializedValue() {
@@ -321,13 +328,11 @@ export default {
 
     position: relative;
     width: 100%;
-    height: 34px;
+    height: 36px;
     border-radius: 3px;
     border: 1px solid rgba(96, 125, 159, 0.25);
-    background-color: #fbfcfe;
-    box-shadow: inset 0 1px 4px -1px rgba(96, 125, 159, 0.25);
     color: #3f4d5a;
-    box-sizing: border-box;
+    box-sizing: padding-box;
     padding: 6px;
     cursor: text;
 }
@@ -453,6 +458,7 @@ export default {
     overflow: hidden;
     display: inline-flex;
     flex-wrap: wrap;
+    content-visibility: auto;
 
     &:hover {
         background-color: #f3f7fc;
@@ -470,6 +476,7 @@ export default {
     line-height: 32px;
     margin: auto;
     text-align: center;
+    content-visibility: auto;
 
     svg {
         width: 100%;

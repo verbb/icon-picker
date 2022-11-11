@@ -1,5 +1,3 @@
-{% set iconModel = value.getSerializedValues() %}
-
 <div class="icon-picker-input-component">
-    <icon-picker-input value="{{ iconModel | json_encode }}" name="{{ name }}"></icon-picker-input>
+    <icon-picker-input value="{{ value | json_encode }}" name="{{ name }}"></icon-picker-input>
 </div>
