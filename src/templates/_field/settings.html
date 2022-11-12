@@ -17,7 +17,7 @@
 
 {% if not errors | length %}
     {{ forms.checkboxSelectField({
-        label: 'Available Icon Sets' | t('icon-picker'),
+        label: 'Available Local Icon Sets' | t('icon-picker'),
         instructions: 'Select which icon sets should be available to this field.' | t('icon-picker'),
         id: 'svgicons',
         name: 'iconSets',
@@ -41,7 +41,7 @@
 
 {{ forms.checkboxSelectField({
     label: 'Available Remote Icon Sets' | t('icon-picker'),
-    instructions: 'Select which (if any) remote, CDN icon sets should be available to this field.' | t('icon-picker'),
+    instructions: 'Select which remote icon sets should be available to this field.' | t('icon-picker'),
     id: 'remoteSets',
     name: 'remoteSets',
     options: remoteSetOptions,
