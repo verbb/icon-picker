@@ -51,6 +51,15 @@ class Icon extends Model implements \JsonSerializable, \Countable
         return (string)$this->value;
     }
 
+    public function init(): void
+    {
+        parent::init();
+
+        // Setup defaults
+        $this->label = $this->getLabel();
+        $this->keywords = $this->getKeywords();
+    }
+
     public function serializeValueForDb(): ?array
     {
         // For when saving the value from the field into the content table for an element

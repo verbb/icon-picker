@@ -124,18 +124,11 @@ class IconPickerField extends Field
             return $value;
         }
 
-        $model = new Icon();
-
         if (is_string($value) && !empty($value)) {
             $value = Json::decodeIfJson($value);
         }
 
-        if (is_array($value)) {
-            // Use `configure()` instead of `setAttributes()` to use `set()` magic methods
-            Craft::configure($model, $value);
-        }
-
-        return $model;
+        return new Icon($value);
     }
 
     public function serializeValue(mixed $value, ?ElementInterface $element = null): mixed
