@@ -33,6 +33,8 @@ class Cache extends Component
             if ($settings->enableCache) {
                 Craft::$app->getQueue()->push(new GenerateIconSetCache([
                     'iconSetKey' => $iconSet->key,
+                    'remoteSet' => $iconSet->remoteSet,
+                    'isRemote' => $iconSet->type === IconSet::TYPE_REMOTE,
                 ]));
             } else {
                 $this->generateIconSetCache($iconSet);

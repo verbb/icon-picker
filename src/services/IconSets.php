@@ -15,9 +15,14 @@ class IconSets extends Component
     // Public Methods
     // =========================================================================
 
-    public function getIconSetByKey(string $key): IconSet
+    public function getIconSetByKey(string $key): ?IconSet
     {
         return ArrayHelper::firstWhere($this->getIconSets(), 'key', $key);
+    }
+
+    public function getRemoteSetByKey(string $key): ?IconSet
+    {
+        return ArrayHelper::firstWhere($this->getRemoteIconSets(), 'remoteSet', $key);
     }
 
     public function getIconSets(): array

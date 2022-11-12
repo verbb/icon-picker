@@ -2,6 +2,7 @@
 namespace verbb\iconpicker\models;
 
 use verbb\iconpicker\IconPicker;
+use verbb\iconpicker\base\IconSourceInterface;
 use verbb\iconpicker\helpers\IconPickerHelper;
 
 use craft\base\Model;
@@ -69,9 +70,7 @@ class IconSet extends Model implements \JsonSerializable
         }
 
         if ($this->type === self::TYPE_REMOTE) {
-            $remoteSet = IconPicker::$plugin->getIconSources()->getRegisteredIconSourceByClass($this->remoteSet);
-
-            if ($remoteSet) {
+            if ($remoteSet = $this->getRemoteIconSource()) {
                 $remoteSet->getIcons($this);
             }
         }
@@ -88,6 +87,11 @@ class IconSet extends Model implements \JsonSerializable
         }
 
         return $this->name . ' (' . ucwords($this->type) . ')';
+    }
+
+    public function getRemoteIconSource(): ?IconSourceInterface
+    {
+        return IconPicker::$plugin->getIconSources()->getRegisteredIconSourceByClass($this->remoteSet);
     }
 
 

@@ -12,6 +12,8 @@ class GenerateIconSetCache extends BaseJob
     // =========================================================================
 
     public ?string $iconSetKey = null;
+    public ?string $remoteSet = null;
+    public bool $isRemote = false;
 
 
     // Public Methods
@@ -21,7 +23,11 @@ class GenerateIconSetCache extends BaseJob
     {
         $this->setProgress($queue, 0);
 
-        $iconSet = IconPicker::$plugin->getIconSets()->getIconSetByKey($this->iconSetKey);
+        if ($this->isRemote) {
+            $iconSet = IconPicker::$plugin->getIconSets()->getRemoteSetByKey($this->remoteSet);
+        } else {
+            $iconSet = IconPicker::$plugin->getIconSets()->getIconSetByKey($this->iconSetKey);
+        }
 
         if ($iconSet) {
             IconPicker::$plugin->getCache()->generateIconSetCache($iconSet);
