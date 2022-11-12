@@ -161,42 +161,69 @@ class IconPickerField extends Field
 
     public function getContentGqlType(): array|Type
     {
-        $typeName = 'Icon_Dimensions';
-
-        $dimensionType = GqlEntityRegistry::getEntity($typeName) ?: GqlEntityRegistry::createEntity($typeName, new ObjectType([
-            'name' => $typeName,
-            'fields' => [
-                'width' => Type::string(),
-                'height' => Type::string(),
-            ],
-        ]));
-
-        TypeLoader::registerType($typeName, static function() use ($dimensionType) {
-            return $dimensionType;
-        });
-
         $typeName = $this->handle . '_Icon';
 
         $iconType = GqlEntityRegistry::getEntity($typeName) ?: GqlEntityRegistry::createEntity($typeName, new ObjectType([
             'name' => $typeName,
             'fields' => [
-                'url' => Type::string(),
-                'icon' => Type::string(),
-                'sprite' => Type::string(),
-                'glyphId' => Type::string(),
-                'glyphName' => Type::string(),
-                'iconSet' => Type::string(),
-                'type' => Type::string(),
-                'css' => Type::string(),
-                'width' => Type::string(),
-                'height' => Type::string(),
-                'path' => Type::string(),
-                'dimensions' => $dimensionType,
-                'inline' => Type::string(),
-                'iconName' => Type::string(),
-                'hasIcon' => Type::string(),
-                'serializedValue' => Type::string(),
-                'glyph' => Type::string(),
+                'value' => [
+                    'name' => 'value',
+                    'type' => Type::string(),
+                    'description' => 'The value of the icon. This will vary depending on the type of icon.',
+                ],
+                'iconSet' => [
+                    'name' => 'iconSet',
+                    'type' => Type::string(),
+                    'description' => 'The icon set this icon belongs to.',
+                ],
+                'label' => [
+                    'name' => 'label',
+                    'type' => Type::string(),
+                    'description' => 'The named representation of the icon.',
+                ],
+                'keywords' => [
+                    'name' => 'keywords',
+                    'type' => Type::string(),
+                    'description' => 'The keywords used to search for the icon by. Defaults to the `label`.',
+                ],
+                'type' => [
+                    'name' => 'type',
+                    'type' => Type::string(),
+                    'description' => 'What type of icon this is: `svg`, `sprite`, `glyph` or `css`.',
+                ],
+                'isEmpty' => [
+                    'name' => 'isEmpty',
+                    'type' => Type::boolean(),
+                    'description' => 'Returns whether or not there‘s an icon selected for this field.',
+                    'resolve' => function($model) {
+                        return $model->isEmpty();
+                    },
+                ],
+                'url' => [
+                    'name' => 'url',
+                    'type' => Type::string(),
+                    'description' => 'Return the full URL to the icon.',
+                ],
+                'path' => [
+                    'name' => 'path',
+                    'type' => Type::string(),
+                    'description' => 'Return the full path to the icon.',
+                ],
+                'inline' => [
+                    'name' => 'inline',
+                    'type' => Type::string(),
+                    'description' => 'Returns the raw contents of the icon.',
+                ],
+                'glyph' => [
+                    'name' => 'glyph',
+                    'type' => Type::string(),
+                    'description' => 'Returns the character representation of a font glyph.',
+                ],
+                'glyphName' => [
+                    'name' => 'glyphName',
+                    'type' => Type::string(),
+                    'description' => 'Returns the named representation of a font glyph.',
+                ],
             ],
         ]));
 

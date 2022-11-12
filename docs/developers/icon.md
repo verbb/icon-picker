@@ -8,6 +8,7 @@ Attribute | Description
 `value` | The value of the icon. This will vary depending on the type of icon.
 `iconSet` | The icon set this icon belongs to.
 `label` | The named representation of the icon.
+`keywords` | The keywords used to search for the icon by. Defaults to the `label`.
 `type` | What type of icon this is: `svg`, `sprite`, `glyph` or `css`.
 `length` | Return the string length of the icon for the field.
 

@@ -6,22 +6,17 @@ You can fetch field content via GraphQL for Icon Picker fields. The resulting va
     entries(id: 1234) {
         ... on blog_blog_Entry {
             iconPickerField {
-                url
-                icon
-                sprite
-                glyphId
-                glyphName
+                value
                 iconSet
+                label
+                keywords
                 type
-                css
-                width
-                height
+                isEmpty
+                url
                 path
                 inline
-                iconName
-                hasIcon
-                serializedValue
                 glyph
+                glyphName
             }
         }
     }
@@ -31,23 +26,18 @@ You can fetch field content via GraphQL for Icon Picker fields. The resulting va
     "data": {
         "entries": [
             {
-                "iconPickerSvg": {
-                    "url": "/assets/icons/address-book.svg",
-                    "icon": "/address-book.svg",
-                    "sprite": null,
-                    "glyphId": null,
-                    "glyphName": null,
-                    "iconSet": null,
-                    "type": null,
-                    "css": null,
-                    "width": null,
-                    "height": null,
-                    "path": "/assets/icons/address-book.svg",
-                    "inline": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 448 512\"><path d=\"M436 160c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-20V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h320c26.5 0 48-21.5 48-48v-48h20c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-20v-64h20c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-20v-64h20zm-68 304H48V48h320v416zM208 256c35.3 0 64-28.7 64-64s-28.7-64-64-64-64 28.7-64 64 28.7 64 64 64zm-89.6 128h179.2c12.4 0 22.4-8.6 22.4-19.2v-19.2c0-31.8-30.1-57.6-67.2-57.6-10.8 0-18.7 8-44.8 8-26.9 0-33.4-8-44.8-8-37.1 0-67.2 25.8-67.2 57.6v19.2c0 10.6 10 19.2 22.4 19.2z\"/></svg>",
-                    "iconName": "address-book",
-                    "hasIcon": "1",
-                    "serializedValue": null,
-                    "glyph": "&#x0"
+                "iconPickerField": {
+                    "value": "/brands/accessible-icon.svg",
+                    "iconSet": "/brands",
+                    "label": "accessible-icon",
+                    "keywords": "accessible-icon",
+                    "type": "svg",
+                    "isEmpty": false,
+                    "url": "/assets/icons-testing/brands/accessible-icon.svg",
+                    "path": "/web/assets/icons-testing/brands/accessible-icon.svg",
+                    "inline": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 448 512\"><path d=\"M423.9 255.8L411 413.1c-3.3 40.7-63.9 35.1-60.6-4.9l10-122.5-41.1 2.3c10.1 20.7 15.8 43.9 15.8 68.5 0 41.2-16.1 78.7-42.3 106.5l-39.3-39.3c57.9-63.7 13.1-167.2-74-167.2-25.9 0-49.5 9.9-67.2 26L73 243.2c22-20.7 50.1-35.1 81.4-40.2l75.3-85.7-42.6-24.8-51.6 46c-30 26.8-70.6-18.5-40.5-45.4l68-60.7c9.8-8.8 24.1-10.2 35.5-3.6 0 0 139.3 80.9 139.5 81.1 16.2 10.1 20.7 36 6.1 52.6L285.7 229l106.1-5.9c18.5-1.1 33.6 14.4 32.1 32.7zm-64.9-154c28.1 0 50.9-22.8 50.9-50.9C409.9 22.8 387.1 0 359 0c-28.1 0-50.9 22.8-50.9 50.9 0 28.1 22.8 50.9 50.9 50.9zM179.6 456.5c-80.6 0-127.4-90.6-82.7-156.1l-39.7-39.7C36.4 287 24 320.3 24 356.4c0 130.7 150.7 201.4 251.4 122.5l-39.7-39.7c-16 10.9-35.3 17.3-56.1 17.3z\"/></svg>",
+                    "glyph": null,
+                    "glyphName": null
                 }
             }
         ]
