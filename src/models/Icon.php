@@ -87,7 +87,7 @@ class Icon extends Model implements \JsonSerializable, \Countable
 
     public function isEmpty(): bool
     {
-        return (bool)$this->count();
+        return !(bool)$this->count();
     }
 
     public function getLabel(): ?string
