@@ -128,6 +128,10 @@ class IconPickerField extends Field
             $value = Json::decodeIfJson($value);
         }
 
+        if (!is_array($value)) {
+            $value = [];
+        }
+
         return new Icon($value);
     }
 
