@@ -92,7 +92,6 @@ class IconPickerField extends Field
             'name' => $this->handle,
             'namespaceId' => $nameSpacedId,
             'value' => $value,
-            'showLabels' => $this->showLabels,
         ]);
     }
 

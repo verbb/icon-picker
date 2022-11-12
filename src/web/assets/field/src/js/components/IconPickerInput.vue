@@ -25,8 +25,10 @@
             <input type="hidden" :name="name + '[value]'" :value="get(selected, 'value')">
             <input type="hidden" :name="name + '[iconSet]'" :value="get(selected, 'iconSet')">
             <input type="hidden" :name="name + '[type]'" :value="get(selected, 'type')">
+            <input type="hidden" :name="name + '[label]'" :value="get(selected, 'label')">
+            <input type="hidden" :name="name + '[keywords]'" :value="get(selected, 'keywords')">
 
-            <button v-if="selected" type="button" class="ipui-icon-input-delete" @click.prevent="deleteIcon">
+            <button v-if="selected.value" type="button" class="ipui-icon-input-delete" @click.prevent="deleteIcon">
                 <!-- eslint-disable-next-line -->
                 <svg aria-hidden="true" focusable="false" data-prefix="fal" data-icon="times" class="svg-inline--fa fa-times fa-w-10" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M193.94 256L296.5 153.44l21.15-21.15c3.12-3.12 3.12-8.19 0-11.31l-22.63-22.63c-3.12-3.12-8.19-3.12-11.31 0L160 222.06 36.29 98.34c-3.12-3.12-8.19-3.12-11.31 0L2.34 120.97c-3.12 3.12-3.12 8.19 0 11.31L126.06 256 2.34 379.71c-3.12 3.12-3.12 8.19 0 11.31l22.63 22.63c3.12 3.12 8.19 3.12 11.31 0L160 289.94 262.56 392.5l21.15 21.15c3.12 3.12 8.19 3.12 11.31 0l22.63-22.63c3.12-3.12 3.12-8.19 0-11.31L193.94 256z" /></svg>
             </button>
@@ -37,7 +39,7 @@
                 <span class="ipui-loading"></span>
             </div>
 
-            <div v-else-if="Object.keys(iconsFiltered).length" class="ipui-icons-groups">
+            <div v-else-if="Object.keys(iconsFiltered).length" :class="['ipui-icons-groups', settings.settings.showLabels ? 'show-labels' : '']">
                 <div v-for="(group, j) in iconsFiltered" :key="j" class="ipui-icons-group">
                     <span class="ipui-icons-group-name">{{ group.name }}</span>
 
@@ -159,7 +161,7 @@ export default {
             theme: 'light-border icon-picker',
             maxWidth: 'none',
             zIndex: 10,
-            hideOnClick: false,
+            hideOnClick: true,
 
             onCreate(instance) {
                 self.isFetching = false;
@@ -206,6 +208,7 @@ export default {
 
         this.loadSpriteSheets();
         this.loadFonts();
+        this.loadScripts();
     },
 
     methods: {
@@ -265,6 +268,12 @@ export default {
                             '}';
 
                         $('head').append(`<style type="text/css">${css}</style>`);
+                    } else if (font.type == 'proxy') {
+                        const css = `.${font.id.replace('.', '\\.')} {` +
+                            `font-family: "${font.name}" !important;` +
+                            '}';
+
+                        $('head').append(`<style type="text/css">${css}</style>`);
                     } else if (font.type == 'remote') {
                         // Support multiple remote stylesheets
                         if (!Array.isArray(font.url)) {
@@ -310,6 +319,22 @@ export default {
             $div.style.display = 'none';
 
             document.body.insertBefore($div, document.body.firstChild);
+        },
+
+        loadScripts() {
+            for (let i = 0; i < this.settings.scripts.length; i++) {
+                const script = this.settings.scripts[i];
+
+                if (!document.getElementById(script.name)) {
+                    const $script = document.createElement('script');
+                    $script.id = script.name;
+                    $script.src = script.url;
+                    $script.async = true;
+                    $script.defer = true;
+
+                    document.body.appendChild($script);
+                }
+            }
         },
     },
 };
@@ -457,16 +482,28 @@ export default {
     cursor: pointer;
     overflow: hidden;
     display: inline-flex;
-    flex-wrap: wrap;
     content-visibility: auto;
+    text-align: center;
+    font-size: 10px;
 
     &:hover {
         background-color: #f3f7fc;
+    }
+
+    .show-labels & {
+        display: inline-block;
+        width: 72px;
+        height: 66px;
     }
 }
 
 .ipui-icon-label {
     display: none;
+
+    .show-labels & {
+        line-height: 10px;
+        display: block;
+    }
 }
 
 .ipui-icon-svg {
@@ -483,6 +520,12 @@ export default {
         height: 100%;
         display: block;
         fill: currentColor;
+    }
+
+    .show-labels & {
+        margin: 5px auto;
+        width: 40px;
+        height: 36px;
     }
 }
 
