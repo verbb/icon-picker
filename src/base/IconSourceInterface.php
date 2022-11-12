@@ -18,6 +18,7 @@ interface IconSourceInterface extends ComponentInterface
     // =========================================================================
 
     public function getSettingsHtml(): ?string;
+    public function getFieldSettingLabel(): ?string;
     public function getIconSets(): array;
     public function getIcons(IconSet $iconSet): void;
 }

@@ -77,6 +77,19 @@ class IconSet extends Model implements \JsonSerializable
         }
     }
 
+    public function getFieldSettingLabel(): string
+    {
+        if ($this->type === self::TYPE_REMOTE) {
+            if ($remoteSet = $this->getRemoteIconSource()) {
+                if ($label = $remoteSet->getFieldSettingLabel($this)) {
+                    return $label;
+                }
+            }
+        }
+
+        return $this->name . ' (' . ucwords($this->type) . ')';
+    }
+
 
     // Private Methods
     // =========================================================================

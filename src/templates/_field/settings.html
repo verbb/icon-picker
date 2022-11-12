@@ -11,7 +11,7 @@
 
 {% for iconSet in iconSets %}
     {% if iconSet.type != 'root' %}
-        {% set iconSetOptions = iconSetOptions | merge([{ label: iconSet.name ~ ' (' ~  (iconSet.type | ucwords) ~ ')', value: iconSet.key }]) %}
+        {% set iconSetOptions = iconSetOptions | merge([{ label: iconSet.getFieldSettingLabel(), value: iconSet.key }]) %}
     {% endif %}
 {% endfor %}
 
@@ -36,7 +36,7 @@
 {% set remoteSetOptions = [] %}
 
 {% for iconSet in remoteSets %}
-    {% set remoteSetOptions = remoteSetOptions | merge([{ label: iconSet.name, value: iconSet.key }]) %}
+    {% set remoteSetOptions = remoteSetOptions | merge([{ label: iconSet.getFieldSettingLabel(), value: iconSet.key }]) %}
 {% endfor %}
 
 {{ forms.checkboxSelectField({

@@ -3,6 +3,7 @@ namespace verbb\iconpicker\base;
 
 use verbb\iconpicker\models\IconSet;
 
+use Craft;
 use craft\base\Component;
 
 abstract class IconSource extends Component implements IconSourceInterface
@@ -27,6 +28,11 @@ abstract class IconSource extends Component implements IconSourceInterface
     public function getSettingsHtml(): ?string
     {
         return null;
+    }
+
+    public function getFieldSettingLabel(): ?string
+    {
+        return static::displayName();
     }
 
     public function getIconSets(): array

@@ -63,6 +63,15 @@ class FontAwesome extends IconSource
         ]);
     }
 
+    public function getFieldSettingLabel(): ?string
+    {
+        if ($this->type === self::TYPE_CDN) {
+            return self::displayName() . ' ' . ucwords($this->cdnLicense) . ' (' . $this->cdnVersion . ')';
+        }
+
+        return parent::getFieldSettingLabel();
+    }
+
     public function getIconSets(): array
     {
         $iconSets = [];
@@ -83,7 +92,7 @@ class FontAwesome extends IconSource
         if ($this->type === self::TYPE_CDN) {
             $iconSets[] = new IconSet([
                 'key' => 'font-awesome-cdn',
-                'name' => 'Font Awesome ' . ucwords($this->cdnLicense) . ' (' . $this->cdnVersion . ')',
+                'name' => self::displayName(),
                 'type' => IconSet::TYPE_REMOTE,
                 'remoteSet' => self::class,
             ]);
