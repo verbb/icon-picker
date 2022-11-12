@@ -1,0 +1,70 @@
+{% extends 'icon-picker/_layouts' %}
+{% import '_includes/forms' as forms %}
+{% import 'verbb-base/_macros' as macros %}
+
+{% set crumbs = [
+    { label: 'Icon Picker' | t('icon-picker'), url: url('icon-picker/settings') },
+    { label: 'Settings' | t('app'), url: url('icon-picker/settings') }
+] %}
+
+{% set navItems = {
+    'general': { title: 'General Settings' | t('icon-picker') },
+    'svg-icons': { title: 'SVG Icons Migration' | t('icon-picker') },
+} %}
+
+{% if iconSourceSettings %}
+    {% set navItems = navItems | merge({
+        'sources-heading': { heading: 'Remote Icon Sets' | t('icon-picker') },
+    }) %}
+
+    {% for iconSource in iconSourceSettings %}
+        {% set navItems = navItems | merge({
+            (iconSource.displayName() | kebab): { title: iconSource.displayName(), iconSource: iconSource },
+        }) %}
+    {% endfor %}
+{% endif %}
+
+{% set selectedTab = 'settings' %}
+{% set selectedItem = 'general' %}
+{% set fullPageForm = true %}
+
+{% block sidebar %}
+    <nav class="icon-picker-settings-tabs" data-vui-tabs>
+        <ul>
+            {% for id, item in navItems %}
+                {% if item.heading is defined %}
+                    <li class="heading"><span>{{ item.heading }}</span></li>
+                {% else %}
+                    <li>
+                        <a id="tab-{{ loop.index }}" href="#tab-{{ id }}" class="tab {% if id == selectedItem %}sel{% endif %}">
+                            {{ item.title }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+{% endblock %}
+
+{% block blockContent %}
+
+<input type="hidden" name="action" value="plugins/save-plugin-settings">
+<input type="hidden" name="pluginHandle" value="icon-picker">
+
+{% for id, item in navItems %}
+    {% if item.title is defined %}
+        <div id="tab-{{ id }}" {% if not loop.first %}class="hidden"{% endif %}>
+            <h2>{{ item.title }}</h2>
+
+            {% namespace 'settings' %}
+                {% if item.iconSource is defined %}
+                    {{ item.iconSource.getSettingsHtml() | raw }}
+                {% else %}
+                    {% include 'icon-picker/settings/_panes/' ~ id ignore missing %}
+                {% endif %}
+            {% endnamespace %}
+        </div>
+    {% endif %}
+{% endfor %}
+
+{% endblock %}

@@ -63,8 +63,9 @@ class IconPickerField extends Field
         // Fetch any fonts or spritesheets that are extra and once-off
         $spriteSheets = $iconPickerService->getSpriteSheets();
         $fonts = $iconPickerService->getLoadedFonts();
+        $scripts = $iconPickerService->getLoadedScripts();
 
-        $settings = array_merge($this->settings, $pluginSettings->toArray());
+        $settings = $this->settings;
 
         Plugin::registerAsset('field/src/js/icon-picker.js');
 
@@ -75,6 +76,7 @@ class IconPickerField extends Field
             'name' => $this->handle,
             'fonts' => $fonts,
             'spriteSheets' => $spriteSheets,
+            'scripts' => $scripts,
             'settings' => $settings,
             'fieldId' => $this->id,
         ]) . ');';
@@ -102,7 +104,7 @@ class IconPickerField extends Field
         $errors = [];
 
         $iconSets = IconPicker::$plugin->getIconSets()->getIconSets();
-        $remoteSets = IconPicker::$plugin->getIconSources()->getRegisteredOptions();
+        $remoteSets = IconPicker::$plugin->getIconSets()->getRemoteIconSets();
 
         if (!$iconSets) {
             $errors[] = 'Unable to locate SVG Icons source directory.</strong><br>Please ensure the directory <code>' . $iconSetsPath . '</code> exists.</p>';
@@ -130,7 +132,8 @@ class IconPickerField extends Field
         }
 
         if (is_array($value)) {
-            $model->setAttributes($value, false);
+            // Use `configure()` instead of `setAttributes()` to use `set()` magic methods
+            Craft::configure($model, $value);
         }
 
         return $model;
@@ -149,7 +152,10 @@ class IconPickerField extends Field
     {
         // When saving the field, fire off queue jobs to prime the icon cache
         $iconSets = IconPicker::$plugin->getIconSets()->getEnabledIconSets($this);
-        IconPicker::$plugin->getCache()->clearAndRegenerate($iconSets);
+        $remoteSets = IconPicker::$plugin->getIconSets()->getEnabledRemoteSets($this);
+        $sets = array_merge($iconSets, $remoteSets);
+
+        IconPicker::$plugin->getCache()->clearAndRegenerate($sets);
 
         parent::afterSave($isNew);
     }

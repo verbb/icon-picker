@@ -75,6 +75,14 @@ class IconPicker extends Plugin
         return Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('icon-picker/settings'));
     }
 
+    public function afterSaveSettings(): void
+    {
+        // Clear the remote icon set caches when re-saving plugin settings.
+        $remoteSets = IconPicker::$plugin->getIconSets()->getRemoteIconSets();
+
+        IconPicker::$plugin->getCache()->clearAndRegenerate($remoteSets);
+    }
+
 
     // Protected Methods
     // =========================================================================

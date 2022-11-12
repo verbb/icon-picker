@@ -33,12 +33,18 @@
     </div>
 {% endif %}
 
+{% set remoteSetOptions = [] %}
+
+{% for iconSet in remoteSets %}
+    {% set remoteSetOptions = remoteSetOptions | merge([{ label: iconSet.name, value: iconSet.key }]) %}
+{% endfor %}
+
 {{ forms.checkboxSelectField({
     label: 'Available Remote Icon Sets' | t('icon-picker'),
     instructions: 'Select which (if any) remote, CDN icon sets should be available to this field.' | t('icon-picker'),
     id: 'remoteSets',
     name: 'remoteSets',
-    options: remoteSets,
+    options: remoteSetOptions,
     values: settings.remoteSets ?? '',
     showAllOption: true,
 }) }}

@@ -43,8 +43,11 @@ class DefaultController extends Controller
     {
         $settings = IconPicker::$plugin->getSettings();
 
+        $iconSourceSettings = IconPicker::$plugin->getIconSources()->getIconSourcesForSettings();
+
         return $this->renderTemplate('icon-picker/settings', [
             'settings' => $settings,
+            'iconSourceSettings' => $iconSourceSettings,
         ]);
     }
 

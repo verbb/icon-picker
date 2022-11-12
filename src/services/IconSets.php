@@ -121,11 +121,25 @@ class IconSets extends Component
         return $iconSets;
     }
 
+    public function getRemoteIconSets(): array
+    {
+        $iconSets = [];
+        $sources = IconPicker::$plugin->getIconSources()->getRegisteredIconSources();
+
+        foreach ($sources as $source) {
+            foreach ($source->getIconSets() as $iconSet) {
+                $iconSets[] = $iconSet;
+            }
+        }
+
+        return $iconSets;
+    }
+
     public function getEnabledRemoteSets(Field $field): array
     {
-        $allRemoteSets = IconPicker::$plugin->getIconSources()->getRegisteredIconSources();
+        $allRemoteSets = $this->getRemoteIconSets();
 
-        if ($field->remoteSets === '') {
+        if ($field->remoteSets === '' || $field->remoteSets === null) {
             return [];
         }
 
@@ -134,18 +148,14 @@ class IconSets extends Component
             return $allRemoteSets;
         }
 
-        if (!is_array($field->remoteSets)) {
-            $field->remoteSets = [];
-        }
+        $iconSets = [];
 
-        $remoteSets = [];
-
-        foreach ($allRemoteSets as $allRemoteSetKey => $allRemoteSetName) {
-            if (in_array($allRemoteSetKey, $field->remoteSets)) {
-                $remoteSets[$allRemoteSetKey] = $allRemoteSetName;
+        foreach ($allRemoteSets as $allRemoteSet) {
+            if (in_array($allRemoteSet->key, $field->remoteSets)) {
+                $iconSets[] = $allRemoteSet;
             }
         }
 
-        return $remoteSets;
+        return $iconSets;
     }
 }

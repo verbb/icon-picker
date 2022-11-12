@@ -1,11 +1,14 @@
 <?php
 namespace verbb\iconpicker\services;
 
+use verbb\iconpicker\IconPicker;
+use verbb\iconpicker\base\IconSourceInterface;
 use verbb\iconpicker\events\RegisterIconSourceEvent;
 
 use Craft;
 use craft\base\Component;
-use craft\helpers\Json;
+use craft\helpers\Component as ComponentHelper;
+use craft\helpers\StringHelper;
 
 class IconSources extends Component
 {
@@ -20,28 +23,15 @@ class IconSources extends Component
     // Public Methods
     // =========================================================================
 
-    public function init(): void
-    {
-        parent::init();
-
-        $this->getRegisteredIconSources();
-    }
-
     public function getRegisteredIconSources(): ?array
     {
         if ($this->_remoteSources !== null) {
             return $this->_remoteSources;
         }
 
-        $icons = $this->getJsonData('font-awesome.json');
+        $settings = IconPicker::$plugin->getSettings();
+
         $sources = [
-            'font-awesome-all' => [
-                'label' => Craft::t('icon-picker', 'Font Awesome 5 (All)'),
-                'url' => 'https://use.fontawesome.com/releases/v5.15.1/css/all.css',
-                'icons' => $icons,
-                'classes' => 'fa fa-',
-                'fontName' => 'Font Awesome 5 Free',
-            ],
         ];
 
         $event = new RegisterIconSourceEvent([
@@ -49,35 +39,40 @@ class IconSources extends Component
         ]);
 
         $this->trigger(self::EVENT_REGISTER_ICON_SOURCE, $event);
-        $this->_remoteSources = $event->sources;
+
+        foreach ($event->sources as $source) {
+            $this->_remoteSources[] = ComponentHelper::createComponent([
+                'type' => $source,
+                'settings' => $settings->iconSources[$source] ?? [],
+            ], IconSourceInterface::class);
+        }
 
         return $this->_remoteSources;
     }
 
-    public function getRegisteredOptions(): array
+    public function getRegisteredIconSourceByClass(string $class): ?IconSourceInterface
     {
-        $options = [];
-        $sources = $this->getRegisteredIconSources();
-
-        foreach ($sources as $key => $source) {
-            $options[] = ['label' => $source['label'], 'value' => $key];
+        foreach ($this->getRegisteredIconSources() as $source) {
+            if ($source instanceof $class) {
+                return $source;
+            }
         }
 
-        return $options;
+        return null;
     }
 
-    public function getRegisteredIconSourceByHandle($handle)
+    public function getIconSourcesForSettings(): array
     {
+        $settings = [];
         $sources = $this->getRegisteredIconSources();
 
-        return $sources[$handle] ?? [];
-    }
+        foreach ($sources as $source) {
+            if ($source::hasSettings()) {
+                $settings[] = $source;
+            }
+        }
 
-    public function getJsonData($file)
-    {
-        $iconPath = __DIR__ . '/../json/' . $file;
-
-        return Json::decode(file_get_contents($iconPath));
+        return $settings;
     }
 
 }

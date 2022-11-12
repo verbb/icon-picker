@@ -29,6 +29,8 @@ class Icon extends Model implements \JsonSerializable, \Countable
     public ?string $value = null;
     public ?string $iconSet = null;
     public ?string $type = null;
+    public ?string $label = null;
+    public ?string $keywords = null;
 
     private ?string $_displayValue = null;
 
@@ -90,6 +92,10 @@ class Icon extends Model implements \JsonSerializable, \Countable
 
     public function getLabel(): ?string
     {
+        if ($this->label) {
+            return $this->label;
+        }
+
         if ($this->type === self::TYPE_CSS) {
             return $this->value;
         }
@@ -111,6 +117,10 @@ class Icon extends Model implements \JsonSerializable, \Countable
 
     public function getKeywords(): ?string
     {
+        if ($this->keywords) {
+            return $this->keywords;
+        }
+
         return $this->getLabel();
     }
 
@@ -207,10 +217,5 @@ class Icon extends Model implements \JsonSerializable, \Countable
         }
 
         return null;
-    }
-
-    public function getRemoteSet()
-    {
-        return IconPicker::$plugin->getIconSources()->getRegisteredIconSourceByHandle($this->iconSet);
     }
 }

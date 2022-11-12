@@ -23,6 +23,7 @@ class IconSet extends Model implements \JsonSerializable
     public const TYPE_SPRITE = 'sprite';
     public const TYPE_FOLDER = 'folder';
     public const TYPE_FONT = 'font';
+    public const TYPE_REMOTE = 'remote';
 
 
     // Properties
@@ -31,9 +32,11 @@ class IconSet extends Model implements \JsonSerializable
     public ?string $key = null;
     public ?string $name = null;
     public ?string $type = null;
+    public ?string $remoteSet = null;
     public array $icons = [];
     public array $fonts = [];
     public array $spriteSheets = [];
+    public array $scripts = [];
     
 
     // Public Methods
@@ -63,6 +66,14 @@ class IconSet extends Model implements \JsonSerializable
 
         if ($this->type === self::TYPE_FONT) {
             $this->_fetchIconsForFont($filePath);
+        }
+
+        if ($this->type === self::TYPE_REMOTE) {
+            $remoteSet = IconPicker::$plugin->getIconSources()->getRegisteredIconSourceByClass($this->remoteSet);
+
+            if ($remoteSet) {
+                $remoteSet->getIcons($this);
+            }
         }
     }
 

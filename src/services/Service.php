@@ -22,6 +22,7 @@ class Service extends Component
 
     private array $_loadedFonts = [];
     private array $_loadedSpriteSheets = [];
+    private array $_loadedScripts = [];
 
 
     // Public Methods
@@ -31,16 +32,13 @@ class Service extends Component
     {
         $enabledIconSets = IconPicker::$plugin->getIconSets()->getEnabledIconSets($field);
         $enabledRemoteSets = IconPicker::$plugin->getIconSets()->getEnabledRemoteSets($field);
-        
-        return $this->getIcons($enabledIconSets, $enabledRemoteSets);
+        $sets = array_merge($enabledIconSets, $enabledRemoteSets);
+
+        return $this->getIcons($sets);
     }
 
-    public function getIcons($iconSets, $remoteSets): array
+    public function getIcons(array $iconSets): array
     {
-        $settings = IconPicker::$plugin->getSettings();
-        $iconSetsPath = $settings->getIconSetsPath();
-        $iconSetsUrl = $settings->getIconSetsUrl();
-
         // Make sure to always check the directory first, otherwise will throw errors
         foreach ($iconSets as $iconSet) {
             // Populate the icons for the icon set (either from the cache or 'live')
@@ -49,33 +47,7 @@ class Service extends Component
             // Grab any additional resources like spritesheets, fonts, etc. Cached at the request level.
             $this->_loadedFonts = array_merge($this->_loadedFonts, $iconSet->fonts);
             $this->_loadedSpriteSheets = array_merge($this->_loadedSpriteSheets, $iconSet->spriteSheets);
-        }
-
-        if ($remoteSets) {
-            foreach ($remoteSets as $remoteSetKey => $remoteSet) {
-                if (is_array($remoteSet['icons'])) {
-                    $remoteSetIcons = [];
-
-                    foreach ($remoteSet['icons'] as $i => $icon) {
-                        $remoteSetIcons[] = new Icon([
-                            'type' => Icon::TYPE_CSS,
-                            'iconSet' => $remoteSetKey,
-                            'value' => $icon,
-                        ]);
-                    }
-
-                    $icons[] = new IconSet([
-                        'name' => $remoteSet['label'],
-                        'icons' => $remoteSetIcons,
-                    ]);
-                }
-
-                $this->_loadedFonts[] = [
-                    'type' => 'remote',
-                    'name' => $remoteSet['fontName'],
-                    'url' => $remoteSet['url'],
-                ];
-            }
+            $this->_loadedScripts = array_merge($this->_loadedScripts, $iconSet->scripts);
         }
 
         return $iconSets;
@@ -99,5 +71,10 @@ class Service extends Component
     public function getLoadedFonts(): array
     {
         return $this->_loadedFonts;
+    }
+
+    public function getLoadedScripts(): array
+    {
+        return $this->_loadedScripts;
     }
 }

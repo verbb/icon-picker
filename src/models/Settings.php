@@ -15,6 +15,7 @@ class Settings extends Model
     public string $iconSetsPath = '@webroot/icons/';
     public string $iconSetsUrl = '@web/icons/';
     public string $redactorFieldHandle = '';
+    public array $iconSources = [];
 
 
     // Public Methods
