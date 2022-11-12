@@ -4,6 +4,7 @@ namespace verbb\iconpicker\services;
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\base\IconSourceInterface;
 use verbb\iconpicker\events\RegisterIconSourceEvent;
+use verbb\iconpicker\iconsources\FontAwesome;
 
 use Craft;
 use craft\base\Component;
@@ -32,6 +33,7 @@ class IconSources extends Component
         $settings = IconPicker::$plugin->getSettings();
 
         $sources = [
+            FontAwesome::class,
         ];
 
         $event = new RegisterIconSourceEvent([
