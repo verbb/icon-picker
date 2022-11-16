@@ -1,2 +1,76 @@
-void 0===Craft.IconPicker&&(Craft.IconPicker={}),function($){Craft.IconPicker.Input=Garnish.Base.extend({$container:null,$selectize:null,$spinner:null,$errorText:null,iconData:null,preppedIconData:{},init:function(e){this.options=e;var i=this;this.loadSpriteSheets(),this.loadFonts(),this.$container=$("#"+e.inputId),this.$selectize=this.$container.find(".icon-picker-select"),this.$spinner=this.$container.find(".spinner"),this.$errorText=this.$container.find(".error-text"),this.fixClipping(),this.$selectize.selectize({maxItems:1,maxOptions:e.settings.maxIconsShown,valueField:"value",labelField:"label",searchField:["label","description"],options:[],optgroups:[],optgroupField:"parent_id",create:!1,preload:"focus",render:{item:function(e,i){if("svg"==e.type)var n='<img class="icon-picker-svg" src="'+e.url+'" alt="'+i(e.label)+'" />';else if("sprite"==e.type)var n='<svg class="icon-picker-sprite" viewBox="0 0 1000 1000"><use xlink:href="#'+e.url+'" /></svg>';else if("glyph"==e.type)var n='<span class="icon-picker-font font-face-'+e.name+'">'+e.url+"</span>";else if("css"==e.type)var n='<span class="icon-picker-font '+e.classes+'">'+e.url+"</span>";return'<div class="icon-picker-thumb"><div class="icon-picker-thumb-icon">'+n+"</div><span>"+i(e.label)+"</span></div>"},option:function(e,n){if("svg"==e.type)var t='<img class="icon-picker-svg" src="'+e.url+'" alt="'+n(e.label)+'" title="'+n(e.label)+'" />';else if("sprite"==e.type)var t='<svg class="icon-picker-sprite" viewBox="0 0 1000 1000"><use xlink:href="#'+e.url+'" /></svg>';else if("glyph"==e.type)var t='<span class="icon-picker-font font-face-'+e.name+'">'+e.url+"</span>";else if("css"==e.type)var t='<span class="icon-picker-font '+e.classes+'">'+e.url+"</span>";var s;return'<div class="icon-picker-item"><div class="icon-picker-item-wrap"><div class="icon-picker-item-icon">'+t+'</div><span class="icon-picker-item-label">'+(i.options.settings.showLabels?n(e.label):"")+"</span></div></div>"}},load:function(n,t){if(i.$spinner.removeClass("hidden"),i.$errorText.html(""),!$.isEmptyObject(i.preppedIconData))return i.$spinner.addClass("hidden"),t(i.preppedIconData);var s=i.$selectize[0].selectize,r=[],a=0;$.ajax({url:Craft.getActionUrl("icon-picker/icons/icons-for-field",{fieldId:e.fieldId}),type:"GET",error:function(e){i.$spinner.addClass("hidden"),i.$errorText.html(e.statusText),t()},success:function(e){$.each(e,(function(e,n){var t={id:a,label:e};s.addOptionGroup(t.id,t),$.each(n,(function(e,n){a<i.options.settings.maxIconsShown&&(n.parent_id=t.id,r.push(n))})),a++})),i.preppedIconData=r,i.$spinner.addClass("hidden"),t(i.preppedIconData)}})}})},fixClipping:function(){var e=this.$container.parents(".ni_block");e.length&&(e.css({overflow:"visible"}),e.find(".ni_block_body").css({overflow:"visible"}))},loadFonts:function(){for(var e=0;e<this.options.fonts.length;e++){var i=this.options.fonts[e];if(-1==$.inArray(i.name,Craft.IconPicker.Cache.fonts))if(Craft.IconPicker.Cache.fonts.push(i.name),"local"==i.type){var n='@font-face {font-family: "'+i.name+'";src: url("'+i.url+'");font-weight: normal;font-style: normal;}.'+i.name+' {font-family: "'+i.name+'" !important;}';$("head").append('<style type="text/css">'+n+"</style>")}else"remote"==i.type&&(Array.isArray(i.url)||(i.url=[i.url]),i.url.forEach((function(e){$("head").append('<link rel="stylesheet" type="text/css" href="'+e+'">')})))}},loadSpriteSheets:function(){for(var e=0;e<this.options.spriteSheets.length;e++){var i=this.options.spriteSheets[e];-1==$.inArray(i.name,Craft.IconPicker.Cache.stylesheets)&&(Craft.IconPicker.Cache.stylesheets.push(i.name),$.ajax({url:i.url,success:this.injectSpriteSheet(i)}))}},injectSpriteSheet:function(e){return function(i){var n=document.createElement("div");n.innerHTML=(new XMLSerializer).serializeToString(i.documentElement);var t=$(n).find("> svg");t.attr("id","icon-picker-spritesheet-"+e.name),t.css("display","none").prependTo("body")}}})}(jQuery);
-//# sourceMappingURL=icon-picker.js.map
+(function ($R) {
+    $R.add('plugin', 'icon-picker', {
+        init: function(app) {
+            this.app = app;
+            this.lang = app.lang;
+            this.inline = app.inline;
+            this.toolbar = app.toolbar;
+            this.insertion = app.insertion;
+        },
+
+        start: function() {
+            this.button = this.toolbar.addButton('icon-picker', {
+                title: Craft.t('icon-picker', 'Icon Picker'),
+                api: 'plugin.icon-picker.open',
+                icon: '<i class="verbb icon icon-picker"></i>',
+            });
+        },
+
+        modals: {
+            iconPickerModal: '<section id="icon-picker-modal"><div class="modal-content"><span class="spinner big main-spinner"></span></div></section>',
+        },
+
+        open: function() {
+            var options = {
+                title: 'Icon Picker',
+                name: 'iconPickerModal',
+                width: '650px',
+                height: '80px',
+                handle: 'insert',
+                commands: {
+                    insert: { title: 'Insert' },
+                    cancel: { title: 'Cancel' },
+                }
+            };
+
+            this.app.api('module.modal.build', options);
+        },
+
+        onmodal: {
+            iconPickerModal: {
+                opened: function($modal, $form) {
+                    var $container = $modal.$modalBody.find('.modal-content');
+                    var $spinner = $modal.$modalBody.find('.main-spinner');
+
+                    $.ajax({
+                        url: Craft.getActionUrl('icon-picker/redactor'),
+                        type: 'GET',
+                        error: function(response) {
+                            $spinner.addClass('hidden');
+                            
+                            console.error(response.statusText);
+                        },
+
+                        success: function(fieldData) {
+                            $spinner.addClass('hidden');
+
+                            $container.html(fieldData.inputHtml);
+
+                            Garnish.$bod.append(fieldData.footHtml);
+                        },
+                    });
+                },
+
+                insert: function($modal, $form) {
+                    var iconHtml = $modal.$modalBody.find('.ipui-icon-input-item .ipui-icon-input-svg').html();
+
+                    this.app.api('module.modal.close');
+                    this.app.selection.restore();
+
+                    var node = $('<span class="icon-picker-redactor-icon" />').html(iconHtml, false);
+                    this.app.insertion.insertNode(node);
+                },
+            },
+        },
+    });
+})(Redactor);

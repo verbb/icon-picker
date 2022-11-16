@@ -1,1 +1,40 @@
-.icon-picker{position:relative}select.icon-picker-select{width:100%;height:40px;opacity:0;visibility:hidden}.icon-picker .selectize-input{height:35px;line-height:23px;box-shadow:none;padding:5px 8px;border:1px solid rgba(0,0,20,0.1)}.icon-picker-thumb{line-height:23px}.icon-picker-thumb-icon{float:left;margin-right:8px}.icon-picker-thumb-icon,.icon-picker-thumb-icon img{width:23px;height:23px}.icon-picker .spinner{position:absolute;top:1px;right:2rem;z-index:2}.icon-picker .error-text{position:absolute;top:-24px;right:0;z-index:2;text-align:right}.selectize-dropdown.icon-picker-select{max-height:40vh !important;border:1px solid rgba(0,0,20,0.1);border-radius:2px;box-shadow:0 5px 10px rgba(0,0,0,0.2)}.selectize-dropdown.icon-picker-select .selectize-dropdown-content{max-height:100% !important;height:100% !important;padding:0}.selectize-dropdown.icon-picker-select .optgroup-header{font-size:11px;padding:8px 10px}.icon-picker-item{position:relative;display:inline-block;width:56px;height:56px;padding:0 !important;margin:0 !important}.icon-picker.show-labels .icon-picker-item{width:100px;height:66px}.icon-picker-item img{display:block;width:100%;height:auto}.icon-picker-item-wrap{position:absolute;top:50%;left:50%;-webkit-transform:translate(-50%, -50%);transform:translate(-50%, -50%);text-align:center}.icon-picker-item-icon{width:32px;margin:0 auto}.icon-picker-item img{display:block;width:100%;height:auto}.icon-picker-item-label{font-size:12px}.icon-picker-font{speak:none;font-style:normal;font-weight:normal;font-variant:normal;text-transform:none;line-height:1;display:inline-block;vertical-align:baseline;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.icon-picker-thumb .icon-picker-font{font-size:24px}.icon-picker-item .icon-picker-font{font-size:36px}
+.verbb.icon.icon-picker::before {
+    display: block;
+    content: ' ';
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMjguMiIgaGVpZ2h0PSIyMjgiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDIyOC4yIDIyOCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBhdGggZD0iTTE2MC41IDE3NC4zYzMuNiAwIDcuMS0xLjQgOS43LTQgMi42LTIuNiA0LjEtNiA0LjItOS42LjEtMy43LTEuMy03LjItMy45LTkuOS0uMy0uMy0uNi0uNi0xLS44bC0xOC4zLTE4LjNjNi4yLTEwLjkgOC4zLTIzLjYgNS44LTM1LjktMi43LTEzLjYtMTAuNS0yNS40LTIyLjEtMzMuMS0xMS42LTcuOC0yNS41LTEwLjUtMzkuMS03LjhDODIuMiA1Ny42IDcwLjQgNjUuNCA2Mi43IDc3Yy03LjggMTEuNi0xMC41IDI1LjUtNy44IDM5LjEgMi43IDEzLjYgMTAuNSAyNS40IDIyLjEgMzMuMSAxNi40IDExIDM3LjYgMTEuNyA1NC44IDIuMWwxOSAxOWMyLjYgMi42IDYuMSA0IDkuNyA0ek0xMDYgMTM1Yy0xNiAwLTI5LTEzLTI5LTI5czEzLTI5IDI5LTI5YzE1LjkgMCAyOSAxMyAyOSAyOXMtMTMgMjktMjkgMjl6TTE2NC4yIDI3LjRoMzYuNXYzNi41YzAgNy42IDYuMSAxMy43IDEzLjcgMTMuN3MxMy43LTYuMSAxMy43LTEzLjdoLS4xVjIyLjhDMjI4IDEwLjIgMjE3LjggMCAyMDUuMiAwaC00MWMtNy42IDAtMTMuNyA2LjEtMTMuNyAxMy43czYuMSAxMy43IDEzLjcgMTMuN3pNNjQgMjAwLjdIMjcuNnYtMzYuNWMwLTcuNi02LjEtMTMuNy0xMy43LTEzLjdTLjIgMTU2LjYuMiAxNjQuMnY0MUMuMiAyMTcuOCAxMC40IDIyOCAyMyAyMjhoNDFjNy41IDAgMTMuNy02IDEzLjctMTMuNnMtNi4xLTEzLjctMTMuNy0xMy43ek0yMTQuNSAxNTAuNGMtNy42IDAtMTMuNyA2LjEtMTMuNyAxMy43djM2LjVoLTM2LjVjLTcuNiAwLTEzLjcgNi4xLTEzLjcgMTMuN3M2LjEgMTMuNyAxMy43IDEzLjdoNDFjMTIuNiAwIDIyLjgtMTAuMiAyMi44LTIyLjhoLjF2LTQxLjFjMC03LjYtNi4xLTEzLjctMTMuNy0xMy43ek0xMy43IDc3LjZjNy42IDAgMTMuNy02LjEgMTMuNy0xMy43VjI3LjRoMzYuNWM3LjYgMCAxMy43LTYuMSAxMy43LTEzLjdTNzEuNSAwIDYzLjkgMGgtNDFDMTAuMyAwIC4xIDEwLjIuMSAyMi44SDB2NDEuMWMwIDcuNiA2LjEgMTMuNyAxMy43IDEzLjd6Ii8+PC9zdmc+");
+    background-size: 16px 16px;
+    height: 16px;
+    width: 16px;
+}
+
+.redactor-modal .icon-picker input {
+    font-size: inherit !important;
+    height: auto !important;
+    border-radius: inherit !important;
+}
+
+#icon-picker-modal {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#icon-picker-modal .main-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.icon-picker-redactor-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    line-height: 20px;
+    display: inline-block;
+}
+
+.icon-picker-redactor-icon svg {
+    width: 100%;
+    height: 100%;
+}

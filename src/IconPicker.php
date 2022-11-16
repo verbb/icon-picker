@@ -19,8 +19,6 @@ use craft\events\RegisterCacheOptionsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\UrlHelper;
-use craft\redactor\events\RegisterPluginPathsEvent;
-use craft\redactor\Field as RichText;
 use craft\services\Fields;
 use craft\services\ProjectConfig;
 use craft\services\Utilities;
@@ -29,6 +27,9 @@ use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 
 use yii\base\Event;
+
+use craft\redactor\events\RegisterPluginPathsEvent;
+use craft\redactor\Field as RichText;
 
 class IconPicker extends Plugin
 {
@@ -154,7 +155,7 @@ class IconPicker extends Plugin
 
     private function _registerRedactorPlugins(): void
     {
-        if (class_exists(RichText::class) && $this->getSettings()->redactorFieldHandle) {
+        if (class_exists(RichText::class)) {
             Event::on(RichText::class, RichText::EVENT_REGISTER_PLUGIN_PATHS, function(RegisterPluginPathsEvent $event) {
                 $event->paths[] = Craft::getAlias('@verbb/iconpicker/resources/dist/js');
 

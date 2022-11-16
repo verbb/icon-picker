@@ -4,6 +4,7 @@ namespace verbb\iconpicker\controllers;
 use verbb\iconpicker\IconPicker;
 
 use Craft;
+use craft\helpers\Html;
 use craft\web\Controller;
 
 use yii\web\Response;
@@ -21,7 +22,11 @@ class RedactorController extends Controller
         $field = Craft::$app->getFields()->getFieldByHandle($settings->redactorFieldHandle);
 
         Craft::$app->getView()->startJsBuffer();
-        $inputHtml = $field->getInputHtml(null);
+        $inputHtml = Html::tag('div', Html::tag('div', $field->getInputHtml(null), [
+            'class' => 'input',
+        ]), [
+            'id' => 'iconPickerRedactor-field'
+        ]);
         $footHtml = Craft::$app->getView()->clearJsBuffer();
 
         return $this->asJson([
