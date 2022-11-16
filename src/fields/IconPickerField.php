@@ -64,15 +64,13 @@ class IconPickerField extends Field
         $nameSpacedId = $view->namespaceInputId($id);
         $pluginSettings = IconPicker::$plugin->getSettings();
 
-        // Fetch the actual icons (from the cache), which preps any fonts and spritesheets
-        $iconPickerService->getIconsForField($this);
+        // Check if this is a non-SVG icon. We will need to trigger a lazy-load of any
+        // spritesheets, fonts, or remote CSS, but we don't want to fire that here before load.
+        $loadResources = false;
 
-        // Fetch any fonts or spritesheets that are extra and once-off
-        $spriteSheets = $iconPickerService->getSpriteSheets();
-        $fonts = $iconPickerService->getLoadedFonts();
-        $scripts = $iconPickerService->getLoadedScripts();
-
-        $settings = $this->settings;
+        if ($value->value && $value->type !== Icon::TYPE_SVG) {
+            $loadResources = true;
+        }
 
         Plugin::registerAsset('field/src/js/icon-picker.js');
 
@@ -81,10 +79,8 @@ class IconPickerField extends Field
             'id' => $id,
             'inputId' => $nameSpacedId,
             'name' => $this->handle,
-            'fonts' => $fonts,
-            'spriteSheets' => $spriteSheets,
-            'scripts' => $scripts,
-            'settings' => $settings,
+            'loadResources' => $loadResources,
+            'settings' => $this->settings,
             'fieldId' => $this->id,
         ]) . ');';
 

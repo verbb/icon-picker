@@ -17,6 +17,20 @@ class IconsController extends Controller
 
     public function actionIconsForField(): ?Response
     {
+        return $this->_getIconSetData();
+    }
+
+    public function actionResourcesForField(): ?Response
+    {
+        return $this->_getIconSetData(false);
+    }
+
+
+    // Private Methods
+    // =========================================================================
+
+    private function _getIconSetData(bool $includeIcons = true): ?Response
+    {
         $request = Craft::$app->getRequest();
 
         // Ensure we look at all fields, not just global ones...
@@ -34,16 +48,25 @@ class IconsController extends Controller
 
         $iconSets = IconPicker::$plugin->getService()->getIconsForField($field);
 
-        $icons = [];
+        $json = [
+            'icons' => [],
+            'fonts' => [],
+            'spriteSheets' => [],
+            'scripts' => [],
+        ];
 
-        // We only really want to return icons here, spritesheets and fonts are done on page-load
-        // So that any values that use the icon actually appear (as they need to spritesheet/font)
+        // Combine all icons, fonts, spritesheets, etc
         foreach ($iconSets as $key => $iconSet) {
-            $icons = array_merge($icons, $iconSet->icons);
+            if ($includeIcons) {
+                $json['icons'] = array_merge($json['icons'], $iconSet->icons);
+            }
+
+            $json['fonts'] = array_merge($json['fonts'], $iconSet->fonts);
+            $json['spriteSheets'] = array_merge($json['spriteSheets'], $iconSet->getSpriteSheets());
+            $json['scripts'] = array_merge($json['scripts'], $iconSet->scripts);
         }
 
-
-        return $this->asJson($icons);
+        return $this->asJson($json);
     }
 
 }

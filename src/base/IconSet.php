@@ -122,6 +122,21 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
         return;
     }
 
+    public function getSpriteSheets(): array
+    {
+        $spriteSheets = [];
+
+        foreach ($this->spriteSheets as $spriteSheet => $sprites) {
+            $spriteSheets[] = [
+                'url' => IconPickerHelper::getUrlForPath($spriteSheet),
+                'name' => pathinfo($spriteSheet, PATHINFO_FILENAME),
+                'sprites' => $sprites,
+            ];
+        }
+
+        return $spriteSheets;
+    }
+
 
     // Private Methods
     // =========================================================================

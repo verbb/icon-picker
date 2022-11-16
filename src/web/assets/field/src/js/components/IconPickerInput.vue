@@ -3,7 +3,8 @@
         <div class="ipui-icon-input" :class="{ 'tippy-visible': tippyVisible }">
             <div v-if="selected && !tippyVisible" class="ipui-icon-input-item">
                 <div class="ipui-icon-input-svg">
-                    <Icon :item="selected" />
+                    <span v-if="isPreloadFetching" class="ipui-loading"></span>
+                    <Icon v-else :item="selected" />
                 </div>
 
                 <span class="ipui-icon-input-label">{{ selected.label }}</span>
@@ -114,6 +115,7 @@ export default {
             search: '',
             selected: null,
             isFetching: false,
+            isPreloadFetching: false,
             tippyVisible: false,
             itemSize: 56,
             gridItems: 19,
@@ -142,6 +144,13 @@ export default {
         }
 
         this.itemSize = this.settings.settings.showLabels ? 72 : 56;
+
+        // Check if we should fetch resources immediately (when a non-SVG icon is the field value)
+        if (this.settings.loadResources) {
+            this.isPreloadFetching = true;
+
+            this.fetchIcons(null, true);
+        }
     },
 
     mounted() {
@@ -186,24 +195,7 @@ export default {
                         return;
                     }
 
-                    self.isFetching = true;
-
-                    const data = {
-                        fieldId: self.settings.fieldId,
-                    };
-
-                    Craft.sendActionRequest('POST', 'icon-picker/icons/icons-for-field', { data })
-                        .then((response) => {
-                            self.icons = response.data;
-                        })
-                        .catch((error) => {
-                            instance.setContent(`Request failed. ${error}`);
-                        })
-                        .finally(() => {
-                            self.isFetching = false;
-
-                            self.updateGridItems();
-                        });
+                    self.fetchIcons(instance);
                 },
 
                 onHide(instance) {
@@ -216,10 +208,6 @@ export default {
                     self.search = '';
                 },
             });
-
-            this.loadSpriteSheets();
-            this.loadFonts();
-            this.loadScripts();
         });
     },
 
@@ -242,6 +230,39 @@ export default {
 
         get(data, value) {
             return get(data, value);
+        },
+
+        fetchIcons(instance = null, preload = false) {
+            this.isFetching = true;
+
+            const data = {
+                fieldId: this.settings.fieldId,
+            };
+
+            // Fetch either just the resources (spritesheets, fonts, etc) or both with icons
+            const endpoint = preload ? 'icon-picker/icons/resources-for-field' : 'icon-picker/icons/icons-for-field';
+
+            Craft.sendActionRequest('POST', endpoint, { data })
+                .then((response) => {
+                    if (response.data.icons) {
+                        this.icons = response.data.icons;
+                    }
+
+                    this.loadSpriteSheets(response.data.spriteSheets);
+                    this.loadFonts(response.data.fonts);
+                    this.loadScripts(response.data.scripts);
+                })
+                .catch((error) => {
+                    if (instance) {
+                        instance.setContent(`Request failed. ${error}`);
+                    }
+                })
+                .finally(() => {
+                    this.isFetching = false;
+                    this.isPreloadFetching = false;
+
+                    this.updateGridItems();
+                });
         },
 
         updateGridItems() {
@@ -270,9 +291,9 @@ export default {
             }
         },
 
-        loadFonts() {
-            for (let i = 0; i < this.settings.fonts.length; i++) {
-                const font = this.settings.fonts[i];
+        loadFonts(fonts) {
+            for (let i = 0; i < fonts.length; i++) {
+                const font = fonts[i];
 
                 if (!Craft.IconPicker.Cache.fonts.includes(font.name)) {
                     Craft.IconPicker.Cache.fonts.push(font.name);
@@ -315,9 +336,9 @@ export default {
             }
         },
 
-        loadSpriteSheets() {
-            for (let i = 0; i < this.settings.spriteSheets.length; i++) {
-                const sheet = this.settings.spriteSheets[i];
+        loadSpriteSheets(spriteSheets) {
+            for (let i = 0; i < spriteSheets.length; i++) {
+                const sheet = spriteSheets[i];
 
                 if (!Craft.IconPicker.Cache.stylesheets.includes(sheet.name)) {
                     Craft.IconPicker.Cache.stylesheets.push(sheet.name);
@@ -343,9 +364,9 @@ export default {
             document.body.insertBefore($div, document.body.firstChild);
         },
 
-        loadScripts() {
-            for (let i = 0; i < this.settings.scripts.length; i++) {
-                const script = this.settings.scripts[i];
+        loadScripts(scripts) {
+            for (let i = 0; i < scripts.length; i++) {
+                const script = scripts[i];
 
                 if (!document.getElementById(script.name)) {
                     const $script = document.createElement('script');
@@ -423,6 +444,7 @@ export default {
 }
 
 .ipui-icon-input-svg {
+    position: relative;
     width: 18px;
     height: 18px;
     font-size: 18px;
@@ -436,6 +458,12 @@ export default {
         height: 100%;
         display: block;
         fill: currentColor;
+    }
+
+    .ipui-loading {
+        position: absolute;
+        top: 3px;
+        left: 13px;
     }
 }
 
