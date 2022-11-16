@@ -108,18 +108,16 @@ It's fairly common for font icon providers to have named classes for each icon, 
 <span class="fa fa-bomb"></span>
 ```
 
-## Remote Icon Sets
-Remote icon sets are often CDN-based icon kits, hosted offsite. Icon Picker comes built in with [Font Awesome 5](https://fontawesome.com/), but you can also [register your own](docs:developers/icon-sources).
+## CSS Icons
+Some icon sets support CSS definitions, in particular the default [Font Awesome](https://fontawesome.com/) icon set. These only store a single bit of information as what the CSS classes should be used to define the icon. Each icon provider will be different in how they require you to render your icons.
 
-Because these kits are CSS-based, they act similar to the icon fonts above, but won't contain any glyph information. Instead, the name of the icon will be available in a `css` property.
-
-Using the built-in Font Awesome remote kit:
+For example, with Font Awesome:
 
 ```twig
-<span class="fa fa-{{ entry.iconPickerField }}"></span>
+<span class="{{ entry.iconPickerField }}"></span>
 
 // Or
-<span class="fa fa-{{ entry.iconPickerField.value }}"></span>
+<span class="{{ entry.iconPickerField.value }}"></span>
 
 // Renders
 <span class="fa fa-air-freshener"></span>

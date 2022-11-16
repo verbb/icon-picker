@@ -1,0 +1,14 @@
+{% import '_includes/forms' as forms %}
+{% import 'verbb-base/_macros' as macros %}
+
+{{ forms.selectField({
+    first: true,
+    label: 'Font File' | t('icon-picker'),
+    instructions: 'Select your font file. This is relative to your [Icons Path]({url}) setting.' | t('icon-picker', { url: cpUrl('icon-picker/settings/general') }),
+    name: 'fontFile',
+    required: true,
+    options: iconSet.getFolderOptions(),
+    value: iconSet.settings.fontFile ?? '',
+    warning: macros.configWarning('fontFile', 'icon-picker'),
+    errors: iconSet.getErrors('fontFile'),
+}) }}

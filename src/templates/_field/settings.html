@@ -4,47 +4,20 @@
     label: 'Show Labels' | t('icon-picker'),
     instructions: 'Whether to show labels for each icon in the selection dropdown.' | t('icon-picker'),
     name: 'showLabels',
-    on: settings.showLabels,
+    on: field.showLabels,
 }) }}
 
 {% set iconSetOptions = [] %}
 
 {% for iconSet in iconSets %}
-    {% if iconSet.type != 'root' %}
-        {% set iconSetOptions = iconSetOptions | merge([{ label: iconSet.getFieldSettingLabel(), value: iconSet.key }]) %}
-    {% endif %}
-{% endfor %}
-
-{% if not errors | length %}
-    {{ forms.checkboxSelectField({
-        label: 'Available Local Icon Sets' | t('icon-picker'),
-        instructions: 'Select which icon sets should be available to this field.' | t('icon-picker'),
-        id: 'svgicons',
-        name: 'iconSets',
-        options: iconSetOptions,
-        values: settings.iconSets ?? (field.id ? '' : '*'),
-        showAllOption: true,
-    }) }}
-{% else %}
-    <div class="errors">
-        {% for error in errors %}
-            {{ error | t('icon-picker') | raw }}
-        {% endfor %}
-    </div>
-{% endif %}
-
-{% set remoteSetOptions = [] %}
-
-{% for iconSet in remoteSets %}
-    {% set remoteSetOptions = remoteSetOptions | merge([{ label: iconSet.getFieldSettingLabel(), value: iconSet.key }]) %}
+    {% set iconSetOptions = iconSetOptions | merge([{ label: iconSet.name, value: iconSet.uid }]) %}
 {% endfor %}
 
 {{ forms.checkboxSelectField({
-    label: 'Available Remote Icon Sets' | t('icon-picker'),
-    instructions: 'Select which remote icon sets should be available to this field.' | t('icon-picker'),
-    id: 'remoteSets',
-    name: 'remoteSets',
-    options: remoteSetOptions,
-    values: settings.remoteSets ?? '',
+    label: 'Available Icon Sets' | t('icon-picker'),
+    instructions: 'Select which icon sets should be available for this field. Manage these through [Icon Sets]({url}).' | t('icon-picker', { url: cpUrl('icon-picker/settings/icon-sets') }),
+    name: 'iconSets',
+    options: iconSetOptions,
+    values: field.iconSets ?? (field.id ? '' : '*'),
     showAllOption: true,
 }) }}

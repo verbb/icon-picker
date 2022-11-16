@@ -4,6 +4,7 @@ namespace verbb\iconpicker\helpers;
 use verbb\iconpicker\IconPicker;
 
 use Craft;
+use craft\helpers\FileHelper;
 use craft\helpers\UrlHelper;
 
 use URL\Normalizer;
@@ -13,6 +14,25 @@ class IconPickerHelper
 {
     // Public Methods
     // =========================================================================
+
+    public static function getFiles($path, $options): array
+    {
+        $settings = IconPicker::$plugin->getSettings();
+        $iconSetsPath = $settings->getIconSetsPath();
+
+        if (!is_dir($iconSetsPath)) {
+            return [];
+        }
+
+        $files = FileHelper::findFiles($path, $options);
+
+        // Sort alphabetically
+        uasort($files, function($a, $b) {
+            return strcmp(basename($a), basename($b));
+        });
+
+        return $files;
+    }
 
     public static function getIconUrl($path): string
     {

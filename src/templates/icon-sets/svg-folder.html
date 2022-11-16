@@ -1,0 +1,14 @@
+{% import '_includes/forms' as forms %}
+{% import 'verbb-base/_macros' as macros %}
+
+{{ forms.selectField({
+    first: true,
+    label: 'Folder' | t('icon-picker'),
+    instructions: 'Select the folder where your SVG icons exist. This is relative to your [Icons Path]({url}) setting. Folders are not recursive.' | t('icon-picker', { url: cpUrl('icon-picker/settings/general') }),
+    name: 'folder',
+    required: true,
+    options: iconSet.getFolderOptions(),
+    value: iconSet.settings.folder ?? '',
+    warning: macros.configWarning('folder', 'icon-picker'),
+    errors: iconSet.getErrors('folder'),
+}) }}

@@ -21,13 +21,7 @@ class CacheUtility extends Utility
 
     public static function iconPath(): ?string
     {
-        $iconPath = Craft::getAlias('@vendor/verbb/icon-picker/src/icon-mask.svg');
-
-        if (!is_string($iconPath)) {
-            return null;
-        }
-
-        return $iconPath;
+        return Craft::getAlias('@vendor/verbb/icon-picker/src/icon-mask.svg');
     }
 
     public static function contentHtml(): string

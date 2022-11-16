@@ -3,10 +3,11 @@ namespace verbb\iconpicker\events;
 
 use yii\base\Event;
 
-class RegisterIconSourceEvent extends Event
+class RegisterIconSetsEvent extends Event
 {
     // Properties
     // =========================================================================
 
-    public array $sources = [];
+    public ?array $iconSets = [];
+    
 }

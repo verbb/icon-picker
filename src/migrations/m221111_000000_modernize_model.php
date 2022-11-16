@@ -130,7 +130,7 @@ class m221111_000000_modernize_model extends Migration
         }
 
         // Re-generate all the caches
-        IconPicker::$plugin->getCache()->clearAndRegenerate();
+        IconPicker::$plugin->getService()->clearAndRegenerateCache();
 
         return true;
     }

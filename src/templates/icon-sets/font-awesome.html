@@ -1,13 +1,8 @@
 {% import '_includes/forms' as forms %}
 {% import 'verbb-base/_macros' as macros %}
 
-{% set settingsKey = 'iconSources.' ~ className(source) %}
-{% set sourceSettings = settings.iconSources[className(source)] ?? {} %}
-
-{% namespace 'iconSources[' ~ className(source) ~ ']' %}
-
-{% set type = sourceSettings.type ?? '' %}
-{% set apiKey = sourceSettings.apiKey ?? '' %}
+{% set type = iconSet.type ?? '' %}
+{% set apiKey = iconSet.apiKey ?? '' %}
 
 {{ forms.selectField({
     first: true,
@@ -20,8 +15,8 @@
         { label: 'Use A Kit' | t('icon-picker'), value: 'kit' },
         { label: 'Use CDN' | t('icon-picker'), value: 'cdn' },
     ],
-    warning: macros.configWarning(settingsKey ~ '.type', 'icon-picker'),
-    errors: settings.getErrors(settingsKey ~ '.type'),
+    warning: macros.configWarning('type', 'icon-picker'),
+    errors: iconSet.getErrors('type'),
     toggle: true,
     targetPrefix: 'type-',
 }) }}
@@ -29,36 +24,37 @@
 <div id="type-kit" class="{{ type != 'kit' ? 'hidden' }}">
     {{ forms.autosuggestField({
         label: 'API Key' | t('icon-picker'),
-        instructions: 'Enter your Font Awesome API Key to access your Kits. Get your API token on [fontawesome.com](https://fontawesome.com/account#api-tokens)' | t('icon-picker'),
+        instructions: 'Enter your Font Awesome API Key to access your Kits. Get your API token on [fontawesome.com]({url}).' | t('icon-picker', { url: 'https://fontawesome.com/account#api-tokens' }),
         name: 'apiKey',
         suggestEnvVars: true,
         value: apiKey,
-        warning: macros.configWarning(settingsKey ~ '.apiKey', 'icon-picker'),
-        errors: settings.getErrors(settingsKey ~ '.apiKey'),
+        required: true,
+        warning: macros.configWarning('apiKey', 'icon-picker'),
+        errors: iconSet.getErrors('apiKey'),
     }) }}
 
     {% if apiKey %}
-        {% set kitOptions = source.getKitOptions() %}
+        {% set kitOptions = iconSet.getKitOptions() %}
 
         {{ forms.checkboxGroupField({
             label: 'Kits' | t('icon-picker'),
-            instructions: 'Select the kits you would like enabled.' | t('icon-picker'),
+            instructions: 'Select the kits you would like included in this icon set.' | t('icon-picker'),
             name: 'kits',
             options: kitOptions,
-            values: sourceSettings.kits ?? '',
-            warning: macros.configWarning(settingsKey ~ '.kits', 'icon-picker'),
-            errors: settings.getErrors(settingsKey ~ '.kits'),
+            values: iconSet.kits ?? '',
+            warning: macros.configWarning('kits', 'icon-picker'),
+            errors: iconSet.getErrors('kits'),
         }) }}
 
-        {% if source.getApiError() %}
-            <p class="error">{{ source.getApiError() }}</p>
+        {% if iconSet.getApiError() %}
+            <p class="error">{{ iconSet.getApiError() }}</p>
         {% endif %}
     {% endif %}
 </div>
 
 <div id="type-cdn" class="{{ type != 'cdn' ? 'hidden' }}">
-    {% set cdnLicense = sourceSettings.cdnLicense ?? '' %}
-    {% set cdnVersion = sourceSettings.cdnVersion ?? '' %}
+    {% set cdnLicense = iconSet.cdnLicense ?? '' %}
+    {% set cdnVersion = iconSet.cdnVersion ?? '' %}
 
     {{ forms.selectField({
         label: 'Version' | t('icon-picker'),
@@ -70,8 +66,8 @@
             { label: '6.2.0' | t('icon-picker'), value: '6.2.0' },
             { label: '5.15.4' | t('icon-picker'), value: '5.15.4' },
         ],
-        warning: macros.configWarning(settingsKey ~ '.cdnVersion', 'icon-picker'),
-        errors: settings.getErrors(settingsKey ~ '.cdnVersion'),
+        warning: macros.configWarning('cdnVersion', 'icon-picker'),
+        errors: iconSet.getErrors('cdnVersion'),
     }) }}
 
     {{ forms.selectField({
@@ -84,15 +80,20 @@
             { label: 'Free' | t('icon-picker'), value: 'free' },
             { label: 'Pro' | t('icon-picker'), value: 'pro' },
         ],
-        warning: macros.configWarning(settingsKey ~ '.cdnLicense', 'icon-picker'),
-        errors: settings.getErrors(settingsKey ~ '.cdnLicense'),
+        warning: macros.configWarning('cdnLicense', 'icon-picker'),
+        errors: iconSet.getErrors('cdnLicense'),
         toggle: true,
         targetPrefix: 'license-',
     }) }}
 
     <div class="version-warning"></div>
 
-    {% set cdnCollections = sourceSettings.cdnCollections ?? [] %}
+    {% set cdnCollections = iconSet.cdnCollections ?? [] %}
+    {% set firstCollection = cdnCollections[0] ?? null %}
+
+    {% if firstCollection == '*' %}
+        {% set cdnCollections = '*' %}
+    {% endif %}
 
     <div id="license-free" data-container="license" class="{{ type != 'free' ? 'hidden' }}">
         {{ forms.checkboxSelectField({
@@ -107,8 +108,8 @@
                 { label: 'Brands' | t('icon-picker'), value: 'brands' },
             ],
             showAllOption: true,
-            warning: macros.configWarning(settingsKey ~ '.cdnCollections', 'icon-picker'),
-            errors: settings.getErrors(settingsKey ~ '.cdnCollections'),
+            warning: macros.configWarning('cdnCollections', 'icon-picker'),
+            errors: iconSet.getErrors('cdnCollections'),
         }) }}
     </div>
 
@@ -127,8 +128,8 @@
                 { label: 'Brands' | t('icon-picker'), value: 'brands' },
             ],
             showAllOption: true,
-            warning: macros.configWarning(settingsKey ~ '.cdnCollections', 'icon-picker'),
-            errors: settings.getErrors(settingsKey ~ '.cdnCollections'),
+            warning: macros.configWarning('cdnCollections', 'icon-picker'),
+            errors: iconSet.getErrors('cdnCollections'),
         }) }}
     </div>
 </div>
@@ -207,5 +208,3 @@
 }
 
 {% endcss %}
-
-{% endnamespace %}

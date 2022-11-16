@@ -1,0 +1,37 @@
+{% extends 'icon-picker/_layouts' %}
+
+{% import '_includes/forms' as forms %}
+{% import 'verbb-base/_macros' as macros %}
+
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
+
+{% set crumbs = [
+    { label: 'Icon Picker' | t('icon-picker'), url: url('icon-picker') },
+    { label: 'Settings' | t('app'), url: url('icon-picker/settings') },
+] %}
+
+{% set selectedSubnavItem = 'settings' %}
+{% set selectedTab = selectedTab ?? craft.app.request.getSegment(3) ?? 'general' %}
+
+{% set navItems = {
+    'general': { title: 'General Settings' | t('icon-picker') },
+    'icon-sets': { title: 'Icons Sets' | t('icon-picker') },
+} %}
+
+{% block sidebar %}
+    <nav class="icon-picker-settings-tabs">
+        <ul>
+            {% for handle, item in navItems %}
+                {% if item.heading is defined %}
+                    <li class="heading"><span>{{ item.heading }}</span></li>
+                {% else %}
+                    <li>
+                        <a href="{{ url('icon-picker/settings/' ~ handle) }}" {% if handle == selectedTab %}class="sel"{% endif %}>
+                            {{ item.title }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+{% endblock %}

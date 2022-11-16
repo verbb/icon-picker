@@ -13,9 +13,7 @@
         "title": "Feature Tour",
         "collapsable": false,
         "children": [
-            "feature-tour/svg-icons",
-            "feature-tour/svg-sprites",
-            "feature-tour/icon-fonts",
+            "feature-tour/icon-sets",
             "feature-tour/redactor",
             "feature-tour/caching"
         ]
@@ -33,7 +31,7 @@
         "collapsable": false,
         "children": [
             "developers/icon",
-            "developers/icon-sources",
+            "developers/icon-sets",
             "developers/graphql"
         ]
     }

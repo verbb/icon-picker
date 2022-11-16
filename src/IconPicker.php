@@ -5,13 +5,16 @@ use verbb\iconpicker\assetbundles\IconPickerCacheAsset;
 use verbb\iconpicker\assetbundles\IconPickerRedactorAsset;
 use verbb\iconpicker\base\PluginTrait;
 use verbb\iconpicker\fields\IconPickerField;
+use verbb\iconpicker\helpers\ProjectConfigHelper;
 use verbb\iconpicker\models\Settings;
+use verbb\iconpicker\services\IconSets;
 use verbb\iconpicker\utilities\CacheUtility;
 use verbb\iconpicker\variables\IconPickerVariable;
 
 use Craft;
 use craft\base\Model;
 use craft\base\Plugin;
+use craft\events\RebuildConfigEvent;
 use craft\events\RegisterCacheOptionsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
@@ -19,6 +22,7 @@ use craft\helpers\UrlHelper;
 use craft\redactor\events\RegisterPluginPathsEvent;
 use craft\redactor\Field as RichText;
 use craft\services\Fields;
+use craft\services\ProjectConfig;
 use craft\services\Utilities;
 use craft\utilities\ClearCaches;
 use craft\web\UrlManager;
@@ -32,7 +36,7 @@ class IconPicker extends Plugin
     // =========================================================================
 
     public bool $hasCpSettings = true;
-    public string $schemaVersion = '1.1.0';
+    public string $schemaVersion = '1.2.1';
     public string $minVersionRequired = '1.1.12';
 
 
@@ -56,6 +60,7 @@ class IconPicker extends Plugin
         $this->_registerVariables();
         $this->_registerFieldTypes();
         $this->_registerCacheTypes();
+        $this->_registerProjectConfigEventListeners();
 
         if (Craft::$app->getRequest()->getIsCpRequest()) {
             $this->_registerCpRoutes();
@@ -66,21 +71,13 @@ class IconPicker extends Plugin
             Craft::$app->getView()->registerAssetBundle(IconPickerCacheAsset::class);
 
             // Try to intelligently check to see if any icons have changed
-            $this->getCache()->checkToInvalidate();
+            $this->getService()->checkToInvalidateCache();
         }
     }
 
     public function getSettingsResponse(): mixed
     {
         return Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('icon-picker/settings'));
-    }
-
-    public function afterSaveSettings(): void
-    {
-        // Clear the remote icon set caches when re-saving plugin settings.
-        $remoteSets = IconPicker::$plugin->getIconSets()->getRemoteIconSets();
-
-        IconPicker::$plugin->getCache()->clearAndRegenerate($remoteSets);
     }
 
 
@@ -99,9 +96,12 @@ class IconPicker extends Plugin
     private function _registerCpRoutes(): void
     {
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
-            $event->rules = array_merge($event->rules, [
-                'icon-picker/settings' => 'icon-picker/default/settings',
-            ]);
+            $event->rules['icon-picker'] = 'icon-picker/settings';
+            $event->rules['icon-picker/settings'] = 'icon-picker/settings';
+            $event->rules['icon-picker/settings/general'] = 'icon-picker/settings';
+            $event->rules['icon-picker/settings/icon-sets'] = 'icon-picker/icon-sets';
+            $event->rules['icon-picker/settings/icon-sets/new'] = 'icon-picker/icon-sets/edit';
+            $event->rules['icon-picker/settings/icon-sets/edit/<iconSetId:\d+>'] = 'icon-picker/icon-sets/edit';
         });
     }
 
@@ -134,6 +134,21 @@ class IconPicker extends Plugin
     {
         Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITY_TYPES, function(RegisterComponentTypesEvent $event) {
             $event->types[] = CacheUtility::class;
+        });
+    }
+
+    private function _registerProjectConfigEventListeners(): void
+    {
+        $projectConfigService = Craft::$app->getProjectConfig();
+
+        $iconSetsService = $this->getIconSets();
+        $projectConfigService
+            ->onAdd(IconSets::CONFIG_ICON_SETS_KEY . '.{uid}', [$iconSetsService, 'handleChangedIconSet'])
+            ->onUpdate(IconSets::CONFIG_ICON_SETS_KEY . '.{uid}', [$iconSetsService, 'handleChangedIconSet'])
+            ->onRemove(IconSets::CONFIG_ICON_SETS_KEY . '.{uid}', [$iconSetsService, 'handleDeletedIconSet']);
+
+        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function(RebuildConfigEvent $event) {
+            $event->config['icon-picker'] = ProjectConfigHelper::rebuildProjectConfig();
         });
     }
 

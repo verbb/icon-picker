@@ -7,7 +7,7 @@
 <p class="light">{{ 'This will create a queue job for each icon set.' | t('icon-picker') }}</p>
 
 <form class="utility" method="post" accept-charset="UTF-8">
-    <input type="hidden" name="action" value="icon-picker/default/clear-cache">
+    <input type="hidden" name="action" value="icon-picker/settings/clear-cache">
 
     {{ redirectInput('utilities/icon-picker-cache') }}
     {{ csrfInput() }}

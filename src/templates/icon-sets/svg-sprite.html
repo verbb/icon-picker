@@ -1,0 +1,14 @@
+{% import '_includes/forms' as forms %}
+{% import 'verbb-base/_macros' as macros %}
+
+{{ forms.selectField({
+    first: true,
+    label: 'Sprite File' | t('icon-picker'),
+    instructions: 'Select your SVG sprite file. This is relative to your [Icons Path]({url}) setting.' | t('icon-picker', { url: cpUrl('icon-picker/settings/general') }),
+    name: 'spriteFile',
+    required: true,
+    options: iconSet.getFolderOptions(),
+    value: iconSet.settings.spriteFile ?? '',
+    warning: macros.configWarning('spriteFile', 'icon-picker'),
+    errors: iconSet.getErrors('spriteFile'),
+}) }}

@@ -1,0 +1,134 @@
+{% import '_includes/forms' as forms %}
+{% extends 'icon-picker/_layouts' %}
+
+{% set crumbs = [
+    { label: 'Icon Picker' | t('icon-picker'), url: url('icon-picker') },
+    { label: 'Settings' | t('app'), url: url('icon-picker/settings') },
+    { label: 'Icon Sets' | t('icon-picker'), url: url('icon-picker/settings/icon-sets') },
+] %}
+
+{% set bodyClass = 'icon-sets-settings' %}
+{% set selectedTab = 'settings' %}
+{% set fullPageForm = true %}
+{% set saveShortcutRedirect = continueEditingUrl %}
+
+{% set formActions = [
+    {
+        label: 'Save and continue editing' | t('app'),
+        redirect: continueEditingUrl | hash,
+        shortcut: true,
+        retainScroll: true,
+    },
+    not isNewIconSet ? {
+        destructive: true,
+        label: 'Delete icon set' | t('icon-picker'),
+        action: 'icon-picker/icon-sets/delete',
+        redirect: baseUrl | hash,
+        confirm: 'Are you sure you want to delete this icon set?' | t('icon-picker'),
+    }
+] | filter %}
+
+{% block content %}
+
+<input type="hidden" name="action" value="icon-picker/icon-sets/save">
+{{ redirectInput(baseUrl) }}
+
+{% if not isNewIconSet %}
+    <input type="hidden" name="sortOrder" value="{{ iconSet.sortOrder }}">
+    <input type="hidden" name="id" value="{{ iconSet.id }}">
+{% endif %}
+
+<div id="settings">
+    {{ forms.textField({
+        first: true,
+        label: 'Name' | t('icon-picker'),
+        instructions: 'What this icon set will be called in the control panel.' | t('icon-picker'),
+        id: 'name',
+        name: 'name',
+        value: (iconSet is defined ? iconSet.name : null),
+        errors: (iconSet is defined ? iconSet.getErrors('name') : null),
+        autofocus: true,
+        required: true,
+    }) }}
+
+    {{ forms.textField({
+        label: 'Handle' | t('icon-picker'),
+        instructions: 'How you’ll refer to this icon set in the templates.' | t('icon-picker'),
+        id: 'handle',
+        name: 'handle',
+        class: 'code',
+        autocorrect: false,
+        autocapitalize: false,
+        value: (iconSet is defined ? iconSet.handle : null),
+        errors: (iconSet is defined ? iconSet.getErrors('handle') : null),
+        required: true,
+    }) }}
+
+    <hr>
+
+    {{ forms.selectField({
+        label: 'Type' | t('icon-picker'),
+        instructions: 'Select the type of icon set to use.' | t('icon-picker'),
+        id: 'type',
+        name: 'type',
+        options: iconSetTypeOptions,
+        value: className(iconSet),
+        toggle: true,
+    }) }}
+
+    {{ missingIconSetPlaceholder | raw }}
+
+    {% for iconSetType in iconSetTypes %}
+        {% set isCurrent = (iconSetType == className(iconSet)) %}
+
+        <div id="{{ iconSetType | id }}" {% if not isCurrent %}class="hidden"{% endif %}>
+            {% namespace 'types[' ~ iconSetType ~ ']' %}
+                {% if isCurrent %}
+                    {{ iconSet.getSettingsHtml() | raw }}
+                {% else %}
+                    {{ iconSetInstances[iconSetType].getSettingsHtml() | raw }}
+                {% endif %}
+            {% endnamespace %}
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block details %}
+
+<div class="meta">
+    {{ forms.lightswitchField({
+        first: true,
+        label: 'Enabled' | t('icon-picker'),
+        id: 'enabled',
+        name: 'enabled',
+        on: isNewIconSet ? true : iconSet.getEnabled(),
+    }) }}
+</div>
+
+{% if not isNewIconSet %}
+    <hr>
+
+    <div class="meta read-only">
+        <div class="data">
+            <h5 class="heading">{{ 'Date Created' | t('app') }}</h5>
+            <div class="value">{{ iconSet.dateCreated | date('short') }} {{ iconSet.dateCreated | time('short') }}</div>
+        </div>
+
+        <div class="data">
+            <h5 class="heading">{{ 'Date Updated' | t('app') }}</h5>
+            <div class="value">{{ iconSet.dateUpdated | date('short') }} {{ iconSet.dateUpdated | time('short') }}</div>
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}
+
+{% js %}
+
+{% if iconSet is not defined or not iconSet.handle %}
+    new Craft.HandleGenerator('#name', '#handle');
+{% endif %}
+
+{% endjs %}

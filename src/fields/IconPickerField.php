@@ -4,8 +4,6 @@ namespace verbb\iconpicker\fields;
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\helpers\Plugin;
 use verbb\iconpicker\models\Icon;
-use verbb\iconpicker\models\IconSet;
-use verbb\iconpicker\queue\jobs\GenerateIconSetCache;
 
 use Craft;
 use craft\base\ElementInterface;
@@ -38,11 +36,20 @@ class IconPickerField extends Field
     public string $columnType = Schema::TYPE_TEXT;
     public bool $showLabels = false;
     public mixed $iconSets = null;
-    public mixed $remoteSets = null;
 
 
     // Public Methods
     // =========================================================================
+
+    public function __construct(array $config = [])
+    {
+        // Config normalization
+        if (array_key_exists('remoteSets', $config)) {
+            unset($config['remoteSets']);
+        }
+
+        parent::__construct($config);
+    }
 
     public function getInputHtml(mixed $value, ?ElementInterface $element = null): string
     {
@@ -97,24 +104,11 @@ class IconPickerField extends Field
 
     public function getSettingsHtml(): ?string
     {
-        $settings = IconPicker::$plugin->getSettings();
-        $iconSetsPath = $settings->getIconSetsPath();
-
-        $errors = [];
-
-        $iconSets = IconPicker::$plugin->getIconSets()->getIconSets();
-        $remoteSets = IconPicker::$plugin->getIconSets()->getRemoteIconSets();
-
-        if (!$iconSets) {
-            $errors[] = 'Unable to locate SVG Icons source directory.</strong><br>Please ensure the directory <code>' . $iconSetsPath . '</code> exists.</p>';
-        }
+        $iconSets = IconPicker::$plugin->getIconSets()->getAllEnabledIconSets();
 
         return Craft::$app->getView()->renderTemplate('icon-picker/_field/settings', [
             'field' => $this,
-            'settings' => $this->getSettings(),
             'iconSets' => $iconSets,
-            'remoteSets' => $remoteSets,
-            'errors' => $errors,
         ]);
     }
 
@@ -147,11 +141,9 @@ class IconPickerField extends Field
     public function afterSave(bool $isNew): void
     {
         // When saving the field, fire off queue jobs to prime the icon cache
-        $iconSets = IconPicker::$plugin->getIconSets()->getEnabledIconSets($this);
-        $remoteSets = IconPicker::$plugin->getIconSets()->getEnabledRemoteSets($this);
-        $sets = array_merge($iconSets, $remoteSets);
+        $iconSets = IconPicker::$plugin->getIconSets()->getIconSetsForField($this);
 
-        IconPicker::$plugin->getCache()->clearAndRegenerate($sets);
+        IconPicker::$plugin->getService()->clearAndRegenerateCache($iconSets);
 
         parent::afterSave($isNew);
     }

@@ -3,8 +3,8 @@ namespace verbb\iconpicker\services;
 
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\helpers\IconPickerHelper;
+use verbb\iconpicker\queue\jobs\GenerateIconSetCache;
 use verbb\iconpicker\models\Icon;
-use verbb\iconpicker\models\IconSet;
 
 use Craft;
 use craft\base\Component;
@@ -30,11 +30,9 @@ class Service extends Component
 
     public function getIconsForField(Field $field)
     {
-        $enabledIconSets = IconPicker::$plugin->getIconSets()->getEnabledIconSets($field);
-        $enabledRemoteSets = IconPicker::$plugin->getIconSets()->getEnabledRemoteSets($field);
-        $sets = array_merge($enabledIconSets, $enabledRemoteSets);
+        $iconSets = IconPicker::$plugin->getIconSets()->getIconSetsForField($field);
 
-        return $this->getIcons($sets);
+        return $this->getIcons($iconSets);
     }
 
     public function getIcons(array $iconSets): array
@@ -42,7 +40,7 @@ class Service extends Component
         // Make sure to always check the directory first, otherwise will throw errors
         foreach ($iconSets as $iconSet) {
             // Populate the icons for the icon set (either from the cache or 'live')
-            IconPicker::$plugin->getCache()->populateIcons($iconSet);
+            $iconSet->populateIcons();
 
             // Grab any additional resources like spritesheets, fonts, etc. Cached at the request level.
             $this->_loadedFonts = array_merge($this->_loadedFonts, $iconSet->fonts);
@@ -76,5 +74,54 @@ class Service extends Component
     public function getLoadedScripts(): array
     {
         return $this->_loadedScripts;
+    }
+
+    public function clearAndRegenerateCache(array $iconSets = []): void
+    {
+        $settings = IconPicker::$plugin->getSettings();
+
+        // Clear and regenerate caches
+        if (!$iconSets) {
+            $iconSets = IconPicker::$plugin->getIconSets()->getAllIconSets();
+        }
+
+        if (!$iconSets) {
+            return;
+        }
+
+        foreach ($iconSets as $iconSet) {
+            if ($settings->enableCache) {
+                Craft::$app->getQueue()->push(new GenerateIconSetCache([
+                    'iconSetUid' => $iconSet->uid,
+                    'iconSetHandle' => $iconSet->handle,
+                ]));
+            } else {
+                $iconSet->populateIcons(false);
+            }
+        }
+    }
+
+    public function checkToInvalidateCache(): void
+    {
+        $iconSetsPath = IconPicker::$plugin->getSettings()->getIconSetsPath();
+
+        // Prevent failure when installing
+        if (!is_dir($iconSetsPath)) {
+            return;
+        }
+
+        // A pretty basic check on whether the root folder has been modified
+        $modifiedTime = filemtime($iconSetsPath);
+
+        $cacheKey = 'icon-picker:modified-time';
+
+        // Has this been cached already?
+        // If it has, check to see if the cache time is different to now
+        if (($cache = Craft::$app->getCache()->get($cacheKey)) && $cache != $modifiedTime) {
+            $this->clearAndRegenerateCache();
+        }
+
+        // Update the cache
+        Craft::$app->getCache()->set($cacheKey, $modifiedTime);
     }
 }

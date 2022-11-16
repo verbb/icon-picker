@@ -1,10 +1,9 @@
 <?php
-namespace verbb\iconpicker\iconsources;
+namespace verbb\iconpicker\iconsets;
 
 use verbb\iconpicker\IconPicker;
-use verbb\iconpicker\base\IconSource;
+use verbb\iconpicker\base\IconSet;
 use verbb\iconpicker\models\Icon;
-use verbb\iconpicker\models\IconSet;
 
 use Craft;
 use craft\helpers\App;
@@ -14,7 +13,7 @@ use GuzzleHttp\Exception\RequestException;
 
 use Throwable;
 
-class FontAwesome extends IconSource
+class FontAwesome extends IconSet
 {
     // Constants
     // =========================================================================
@@ -29,11 +28,6 @@ class FontAwesome extends IconSource
     public static function displayName(): string
     {
         return Craft::t('icon-picker', 'Font Awesome');
-    }
-
-    public static function hasSettings(): bool
-    {
-        return true;
     }
 
 
@@ -53,86 +47,52 @@ class FontAwesome extends IconSource
     // Public Methods
     // =========================================================================
 
+    public function defineRules(): array
+    {
+        $rules = parent::defineRules();
+
+        $rules[] = [['apiKey'], 'required', 'when' => fn() => $this->type === self::TYPE_KIT];
+
+        return $rules;
+    }
+
     public function getSettingsHtml(): ?string
     {
-        $settings = IconPicker::$plugin->getSettings();
-
-        return Craft::$app->getView()->renderTemplate('icon-picker/icon-sources/font-awesome', [
-            'source' => $this,
-            'settings' => $settings,
+        return Craft::$app->getView()->renderTemplate('icon-picker/icon-sets/font-awesome', [
+            'iconSet' => $this,
         ]);
     }
 
-    public function getFieldSettingLabel(): ?string
-    {
-        if ($this->type === self::TYPE_CDN) {
-            return self::displayName() . ' ' . ucwords($this->cdnLicense) . ' (' . $this->cdnVersion . ')';
-        }
-
-        return parent::getFieldSettingLabel();
-    }
-
-    public function getIconSets(): array
-    {
-        $iconSets = [];
-
-        if ($this->type === self::TYPE_KIT) {
-            foreach ($this->getKits() as $kit) {
-                if (in_array($kit['token'], $this->kits)) {
-                    $iconSets[] = new IconSet([
-                        'key' => 'fa:' . $kit['token'] . ':' . $kit['version'] . ':' . $kit['licenseSelected'],
-                        'name' => self::displayName() . ': ' . $kit['name'],
-                        'type' => IconSet::TYPE_REMOTE,
-                        'remoteSet' => self::class,
-                    ]);
-                }
-            }
-        }
-
-        if ($this->type === self::TYPE_CDN) {
-            $iconSets[] = new IconSet([
-                'key' => 'font-awesome-cdn',
-                'name' => self::displayName(),
-                'type' => IconSet::TYPE_REMOTE,
-                'remoteSet' => self::class,
-            ]);
-        }
-
-        return $iconSets;
-    }
-
-    public function getIcons(IconSet $iconSet): void
+    public function fetchIcons(): void
     {
         if ($this->type === self::TYPE_KIT) {
-            [, $kitToken, $version, $license] = explode(':', $iconSet->key);
+            foreach ($this->kits as $kit) {
+                [$kitToken, $version, $license] = explode(':', $kit);
 
-            $iconSetName = 'font-awesome-' . $kitToken;
+                $icons = $this->getKit($kitToken, $license);
 
-            $icons = $this->getKit($kitToken, $license);
+                foreach ($icons as $icon) {
+                    // Create a new icon for each style
+                    $styles = $icon['familyStylesByLicense'] ?? [];
 
-            foreach ($icons as $icon) {
-                // Create a new icon for each style
-                $styles = $icon['familyStylesByLicense'] ?? [];
+                    foreach ($styles as $styleKey => $style) {
+                        foreach ($style as $key => $familyStyle) {
+                            $class = $this->_getAbbreviationForFamilyStyle($familyStyle);
 
-                foreach ($styles as $styleKey => $style) {
-                    foreach ($style as $key => $familyStyle) {
-                        $class = $this->_getAbbreviationForFamilyStyle($familyStyle);
-
-                        $iconSet->icons[] = new Icon([
-                            'type' => Icon::TYPE_CSS,
-                            'iconSet' => $iconSetName,
-                            'value' => $class . ' fa-' . $icon['id'],
-                            'label' => $icon['label'],
-                            'keywords' => $icon['label'],
-                        ]);
+                            $this->icons[] = new Icon([
+                                'type' => Icon::TYPE_CSS,
+                                'value' => $class . ' fa-' . $icon['id'],
+                                'label' => $icon['label'],
+                                'keywords' => $icon['label'],
+                            ]);
+                        }
                     }
                 }
-            }
 
-            $iconSet->scripts[] = [
-                'name' => $iconSetName,
-                'url' => "https://kit.fontawesome.com/{$kitToken}.js",
-            ];
+                $this->scripts[] = [
+                    'url' => "https://kit.fontawesome.com/{$kitToken}.js",
+                ];
+            }
         }
 
         if ($this->type === self::TYPE_CDN) {
@@ -157,7 +117,7 @@ class FontAwesome extends IconSource
             usort($icons, fn($a, $b) => strcmp($a['label'], $b['label']));
 
             foreach ($icons as $icon) {
-                $iconSet->icons[] = new Icon([
+                $this->icons[] = new Icon([
                     'type' => Icon::TYPE_CSS,
                     'value' => $icon['classes'],
                     'label' => $icon['label'],
@@ -180,7 +140,7 @@ class FontAwesome extends IconSource
 
             $urls = array_values(array_unique($urls));
 
-            $iconSet->fonts[] = [
+            $this->fonts[] = [
                 'type' => 'remote',
                 'name' => 'Font Awesome',
                 'url' => $urls,
@@ -196,7 +156,7 @@ class FontAwesome extends IconSource
             foreach ($this->getKits() as $kit) {
                 $options[] = [
                     'label' => "{$kit['name']} ({$kit['token']})",
-                    'value' => $kit['token'],
+                    'value' => "{$kit['token']}:{$kit['version']}:{$kit['licenseSelected']}",
                 ];
             }
         }

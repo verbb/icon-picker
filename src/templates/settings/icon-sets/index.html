@@ -1,0 +1,66 @@
+{% extends 'icon-picker/_layouts/settings' %}
+
+{% block actionButton %}
+    <a href="{{ url("icon-picker/settings/icon-sets/new") }}" class="btn submit add icon">{{ 'New Icon Set' | t('icon-picker') }}</a>
+{% endblock %}
+
+{% block content %}
+    <div id="icon-sets-vue-admin-table"></div>
+{% endblock %}
+
+{% set tableData = [] %}
+{% for iconSet in iconSets %}
+    {% set iconSetIsMissing = false %}
+
+    {% if iconSet is missing %}
+        {% set iconSetIsMissing = true %}
+    {% endif %}
+
+    {% set tableData = tableData | merge([{
+        id: iconSet.id,
+        title: iconSet.getName() | t('icon-picker'),
+        url: iconSet.cpEditUrl,
+        name: iconSet.getName() | t('icon-picker') | e,
+        enabled: iconSet.getEnabled(),
+        type: {
+            isMissing: iconSetIsMissing,
+            label: iconSetIsMissing ? iconSet.expectedType : iconSet.displayName(),
+        },
+    }]) %}
+{% endfor %}
+
+{% js %}
+
+var columns = [
+    { name: '__slot:title', title: Craft.t('app', 'Name') },
+    { name: 'type', title: Craft.t('app', 'Type'), callback: function(value) {
+            if (value.isMissing) {
+                return '<span class="error">' + value.label + '</span>';
+            }
+
+            return value.label;
+        }
+    },
+    { name: 'enabled', title: Craft.t('icon-picker', 'Enabled'), callback: function(value) {
+            if (value) {
+                return '<span class="status on"></span>' + Craft.t('icon-picker', 'Enabled');
+            } else {
+                return '<span class="status"></span>' + Craft.t('icon-picker', 'Disabled');
+            }
+        }
+    },
+];
+
+new Craft.VueAdminTable({
+    columns: columns,
+    container: '#icon-sets-vue-admin-table',
+    emptyMessage: Craft.t('icon-picker', 'No icon sets exist yet.'),
+    tableData: {{ tableData | json_encode | raw }},
+
+    {% if craft.app.config.general.allowAdminChanges %}
+        deleteAction: 'icon-picker/icon-sets/delete',
+        reorderAction: '{{ iconSets | length > 1 ? 'icon-picker/icon-sets/reorder' : ''}}',
+    {% endif %}
+});
+
+{% endjs %}
