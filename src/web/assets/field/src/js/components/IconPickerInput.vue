@@ -140,6 +140,8 @@ export default {
         if (this.value) {
             this.selected = JSON.parse(this.value);
         }
+
+        this.itemSize = this.settings.settings.showLabels ? 72 : 56;
     },
 
     mounted() {
@@ -520,7 +522,7 @@ export default {
     .show-labels & {
         display: inline-block;
         width: 72px;
-        height: 66px;
+        height: 72px;
     }
 }
 

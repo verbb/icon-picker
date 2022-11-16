@@ -88,7 +88,7 @@ class Icon extends Model implements \JsonSerializable, \Countable
         $array['displayValue'] = $this->getDisplayValue();
 
         // ID for vue-virtual-scroller
-        $array['id'] = StringHelper::appendRandomString($array['label'], 5);
+        $array['id'] = $array['label'] ? StringHelper::appendRandomString($array['label'], 5) : rand();
 
         return $array;
     }
