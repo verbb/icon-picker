@@ -50,6 +50,7 @@ class IconSets extends Component
 
     private ?MemoizableArray $_iconSets = null;
     private ?array $_iconSetsByType = null;
+    private ?array $_preloadedIconSets = null;
 
 
     // Public Methods
@@ -120,6 +121,16 @@ class IconSets extends Component
         }
 
         return $iconSets;
+    }
+
+    public function getPreloadedIconSet(string $key): ?IconSet
+    {
+        return $this->_preloadedIconSets[$key] ?? null;
+    }
+
+    public function setPreloadedIconSet(string $key, IconSet $value): void
+    {
+        $this->_preloadedIconSets[$key] = $value;
     }
 
     public function createIconSetConfig(IconSetInterface $iconSet): array

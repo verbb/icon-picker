@@ -2,6 +2,7 @@
 namespace verbb\iconpicker\base;
 
 use verbb\iconpicker\IconPicker;
+use verbb\iconpicker\helpers\IconPickerHelper;
 use verbb\iconpicker\models\Icon;
 
 use Craft;
@@ -82,11 +83,22 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
         $settings = IconPicker::$plugin->getSettings();
         $cacheKey = 'icon-picker:' . $this->handle;
 
+        // Check to see if loaded in-memory already, rather than loading from the cache
+        if ($preloadedData = IconPicker::$plugin->getIconSets()->getPreloadedIconSet($cacheKey)) {
+            $this->setAttributes($preloadedData->getAttributes(), false);
+
+            return;
+        }
+
         if ($fromCache && $settings->enableCache) {
             if ($cachedData = Craft::$app->getCache()->get($cacheKey)) {
                 $cachedData = $this->_unserializeFromCache($cachedData);
 
                 $this->setAttributes($cachedData, false);
+
+                // Save the data as preloaded, in case we need it again for the same request.
+                // Faster than the cache for large icon sets
+                IconPicker::$plugin->getIconSets()->setPreloadedIconSet($cacheKey, $this);
 
                 return;
             }
@@ -99,6 +111,10 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
         if ($settings->enableCache) {
             Craft::$app->getCache()->set($cacheKey, $this->_serializeToCache($this));
         }
+
+        // Save the data as preloaded, in case we need it again for the same request.
+        // Faster than the cache for large icon sets
+        IconPicker::$plugin->getIconSets()->setPreloadedIconSet($cacheKey, $this);
     }
 
     public function fetchIcons(): void
@@ -133,29 +149,4 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
 
         return $data;
     }
-
-
-
-
-
-
-    // public function getSettingsHtml(): ?string
-    // {
-    //     return null;
-    // }
-
-    // public function getFieldSettingLabel(): ?string
-    // {
-    //     return static::displayName();
-    // }
-
-    // public function getIconSets(): array
-    // {
-    //     return [];
-    // }
-
-    // public function getIcons(IconSet $iconSet): void
-    // {
-    //     return;
-    // }
 }
