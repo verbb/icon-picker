@@ -5,6 +5,7 @@
 ### Added
 - Added the concept of Icon Sets to better organise collections of icons. This allows for greater flexibility, consistency and control for icons.
 - Added the ability to register your own Icon Sets (even extend existing ones) for advanced handling of icons.
+- Added better handling for rendering lots of icons.
 
 ### Changed
 - Migrate to Vue 3-based field input for more control and better client-side performance.
