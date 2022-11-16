@@ -8,6 +8,7 @@ use Craft;
 use craft\base\Model;
 use craft\helpers\ArrayHelper;
 use craft\helpers\FileHelper;
+use craft\helpers\StringHelper;
 use craft\helpers\Template;
 
 use Twig\Markup;
@@ -85,6 +86,9 @@ class Icon extends Model implements \JsonSerializable, \Countable
         $array['label'] = $this->getLabel();
         $array['keywords'] = $this->getKeywords();
         $array['displayValue'] = $this->getDisplayValue();
+
+        // ID for vue-virtual-scroller
+        $array['id'] = StringHelper::appendRandomString($array['label'], 5);
 
         return $array;
     }

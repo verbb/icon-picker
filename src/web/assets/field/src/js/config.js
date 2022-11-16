@@ -2,8 +2,6 @@ import { createApp } from 'vue';
 import mitt from 'mitt';
 
 // Vue plugins
-import VTooltip from 'floating-vue';
-import { vfmPlugin } from 'vue-final-modal';
 import VueUniqueId from '@/js/vendor/vue-unique-id';
 
 import { clone } from '@utils/object';
@@ -29,27 +27,9 @@ export const createVueApp = (props) => {
     // Be careful about adding too much here. You can always include them per-app.
     //
 
-    // Vue Final Modal
-    // https://v3.vue-final-modal.org/
-    app.use(vfmPlugin);
-
     // Vue Unique ID
     // Custom - waiting for https://github.com/berniegp/vue-unique-id
     app.use(VueUniqueId);
-
-    // Vue Tooltips
-    // https://github.com/Akryum/floating-vue
-    app.use(VTooltip, {
-        themes: {
-            'vui-tooltip': {
-                $extend: 'tooltip',
-                delay: {
-                    show: 0,
-                    hide: 0,
-                },
-            },
-        },
-    });
 
     //
     // Global properties

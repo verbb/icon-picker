@@ -5,6 +5,7 @@ use verbb\iconpicker\IconPicker;
 
 use Craft;
 use craft\helpers\ArrayHelper;
+use craft\helpers\Json;
 use craft\web\Controller;
 
 use yii\web\Response;
@@ -14,7 +15,7 @@ class IconsController extends Controller
     // Public Methods
     // =========================================================================
 
-    public function actionIconsForField(): Response
+    public function actionIconsForField(): ?Response
     {
         $request = Craft::$app->getRequest();
 
@@ -33,7 +34,16 @@ class IconsController extends Controller
 
         $iconSets = IconPicker::$plugin->getService()->getIconsForField($field);
 
-        return $this->asJson($iconSets);
+        $icons = [];
+
+        // We only really want to return icons here, spritesheets and fonts are done on page-load
+        // So that any values that use the icon actually appear (as they need to spritesheet/font)
+        foreach ($iconSets as $key => $iconSet) {
+            $icons = array_merge($icons, $iconSet->icons);
+        }
+
+
+        return $this->asJson($icons);
     }
 
 }

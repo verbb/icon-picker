@@ -125,7 +125,7 @@ class IconPicker extends Plugin
             $event->options[] = [
                 'key' => 'icon-picker',
                 'label' => Craft::t('icon-picker', 'Icon Picker cache'),
-                'action' => [IconPicker::$plugin->getCache(), 'clearAndRegenerate'],
+                'action' => [IconPicker::$plugin->getService(), 'clearAndRegenerateCache'],
             ];
         });
     }

@@ -12,19 +12,6 @@ use craft\helpers\UrlHelper;
 
 abstract class IconSet extends SavableComponent implements IconSetInterface, \JsonSerializable
 {
-    // Static Methods
-    // =========================================================================
-
-    // public static function displayName(): string
-    // {
-    //     return Craft::t('icon-picker', 'Icon Source');
-    // }
-
-    // public static function hasSettings(): bool
-    // {
-    //     return false;
-    // }
-
     // Properties
     // =========================================================================
 
@@ -48,13 +35,12 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
     public function jsonSerialize(): mixed
     {
         // Return a minimal array for the front-end Vue field
-        return [
-            'name' => $this->name,
+        return array_filter([
             'icons' => $this->icons,
             'fonts' => $this->fonts,
             'spriteSheets' => $this->spriteSheets,
             'scripts' => $this->scripts,
-        ];
+        ]);
     }
 
     public function getName(): string

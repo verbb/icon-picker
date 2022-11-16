@@ -3,7 +3,7 @@
         <div class="ipui-icon-input" :class="{ 'tippy-visible': tippyVisible }">
             <div v-if="selected && !tippyVisible" class="ipui-icon-input-item">
                 <div class="ipui-icon-input-svg">
-                    <component :is="getGlyphComponent(selected.type)" :icon="selected" />
+                    <Icon :item="selected" />
                 </div>
 
                 <span class="ipui-icon-input-label">{{ selected.label }}</span>
@@ -28,7 +28,7 @@
             <input type="hidden" :name="name + '[label]'" :value="get(selected, 'label')">
             <input type="hidden" :name="name + '[keywords]'" :value="get(selected, 'keywords')">
 
-            <button v-if="selected.value" type="button" class="ipui-icon-input-delete" @click.prevent="deleteIcon">
+            <button v-if="get(selected, 'value')" type="button" class="ipui-icon-input-delete" @click.prevent="deleteIcon">
                 <!-- eslint-disable-next-line -->
                 <svg aria-hidden="true" focusable="false" data-prefix="fal" data-icon="times" class="svg-inline--fa fa-times fa-w-10" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M193.94 256L296.5 153.44l21.15-21.15c3.12-3.12 3.12-8.19 0-11.31l-22.63-22.63c-3.12-3.12-8.19-3.12-11.31 0L160 222.06 36.29 98.34c-3.12-3.12-8.19-3.12-11.31 0L2.34 120.97c-3.12 3.12-3.12 8.19 0 11.31L126.06 256 2.34 379.71c-3.12 3.12-3.12 8.19 0 11.31l22.63 22.63c3.12 3.12 8.19 3.12 11.31 0L160 289.94 262.56 392.5l21.15 21.15c3.12 3.12 8.19 3.12 11.31 0l22.63-22.63c3.12-3.12 3.12-8.19 0-11.31L193.94 256z" /></svg>
             </button>
@@ -40,19 +40,22 @@
             </div>
 
             <div v-else-if="Object.keys(iconsFiltered).length" :class="['ipui-icons-groups', settings.settings.showLabels ? 'show-labels' : '']">
-                <div v-for="(group, j) in iconsFiltered" :key="j" class="ipui-icons-group">
-                    <span class="ipui-icons-group-name">{{ group.name }}</span>
-
-                    <div class="ipui-icons">
-                        <div v-for="(icon, i) in group.icons" :key="i" class="ipui-icon-wrap" :title="`${icon.label} (${group.name})`" @click.prevent="select(icon)">
-                            <div class="ipui-icon-svg">
-                                <component :is="getGlyphComponent(icon.type)" :icon="icon" />
-                            </div>
-
-                            <span class="ipui-icon-label">{{ icon.label }}</span>
+                <RecycleScroller
+                    ref="scroller"
+                    v-slot="{ item }"
+                    class="scroller"
+                    :items="iconsFiltered"
+                    :item-size="itemSize"
+                    :grid-items="gridItems"
+                >
+                    <div class="ipui-icon-wrap" :title="item.label" @click.prevent="select(item)">
+                        <div class="ipui-icon-svg">
+                            <Icon :item="item" />
                         </div>
+
+                        <span class="ipui-icon-label">{{ item.label }}</span>
                     </div>
-                </div>
+                </RecycleScroller>
             </div>
 
             <div v-else class="ipui-no-icons">
@@ -67,23 +70,23 @@ import {
     isEmpty, camelCase, startCase, get,
 } from 'lodash-es';
 
-import IconCss from '@components/IconCss.vue';
-import IconGlyph from '@components/IconGlyph.vue';
-import IconSprite from '@components/IconSprite.vue';
-import IconSvg from '@components/IconSvg.vue';
-
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/themes/light-border.css';
+
+import { RecycleScroller } from 'vue-virtual-scroller';
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
+
+import { hideOnEsc } from '@utils/tippy';
+
+import Icon from '@components/Icon.vue';
 
 export default {
     name: 'IconPickerInput',
 
     components: {
-        IconCss,
-        IconGlyph,
-        IconSprite,
-        IconSvg,
+        Icon,
+        RecycleScroller,
     },
 
     props: {
@@ -112,6 +115,8 @@ export default {
             selected: null,
             isFetching: false,
             tippyVisible: false,
+            itemSize: 56,
+            gridItems: 19,
         };
     },
 
@@ -125,13 +130,9 @@ export default {
                 return [];
             }
 
-            return this.icons.reduce((acc, iconGroup) => {
-                const icons = iconGroup.icons.filter((icon) => {
-                    return icon.keywords.toLowerCase().includes(this.search.toLowerCase());
-                });
-
-                return !icons.length ? acc : acc.concat({ ...iconGroup, icons });
-            }, []);
+            return this.icons.filter((icon) => {
+                return icon.keywords.toLowerCase().includes(this.search.toLowerCase());
+            });
         },
     },
 
@@ -142,73 +143,82 @@ export default {
     },
 
     mounted() {
-        const self = this;
+        this.$nextTick(() => {
+            const self = this;
 
-        // Modify the jQuery data for `ElementEditor.js`, otherwise a change will be detected, and the draft saved.
-        // This is due to jQuery kicking in and serializing the form before Vue kicks in.
-        this.updateInitialSerializedValue();
+            // Modify the jQuery data for `ElementEditor.js`, otherwise a change will be detected, and the draft saved.
+            // This is due to jQuery kicking in and serializing the form before Vue kicks in.
+            this.updateInitialSerializedValue();
 
-        const template = this.$el.querySelector('.js-ipui-tippy-template');
-        template.style.display = 'block';
+            const template = this.$el.querySelector('.js-ipui-tippy-template');
+            template.style.display = 'block';
 
-        this.tippy = tippy(`#${this.id}`, {
-            content: template,
-            trigger: 'focus',
-            allowHTML: true,
-            arrow: true,
-            interactive: true,
-            placement: 'bottom-start',
-            theme: 'light-border icon-picker',
-            maxWidth: 'none',
-            zIndex: 10,
-            hideOnClick: true,
+            // Change the number of items in the grid scroller when resizing the window
+            window.addEventListener('resize', this.updateGridItems);
+            this.updateGridItems();
 
-            onCreate(instance) {
-                self.isFetching = false;
+            this.tippy = tippy(`#${this.id}`, {
+                content: template,
+                trigger: 'focus',
+                allowHTML: true,
+                arrow: true,
+                interactive: true,
+                placement: 'bottom-start',
+                theme: 'light-border icon-picker',
+                maxWidth: 'none',
+                zIndex: 10,
+                hideOnClick: true,
+                plugins: [hideOnEsc],
 
-                instance.popper.style.width = '100%';
-            },
+                onCreate(instance) {
+                    self.isFetching = false;
 
-            onShow(instance) {
-                self.tippyVisible = true;
+                    instance.popper.style.width = '100%';
+                },
 
-                // Have we cached already, or fetching?
-                if (self.isFetching || self.icons.length) {
-                    return;
-                }
+                onShow(instance) {
+                    self.tippyVisible = true;
 
-                self.isFetching = true;
+                    // Have we cached already, or fetching?
+                    if (self.isFetching || self.icons.length) {
+                        return;
+                    }
 
-                const data = {
-                    fieldId: self.settings.fieldId,
-                };
+                    self.isFetching = true;
 
-                Craft.sendActionRequest('POST', 'icon-picker/icons/icons-for-field', { data })
-                    .then((response) => {
-                        self.icons = response.data;
-                    })
-                    .catch((error) => {
-                        instance.setContent(`Request failed. ${error}`);
-                    })
-                    .finally(() => {
-                        self.isFetching = false;
-                    });
-            },
+                    const data = {
+                        fieldId: self.settings.fieldId,
+                    };
 
-            onHide(instance) {
-                self.isFetching = false;
-                self.tippyVisible = false;
-            },
+                    Craft.sendActionRequest('POST', 'icon-picker/icons/icons-for-field', { data })
+                        .then((response) => {
+                            self.icons = response.data;
+                        })
+                        .catch((error) => {
+                            instance.setContent(`Request failed. ${error}`);
+                        })
+                        .finally(() => {
+                            self.isFetching = false;
 
-            onHidden(instance) {
-                // Always clear the search, but after transition. Otherwise, jumpy...
-                self.search = '';
-            },
+                            self.updateGridItems();
+                        });
+                },
+
+                onHide(instance) {
+                    self.isFetching = false;
+                    self.tippyVisible = false;
+                },
+
+                onHidden(instance) {
+                    // Always clear the search, but after transition. Otherwise, jumpy...
+                    self.search = '';
+                },
+            });
+
+            this.loadSpriteSheets();
+            this.loadFonts();
+            this.loadScripts();
         });
-
-        this.loadSpriteSheets();
-        this.loadFonts();
-        this.loadScripts();
     },
 
     methods: {
@@ -230,6 +240,16 @@ export default {
 
         get(data, value) {
             return get(data, value);
+        },
+
+        updateGridItems() {
+            this.$nextTick(() => {
+                if (this.$refs.scroller && this.$refs.scroller.$el) {
+                    const { clientWidth } = this.$refs.scroller.$el;
+
+                    this.gridItems = Math.floor(clientWidth / this.itemSize);
+                }
+            });
         },
 
         updateInitialSerializedValue() {
@@ -350,7 +370,6 @@ export default {
 .ipui-icon-input {
     display: flex;
     align-items: center;
-
     position: relative;
     width: 100%;
     height: 36px;
@@ -451,11 +470,20 @@ export default {
 // Dropdown
 // ==========================================================================
 
-.tippy-box[data-theme~='icon-picker'] >.tippy-content {
-    overflow-y: auto;
-    overflow-x: hidden;
+.tippy-box[data-theme~='icon-picker'] >.tippy-content,
+.tippy-box[data-theme~='icon-picker'] >.tippy-content .scroller {
     max-height: 50vh;
     min-height: 100px;
+}
+
+.tippy-box[data-theme~='icon-picker'] >.tippy-content {
+    padding: 0;
+
+    .scroller {
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 5px;
+    }
 }
 
 .ipui-no-icons {
@@ -482,7 +510,6 @@ export default {
     cursor: pointer;
     overflow: hidden;
     display: inline-flex;
-    content-visibility: auto;
     text-align: center;
     font-size: 10px;
 
@@ -513,7 +540,6 @@ export default {
     line-height: 32px;
     margin: auto;
     text-align: center;
-    content-visibility: auto;
 
     svg {
         width: 100%;
