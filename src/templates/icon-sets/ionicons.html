@@ -1,0 +1,24 @@
+{% import '_includes/forms' as forms %}
+{% import 'verbb-base/_macros' as macros %}
+
+{% set variants = iconSet.variants ?? [] %}
+{% set firstVariant = variants[0] ?? null %}
+
+{% if firstVariant == '*' %}
+    {% set variants = '*' %}
+{% endif %}
+
+{{ forms.checkboxSelectField({
+    label: 'Variants' | t('icon-picker'),
+    instructions: 'Select which variants to include.' | t('icon-picker'),
+    name: 'variants',
+    values: variants,
+    options: [
+        { label: 'Filled' | t('icon-picker'), value: 'filled' },
+        { label: 'Outline' | t('icon-picker'), value: 'outline' },
+        { label: 'Sharp' | t('icon-picker'), value: 'sharp' },
+    ],
+    showAllOption: true,
+    warning: macros.configWarning('variants', 'icon-picker'),
+    errors: iconSet.getErrors('variants'),
+}) }}

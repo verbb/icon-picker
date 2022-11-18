@@ -63,6 +63,7 @@ class IconSets extends Component
             registerediconsets\SvgSprite::class,
             registerediconsets\WebFont::class,
             registerediconsets\FontAwesome::class,
+            registerediconsets\Ionicons::class,
         ];
 
         $event = new RegisterIconSetsEvent([
