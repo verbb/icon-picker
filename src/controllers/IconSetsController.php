@@ -150,7 +150,7 @@ class IconSetsController extends Controller
         $this->setSuccessFlash(Craft::t('icon-picker', 'Icon set saved.'));
 
         // Re-generate the cache for this icon set
-        IconPicker::$plugin->getService()->clearAndRegenerateCache($iconSet);
+        IconPicker::$plugin->getService()->clearAndRegenerateCache([$iconSet]);
 
         return $this->redirectToPostedUrl($iconSet);
     }
