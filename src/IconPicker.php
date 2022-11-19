@@ -6,6 +6,7 @@ use verbb\iconpicker\assetbundles\IconPickerRedactorAsset;
 use verbb\iconpicker\base\PluginTrait;
 use verbb\iconpicker\fields\IconPickerField;
 use verbb\iconpicker\helpers\ProjectConfigHelper;
+use verbb\iconpicker\integrations\feedme\fields\IconPicker as FeedMeIconPickerField;
 use verbb\iconpicker\models\Settings;
 use verbb\iconpicker\services\IconSets;
 use verbb\iconpicker\utilities\CacheUtility;
@@ -30,6 +31,9 @@ use yii\base\Event;
 
 use craft\redactor\events\RegisterPluginPathsEvent;
 use craft\redactor\Field as RichText;
+
+use craft\feedme\events\RegisterFeedMeFieldsEvent;
+use craft\feedme\services\Fields as FeedMeFields;
 
 class IconPicker extends Plugin
 {
@@ -62,6 +66,7 @@ class IconPicker extends Plugin
         $this->_registerFieldTypes();
         $this->_registerCacheTypes();
         $this->_registerProjectConfigEventListeners();
+        $this->_registerThirdPartyEventListeners();
 
         if (Craft::$app->getRequest()->getIsCpRequest()) {
             $this->_registerCpRoutes();
@@ -160,6 +165,15 @@ class IconPicker extends Plugin
                 $event->paths[] = Craft::getAlias('@verbb/iconpicker/resources/dist/js');
 
                 Craft::$app->getView()->registerAssetBundle(IconPickerRedactorAsset::class);
+            });
+        }
+    }
+
+    private function _registerThirdPartyEventListeners(): void
+    {
+        if (class_exists(FeedMeFields::class)) {
+            Event::on(FeedMeFields::class, FeedMeFields::EVENT_REGISTER_FEED_ME_FIELDS, function(RegisterFeedMeFieldsEvent $event) {
+                $event->fields[] = FeedMeIconPickerField::class;
             });
         }
     }
