@@ -6,7 +6,7 @@ There are a few different types of Icon Sets you can create:
 - SVG Folders
 - SVG Sprites
 - Web Fonts
-- [Font Awesome 5/6](https://fontawesome.com/
+- [Font Awesome 5/6](https://fontawesome.com/)
 - [Feather Icons](https://feathericons.com/)
 - [Ionicons](https://ionic.io/ionicons)
 - [CSS.gg](https://css.gg/)

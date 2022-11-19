@@ -6,25 +6,39 @@
 - Added the concept of Icon Sets to better organise collections of icons. This allows for greater flexibility, consistency and control for icons.
 - Added the ability to register your own Icon Sets (even extend existing ones) for advanced handling of icons.
 - Added better handling for rendering lots of icons.
+- Added `vue-virtual-scroller` to improve render performance for large icon sets.
+- Added icon set preloading for more performance benefits.
+- Added [Font Awesome 5/6 Free and Pro](https://fontawesome.com/).
+- Added [Feather Icons](https://feathericons.com/).
+- Added [Ionicons](https://ionic.io/ionicons).
+- Added [CSS.gg](https://css.gg/).
+- Added [Material Symbols](https://fonts.google.com/icons).
+- Add Feed Me support.
+- Add plugin settings to configure the size of icons in the dropdown icon-picker.
+- Add `metadata.json` file support for icon sets, to provide extra keywords for searching.
 
 ### Changed
 - Migrate to Vue 3-based field input for more control and better client-side performance.
 - Reorganise `Icon` and `IconSet` models, and improve server-side performance.
 - Icon Picker will no longer automatically scan the nominated "Icons Path" for folders, sprites and fonts. Create an Icon Set instead.
+- Revamp remote icon sets to be class-based, and treated like regular icon sets.
+- Revamp Font Awesome remote set, add 5/6 Free and Pro CDN option, ability to select version/license/type/collections, and Kit option through API.
+- Lazy-load non-SVG resources (fonts, spritesheets, scripts) for icon field values to save on-load performance hit.
+- Change default path from `icons` to `icon-picker` to avoid some server setup conflicts.
 
 ### Removed
-- Remove Icon Sources and the concept of Remote Icons Sets. These are all now Icon Sets.
-- Remove `maxIconsShown` plugin setting, as no longer required.
-- Remove `craft.iconPicker.getIcon()`.
-- Remove `craft.iconPicker.getDimensions()`.
-- Remove `craft.iconPicker.inline()`.
-- Remove `Icon::icon`. Use `Icon::value` instead.
-- Remove `Icon::sprite`. Use `Icon::value` instead.
-- Remove `Icon::css`. Use `Icon::value` instead.
-- Remove `Icon::glyphId`. Use `Icon::getGlyph()` instead.
-- Remove `Icon::glyphName`. Use `Icon::getGlyphName()` instead.
-- Remove `Icon::getIconName()`. Use `Icon::label` instead.
-- Remove `Icon::width` and `Icon::height`.
+- Removed Icon Sources and the concept of Remote Icons Sets. These are all now Icon Sets.
+- Removed `maxIconsShown` plugin setting, as no longer required.
+- Removed `craft.iconPicker.getIcon()`.
+- Removed `craft.iconPicker.getDimensions()`.
+- Removed `craft.iconPicker.inline()`.
+- Removed `Icon::icon`. Use `Icon::value` instead.
+- Removed `Icon::sprite`. Use `Icon::value` instead.
+- Removed `Icon::css`. Use `Icon::value` instead.
+- Removed `Icon::glyphId`. Use `Icon::getGlyph()` instead.
+- Removed `Icon::glyphName`. Use `Icon::getGlyphName()` instead.
+- Removed `Icon::getIconName()`. Use `Icon::label` instead.
+- Removed `Icon::width` and `Icon::height`.
 
 ## 2.0.0-beta.5 - 2022-06-15
 
