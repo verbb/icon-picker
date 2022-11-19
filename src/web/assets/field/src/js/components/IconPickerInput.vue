@@ -7,7 +7,7 @@
                     <Icon v-else :item="selected" :css-attribute="cssAttribute" />
                 </div>
 
-                <span class="ipui-icon-input-label">{{ selected.label }}</span>
+                <span class="ipui-icon-input-label">{{ getLabel(selected.label) }}</span>
             </div>
 
             <!-- Require wrapper for accessibility -->
@@ -46,7 +46,7 @@
                     v-slot="{ item }"
                     class="scroller"
                     :items="iconsFiltered"
-                    :item-size="itemWrapperSize"
+                    :item-size="scrollerItemSize"
                     :grid-items="gridItems"
                 >
                     <div class="ipui-icon-wrap" :title="item.label" @click.prevent="select(item)">
@@ -54,7 +54,7 @@
                             <Icon :item="item" :css-attribute="cssAttribute" />
                         </div>
 
-                        <span class="ipui-icon-label">{{ item.label }}</span>
+                        <span class="ipui-icon-label">{{ getLabel(item.label) }}</span>
                     </div>
                 </RecycleScroller>
             </div>
@@ -68,7 +68,7 @@
 
 <script>
 import {
-    isEmpty, camelCase, startCase, get,
+    isEmpty, camelCase, startCase, get, toLower,
 } from 'lodash-es';
 
 import tippy from 'tippy.js';
@@ -139,6 +139,10 @@ export default {
             return this.icons.filter((icon) => {
                 return icon.keywords.toLowerCase().includes(this.search.toLowerCase());
             });
+        },
+
+        scrollerItemSize() {
+            return this.settings.settings.showLabels ? this.itemWrapperSizeLarge : this.itemWrapperSize;
         },
 
         cssVariables() {
@@ -248,6 +252,10 @@ export default {
             return get(data, value);
         },
 
+        getLabel(string) {
+            return startCase(toLower(string));
+        },
+
         fetchIcons(instance = null, preload = false) {
             this.isFetching = true;
 
@@ -288,7 +296,7 @@ export default {
                 if (this.$refs.scroller && this.$refs.scroller.$el) {
                     const { clientWidth } = this.$refs.scroller.$el;
 
-                    this.gridItems = Math.floor(clientWidth / this.itemWrapperSize);
+                    this.gridItems = Math.floor(clientWidth / this.scrollerItemSize);
                 }
             });
         },
