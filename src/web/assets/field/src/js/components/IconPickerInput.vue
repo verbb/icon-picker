@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :style="cssVariables">
         <div class="ipui-icon-input" :class="{ 'tippy-visible': tippyVisible }">
             <div v-if="get(selected, 'value') && !tippyVisible" class="ipui-icon-input-item">
                 <div class="ipui-icon-input-svg">
@@ -46,7 +46,7 @@
                     v-slot="{ item }"
                     class="scroller"
                     :items="iconsFiltered"
-                    :item-size="itemSize"
+                    :item-size="itemWrapperSize"
                     :grid-items="gridItems"
                 >
                     <div class="ipui-icon-wrap" :title="item.label" @click.prevent="select(item)">
@@ -118,7 +118,10 @@ export default {
             isPreloadFetching: false,
             cssAttribute: 'class',
             tippyVisible: false,
-            itemSize: 56,
+            itemWrapperSize: 56,
+            itemWrapperSizeLarge: 72,
+            itemSize: 32,
+            itemSizeLarge: 40,
             gridItems: 19,
         };
     },
@@ -137,6 +140,15 @@ export default {
                 return icon.keywords.toLowerCase().includes(this.search.toLowerCase());
             });
         },
+
+        cssVariables() {
+            return {
+                '--icon-item-wrapper-size': `${this.itemWrapperSize}px`,
+                '--icon-item-wrapper-size-large': `${this.itemWrapperSizeLarge}px`,
+                '--icon-item-size': `${this.itemSize}px`,
+                '--icon-item-size-large': `${this.itemSizeLarge}px`,
+            };
+        },
     },
 
     created() {
@@ -144,7 +156,10 @@ export default {
             this.selected = JSON.parse(this.value);
         }
 
-        this.itemSize = this.settings.settings.showLabels ? 72 : 56;
+        this.itemSize = this.settings.itemSize;
+        this.itemSizeLarge = this.settings.itemSizeLarge;
+        this.itemWrapperSize = this.settings.itemWrapperSize;
+        this.itemWrapperSizeLarge = this.settings.itemWrapperSizeLarge;
 
         // Check if we should fetch resources immediately (when a non-SVG icon is the field value)
         if (this.settings.loadResources) {
@@ -273,7 +288,7 @@ export default {
                 if (this.$refs.scroller && this.$refs.scroller.$el) {
                     const { clientWidth } = this.$refs.scroller.$el;
 
-                    this.gridItems = Math.floor(clientWidth / this.itemSize);
+                    this.gridItems = Math.floor(clientWidth / this.itemWrapperSize);
                 }
             });
         },
@@ -548,8 +563,8 @@ export default {
 }
 
 .ipui-icon-wrap {
-    width: 56px;
-    height: 56px;
+    width: var(--icon-item-wrapper-size);
+    height: var(--icon-item-wrapper-size);
     color: #3f4d5a;
     cursor: pointer;
     overflow: hidden;
@@ -563,8 +578,8 @@ export default {
 
     .show-labels & {
         display: inline-block;
-        width: 72px;
-        height: 72px;
+        width: var(--icon-item-wrapper-size-large);
+        height: var(--icon-item-wrapper-size-large);
     }
 }
 
@@ -578,10 +593,10 @@ export default {
 }
 
 .ipui-icon-svg {
-    width: 32px;
-    height: 32px;
-    font-size: 32px;
-    line-height: 32px;
+    width: var(--icon-item-size);
+    height: var(--icon-item-size);
+    font-size: var(--icon-item-size);
+    line-height: var(--icon-item-size);
     margin: auto;
     text-align: center;
 
@@ -597,8 +612,8 @@ export default {
 
     .show-labels & {
         margin: 5px auto;
-        width: 40px;
-        height: 36px;
+        width: var(--icon-item-size-large);
+        height: var(--icon-item-size-large);
     }
 }
 

@@ -82,6 +82,10 @@ class IconPickerField extends Field
             'loadResources' => $loadResources,
             'settings' => $this->settings,
             'fieldId' => $this->id,
+            'itemSize' => $pluginSettings->iconItemSize,
+            'itemSizeLarge' => $pluginSettings->iconItemSizeLarge,
+            'itemWrapperSize' => $pluginSettings->iconItemWrapperSize,
+            'itemWrapperSizeLarge' => $pluginSettings->iconItemWrapperSizeLarge,
         ]) . ');';
 
         // Wait for IconPicker JS to be loaded, either through an event listener, or by a flag.
