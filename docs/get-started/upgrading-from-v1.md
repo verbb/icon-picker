@@ -21,6 +21,15 @@ You'll still be able to register your own sources of icons as an Icon Set.
 Read further about [Icon Sets](docs:developers/icon-sets).
 
 
+## Settings
+The following plugin setting default value have changed.
+
+Setting | Old | New
+--- | --- | ---
+| `iconSetsPath` | | `@webroot/icons/` | `@webroot/icon-picker/`
+| `iconSetsUrl` | | `@web/icons/` | `@web/icon-picker/`
+
+
 ## Renamed Classes
 The following classes have been renamed.
 
