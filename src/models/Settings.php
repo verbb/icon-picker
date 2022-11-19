@@ -12,8 +12,8 @@ class Settings extends Model
     // =========================================================================
 
     public bool $enableCache = true;
-    public string $iconSetsPath = '@webroot/icons/';
-    public string $iconSetsUrl = '@web/icons/';
+    public string $iconSetsPath = '@webroot/icon-picker/';
+    public string $iconSetsUrl = '@web/icon-picker/';
     public string $redactorFieldHandle = '';
     public array $iconSources = [];
 
