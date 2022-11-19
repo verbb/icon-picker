@@ -1,10 +1,10 @@
 <template>
     <div>
         <div class="ipui-icon-input" :class="{ 'tippy-visible': tippyVisible }">
-            <div v-if="selected && !tippyVisible" class="ipui-icon-input-item">
+            <div v-if="get(selected, 'value') && !tippyVisible" class="ipui-icon-input-item">
                 <div class="ipui-icon-input-svg">
                     <span v-if="isPreloadFetching" class="ipui-loading"></span>
-                    <Icon v-else :item="selected" />
+                    <Icon v-else :item="selected" :css-attribute="cssAttribute" />
                 </div>
 
                 <span class="ipui-icon-input-label">{{ selected.label }}</span>
@@ -51,7 +51,7 @@
                 >
                     <div class="ipui-icon-wrap" :title="item.label" @click.prevent="select(item)">
                         <div class="ipui-icon-svg">
-                            <Icon :item="item" />
+                            <Icon :item="item" :css-attribute="cssAttribute" />
                         </div>
 
                         <span class="ipui-icon-label">{{ item.label }}</span>
@@ -116,6 +116,7 @@ export default {
             selected: null,
             isFetching: false,
             isPreloadFetching: false,
+            cssAttribute: 'class',
             tippyVisible: false,
             itemSize: 56,
             gridItems: 19,
@@ -244,6 +245,8 @@ export default {
 
             Craft.sendActionRequest('POST', endpoint, { data })
                 .then((response) => {
+                    this.cssAttribute = response.data.cssAttribute;
+
                     if (response.data.icons) {
                         this.icons = response.data.icons;
                     }
@@ -371,9 +374,17 @@ export default {
                 if (!document.getElementById(script.name)) {
                     const $script = document.createElement('script');
                     $script.id = script.name;
-                    $script.src = script.url;
-                    $script.async = true;
-                    $script.defer = true;
+
+                    if (script.type == 'remote') {
+                        $script.src = script.url;
+                        $script.async = true;
+                        $script.defer = true;
+                        $script.onload = eval(script.onload);
+                    }
+
+                    if (script.type == 'local') {
+                        $script.innerHTML = script.content;
+                    }
 
                     document.body.appendChild($script);
                 }
@@ -457,7 +468,10 @@ export default {
         width: 100%;
         height: 100%;
         display: block;
-        fill: currentColor;
+
+        &:not([stroke]) {
+            fill: currentColor;
+        }
     }
 
     .ipui-loading {
@@ -575,7 +589,10 @@ export default {
         width: 100%;
         height: 100%;
         display: block;
-        fill: currentColor;
+
+        &:not([stroke]) {
+            fill: currentColor;
+        }
     }
 
     .show-labels & {

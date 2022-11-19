@@ -90,6 +90,7 @@ class FontAwesome extends IconSet
                 }
 
                 $this->scripts[] = [
+                    'type' => 'remote',
                     'url' => "https://kit.fontawesome.com/{$kitToken}.js",
                 ];
             }

@@ -64,6 +64,7 @@ class IconSets extends Component
             registerediconsets\WebFont::class,
             registerediconsets\FontAwesome::class,
             registerediconsets\Ionicons::class,
+            registerediconsets\Feather::class,
         ];
 
         $event = new RegisterIconSetsEvent([

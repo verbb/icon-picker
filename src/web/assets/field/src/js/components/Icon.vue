@@ -8,11 +8,11 @@
     </template>
 
     <template v-if="item.type === 'glyph'">
-        <span :class="['icon-picker-font', 'font-face-' + item.iconSet]" v-html="item.displayValue"></span>
+        <span :class="['ipui-font', 'font-face-' + item.iconSet]" v-html="item.displayValue"></span>
     </template>
 
     <template v-if="item.type === 'css'">
-        <span :class="item.displayValue"></span>
+        <span :[cssAttribute]="item.displayValue"></span>
     </template>
 </template>
 
@@ -28,6 +28,11 @@ export default {
         index: {
             type: Number,
             default: 0,
+        },
+
+        cssAttribute: {
+            type: String,
+            default: 'class',
         },
     },
 };

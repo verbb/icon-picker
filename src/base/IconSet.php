@@ -22,6 +22,7 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
     public ?int $sortOrder = null;
     public ?string $uid = null;
 
+    public string $cssAttribute = 'class';
     public array $icons = [];
     public array $fonts = [];
     public array $spriteSheets = [];
@@ -41,6 +42,7 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
             'fonts' => $this->fonts,
             'spriteSheets' => $this->spriteSheets,
             'scripts' => $this->scripts,
+            'cssAttribute' => $this->cssAttribute,
         ]);
     }
 

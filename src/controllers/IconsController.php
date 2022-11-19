@@ -64,6 +64,7 @@ class IconsController extends Controller
             $json['fonts'] = array_merge($json['fonts'], $iconSet->fonts);
             $json['spriteSheets'] = array_merge($json['spriteSheets'], $iconSet->getSpriteSheets());
             $json['scripts'] = array_merge($json['scripts'], $iconSet->scripts);
+            $json['cssAttribute'] = $iconSet->cssAttribute;
         }
 
         return $this->asJson($json);
