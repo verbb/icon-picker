@@ -88,10 +88,15 @@ class SvgFolder extends IconSet
 
         foreach ($files as $key => $file) {
             $item = str_replace($iconSetsPath, '', $file);
+            $name = pathinfo($item, PATHINFO_FILENAME);
+
+            // Find any metadata alongside the icons
+            $keywords = $this->getMetadata($folderPath . DIRECTORY_SEPARATOR . 'metadata.json', $name);
 
             $this->icons[] = new Icon([
                 'type' => Icon::TYPE_SVG,
                 'value' => $item,
+                'keywords' => $keywords,
             ]);
         }
     }

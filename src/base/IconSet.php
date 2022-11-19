@@ -124,6 +124,23 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
         return;
     }
 
+    public function getMetadata(string $path, string $key): ?string
+    {
+        // Get or set the metadata from the cache
+        $metadata = $this->_fetchMetadata($path);
+        $itemMetadata = $metadata[$key] ?? [];
+
+        if ($itemMetadata) {
+            if (!is_array($itemMetadata)) {
+                $itemMetadata = [$itemMetadata];
+            }
+
+            return implode(' ', $itemMetadata);
+        }
+
+        return null;
+    }
+
     public function getSpriteSheets(): array
     {
         $spriteSheets = [];
@@ -165,5 +182,26 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
         }
 
         return $data;
+    }
+
+    private function _fetchMetadata(string $path): ?array
+    {
+        $cacheKey = 'icon-picker-metadata: ' . md5($path);
+
+        return Craft::$app->getCache()->getOrSet($cacheKey, function() use ($path) {
+            $filename = basename($path);
+            $folderPath = str_replace($filename, '', $path);
+
+            $metadataFiles = IconPickerHelper::getFiles($folderPath, [
+                'only' => [$filename],
+                'recursive' => false,
+            ]);
+
+            $metadataFile = $metadataFiles[0] ?? null;
+
+            if ($metadataFile) {
+                return Json::decode(file_get_contents($metadataFile));
+            }
+        });
     }
 }

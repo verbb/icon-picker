@@ -83,14 +83,20 @@ class WebFont extends IconSet
             'recursive' => false,
         ]);
 
+        $metadataPath = $iconSetsPath . DIRECTORY_SEPARATOR . $fontFilename . '-metadata.json';
+
         foreach ($fonts as $key => $file) {
             $glyphs = $this->_fetchFontGlyphs($file);
 
             foreach ($glyphs as $i => $glyph) {
+                // Find any metadata alongside the icons
+                $keywords = $this->getMetadata($metadataPath, $glyph['name']);
+
                 $this->icons[] = new Icon([
                     'type' => Icon::TYPE_GLYPH,
                     'iconSet' => $fontFilename,
                     'value' => $glyph['name'] . ':' . $glyph['glyphId'],
+                    'keywords' => $keywords,
                 ]);
             }
 

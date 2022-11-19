@@ -84,14 +84,21 @@ class SvgSprite extends IconSet
             'recursive' => false,
         ]);
 
+        $fullPath = $iconSetsPath . DIRECTORY_SEPARATOR . $this->spriteFile;
+        $metadataPath = str_replace('.svg', '-metadata.json', $fullPath);
+
         foreach ($spriteSheets as $spriteSheet) {
             $files = $this->_fetchSvgsFromSprites($spriteSheet);
 
             foreach ($files as $i => $file) {
+                // Find any metadata alongside the icons
+                $keywords = $this->getMetadata($metadataPath, $file['@id']);
+
                 $this->icons[] = new Icon([
                     'type' => Icon::TYPE_SPRITE,
                     'iconSet' => $iconSetName,
                     'value' => $file['@id'],
+                    'keywords' => $keywords,
                 ]);
             }
 
