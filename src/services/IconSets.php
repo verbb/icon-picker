@@ -66,6 +66,7 @@ class IconSets extends Component
             registerediconsets\Ionicons::class,
             registerediconsets\Feather::class,
             registerediconsets\CssGg::class,
+            registerediconsets\MaterialSymbols::class,
         ];
 
         $event = new RegisterIconSetsEvent([
