@@ -3,6 +3,15 @@ An Icon Set is the concept of a collection of icons. You can create and manage t
 
 There are a few different types of Icon Sets you can create:
 
+- SVG Folders
+- SVG Sprites
+- Web Fonts
+- [Font Awesome 5/6](https://fontawesome.com/
+- [Feather Icons](https://feathericons.com/)
+- [Ionicons](https://ionic.io/ionicons)
+- [CSS.gg](https://css.gg/)
+- [Material Symbols](https://fonts.google.com/icons)
+
 ## SVG Folders
 Creating a **SVG Folder** Icon Set allows you to pick from a sub-folder (or the root folder) where a collection of `.svg` files sit. This is relative to your **Icons Path** plugin setting. Icon Picker will scan all `.svg` files in that folder, to be a pickable icon.
 
@@ -53,3 +62,33 @@ So, for example, you may only wish for your users to be able to pick from **Soli
 
 Using **Font Awesome 5 Pro** is supported, but will require a Font Awesome subscription, and your domain name added to the allowed domains in your Font Awesome account. **Font Awesome 6 Pro** is not supported on the CDN by any method.
 
+## Metadata
+Sometimes, your icon pack of choice - be it collection of SVGs or a Web Font - might come with additional metadata used for descriptions of the icons. For example, a `heart` icon could likely fit under multiple keywords like `love`, `blood`, `medical`, etc. Unfortunately, it's difficult to embed this extra information in the filename of a SVG, SVG Spritesheet, or Web Font - which is where metadata comes in. Depending on your icons of choice, some might be available already, or you can create your own.
+
+Simply put, metadata is a JSON file that's a key-value of the name of your icon and keyword.
+
+```json
+{
+    "heart": ["love", "blood", "medical"]
+}
+
+// or
+
+{
+    "heart": "love blood medical"
+}
+```
+
+Here, you define the keywords (either as a space-delimited string, or an array) with a reference to the individual icon. Icon Picker will pick up this metadata file, and pull in any keywords from it to be used when searching for an icon.
+
+### Metadata Usage
+Depending on what sort of icon set you're using will depend where you place, and what you name your metadata file. In all instances however, you must include the `-metadata.json` suffix.
+
+#### Metadata with SVG Folders
+You should place the `metadata.json` file alongside your icons. This would either be in the root of your icons folder, or in the folder of your icons. They should be alongside your SVGs.
+
+#### Metadata with SVG Sprites
+You should place the `-metadata.json` file alongside your SVG Sprites. This would be in the root of your icons folder. You must name the metadata file the same as your sprites file. For example, `ui-icons-sprites.svg` and `ui-icons-sprites-metadata.json`.
+
+#### Metadata with Web Fonts
+You should place the `-metadata.json` file alongside your Web Font. This would be in the root of your icons folder. You must name the metadata file the same as your web font file. For example, `icomoon.ttf` and `icomoon-metadata.json`.
