@@ -18,6 +18,9 @@
 - Add `metadata.json` file support for icon sets, to provide extra keywords for searching.
 
 ### Changed
+- Now requires PHP `^8.0.2`.
+- Now requires Craft `^4.0.0-beta.1`.
+- Now requires Icon Picker `1.1.12` in order to update from Craft 3.
 - Migrate to Vue 3-based field input for more control and better client-side performance.
 - Reorganise `Icon` and `IconSet` models, and improve server-side performance.
 - Icon Picker will no longer automatically scan the nominated "Icons Path" for folders, sprites and fonts. Create an Icon Set instead.
@@ -39,42 +42,6 @@
 - Removed `Icon::glyphName`. Use `Icon::getGlyphName()` instead.
 - Removed `Icon::getIconName()`. Use `Icon::label` instead.
 - Removed `Icon::width` and `Icon::height`.
-
-## 2.0.0-beta.5 - 2022-06-15
-
-### Fixed
-- Fix an error when editing a field.
-
-## 2.0.0-beta.4 - 2022-06-15
-
-### Fixed
-- Fix field settings not saving.
-
-## 2.0.0-beta.3 - 2022-06-15
-
-### Added
-- Add checks for registering events for performance.
-
-### Changed
-- Rename model classes.
-- Rename base plugin methods.
-
-### Fixed
-- Fix empty field checks.
-
-## 2.0.0-beta.2 - 2022-03-24
-
-### Changed
-- Now requires Icon Picker `1.1.12` in order to update from Craft 3.
-
-### Fixed
-- Fix typing for `placeholderAvatar` plugin setting.
-
-## 2.0.0-beta.1 - 2022-03-10
-
-### Changed
-- Now requires PHP `^8.0.2`.
-- Now requires Craft `^4.0.0-beta.1`.
 
 ## 1.1.13 - 2022-06-08
 
