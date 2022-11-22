@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0 - Unreleased
+## 2.0.0 - 2022-11-23
 
 ### Added
 - Added the concept of Icon Sets to better organise collections of icons. This allows for greater flexibility, consistency and control for icons.
