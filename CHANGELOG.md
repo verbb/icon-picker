@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.1 - 2022-11-24
+
+### Fixed
+- Fix some migration issues from 1.x.
+
 ## 2.0.0 - 2022-11-23
 
 ### Added
