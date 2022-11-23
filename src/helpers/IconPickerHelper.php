@@ -20,7 +20,7 @@ class IconPickerHelper
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->getIconSetsPath();
 
-        if (!is_dir($iconSetsPath)) {
+        if (!is_dir($iconSetsPath) || !is_dir($path)) {
             return [];
         }
 

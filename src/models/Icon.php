@@ -201,7 +201,8 @@ class Icon extends Model implements \JsonSerializable, \Countable
     public function getGlyph($format = 'charHex'): ?string
     {
         if ($this->type === self::TYPE_GLYPH) {
-            [$glyphName, $glyphId] = explode(':', $this->value);
+            $glyphName = (explode(':', $this->value)[0]) ?? null;
+            $glyphId = (explode(':', $this->value)[1]) ?? null;
 
             if ($format === 'decimal') {
                 return $glyphId;
@@ -224,9 +225,7 @@ class Icon extends Model implements \JsonSerializable, \Countable
     public function getGlyphName(): ?string
     {
         if ($this->type === self::TYPE_GLYPH) {
-            [$glyphName, $glyphId] = explode(':', $this->value);
-
-            return $glyphName;
+            return (explode(':', $this->value)[0]) ?? null;
         }
 
         return null;

@@ -66,6 +66,9 @@ class m221116_000000_migrate_iconsets extends Migration
             $this->update('{{%fields}}', ['settings' => Json::encode($settings)], ['id' => $fieldData['id']]);
         }
 
+        // Re-generate all the caches
+        IconPicker::$plugin->getService()->clearAndRegenerateCache();
+
         return true;
     }
 
