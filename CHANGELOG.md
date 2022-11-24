@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.3 - 2022-11-24
+
+### Fixed
+- Fix a migration error when migration icon sets for already-applied project config.
+
 ## 2.0.2 - 2022-11-24
 
 ### Fixed
