@@ -86,8 +86,6 @@ class IconSetsController extends Controller
         $baseUrl = 'icon-picker/settings/icon-sets';
         $continueEditingUrl = 'icon-picker/settings/icon-sets/edit/{id}';
 
-        // Plugin::registerAsset('src/js/formie-iconSet-settings.js');
-
         return $this->renderTemplate('icon-picker/settings/icon-sets/_edit', [
             'iconSet' => $iconSet,
             'isNewIconSet' => $isNewIconSet,
@@ -181,7 +179,7 @@ class IconSetsController extends Controller
             ]);
         }
 
-        $this->setSuccessFlash(Craft::t('formie', 'Icon set deleted.'));
+        $this->setSuccessFlash(Craft::t('icon-picker', 'Icon set deleted.'));
 
         return $this->redirectToPostedUrl();
     }

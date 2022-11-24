@@ -28,7 +28,7 @@ class ProjectConfigHelper
     {
         $data = [];
 
-        $iconSetsService = Formie::$plugin->geticonSets();
+        $iconSetsService = IconPicker::$plugin->geticonSets();
 
         foreach ($iconSetsService->getAllIconSets() as $iconSet) {
             $data[$iconSet->uid] = $iconSetsService->createIconSetConfig($iconSet);
