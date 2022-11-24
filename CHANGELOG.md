@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.4 - 2022-11-25
+
+### Fixed
+- Fix a potential migration error where icon models haven't been migrated properly.
+
 ## 2.0.3 - 2022-11-24
 
 ### Fixed
