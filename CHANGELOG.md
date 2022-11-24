@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.2 - 2022-11-24
+
+### Fixed
+- Fix an error with incorrect Formie references included.
+
 ## 2.0.1 - 2022-11-24
 
 ### Fixed
