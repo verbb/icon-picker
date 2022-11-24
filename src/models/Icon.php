@@ -39,6 +39,20 @@ class Icon extends Model implements \JsonSerializable, \Countable
     // Public Methods
     // =========================================================================
 
+    public function __construct(array $config = [])
+    {
+        // Config normalization
+        $attributes = ['icon', 'glyphId', 'glyphName', 'css', 'sprite'];
+
+        foreach ($attributes as $attribute) {
+            if (array_key_exists($attribute, $config)) {
+                unset($config[$attribute]);
+            }
+        }
+
+        parent::__construct($config);
+    }
+
     public function __toString(): string
     {
         if ($this->type === self::TYPE_GLYPH) {
