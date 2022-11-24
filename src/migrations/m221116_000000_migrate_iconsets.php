@@ -21,6 +21,16 @@ class m221116_000000_migrate_iconsets extends Migration
      */
     public function safeUp(): bool
     {
+        // Don't make the same config changes twice
+        $projectConfig = Craft::$app->getProjectConfig();
+        $schemaVersion = $projectConfig->get('plugins.icon-picker.schemaVersion', true);
+
+        if (version_compare($schemaVersion, '1.2.1', '>=')) {
+            IconPicker::$plugin->getService()->clearAndRegenerateCache();
+
+            return true;
+        }
+
         $fields = (new Query())
             ->from('{{%fields}}')
             ->where(['type' => IconPickerField::class])
