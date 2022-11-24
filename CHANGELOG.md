@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.5 - 2022-11-25
+
+### Fixed
+- Fix an error when migrating Matrix-based icons.
+
 ## 2.0.4 - 2022-11-25
 
 ### Fixed

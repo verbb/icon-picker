@@ -55,8 +55,6 @@ class m221111_000000_modernize_model extends Migration
                     // Get the Matrix field, and the content table
                     $blockTypeUid = explode(':', $field->context)[1];
 
-                    Craft::dd('matrixBlockType' . $blockTypeUid);
-
                     $matrixInfo = (new Query())
                         ->select(['fieldId', 'handle'])
                         ->from('{{%matrixblocktypes}}')
