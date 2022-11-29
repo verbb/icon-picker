@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.6 - 2022-11-30
+
+### Fixed
+- Fix some icon sets not migrating from previous plugin versions correctly.
+
 ## 2.0.5 - 2022-11-25
 
 ### Fixed
