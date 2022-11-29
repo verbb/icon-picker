@@ -24,12 +24,12 @@ use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
 
 use yii\base\Component;
+use yii\base\InvalidConfigException;
 use yii\base\UnknownPropertyException;
 use yii\db\ActiveRecord;
+use yii\db\Exception;
 
 use Throwable;
-use yii\base\InvalidConfigException;
-use yii\db\Exception;
 
 class IconSets extends Component
 {

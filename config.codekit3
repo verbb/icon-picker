@@ -9,6 +9,17 @@
   ],
   "creatorBuild" : "34365",
   "files" : {
+    "\/.eslintrc.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/js\/.eslintrc.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/.github" : {
       "ft" : 65536,
       "oA" : 1,
@@ -77,7 +88,7 @@
       "rFN" : 0,
       "uCM" : 0
     },
-    "\/docs\/developers\/icon-sources.md" : {
+    "\/docs\/developers\/icon-sets.md" : {
       "cB" : 0,
       "cS" : 0,
       "eF" : 1,
@@ -87,7 +98,7 @@
       "ft" : 4096,
       "hM" : 0,
       "oA" : 1,
-      "oAP" : "\/docs\/developers\/icon-sources.html",
+      "oAP" : "\/docs\/developers\/icon-sets.html",
       "oF" : 0,
       "oFM" : 0,
       "oS" : 0,
@@ -134,7 +145,7 @@
       "rFN" : 0,
       "uCM" : 0
     },
-    "\/docs\/feature-tour\/icon-fonts.md" : {
+    "\/docs\/feature-tour\/icon-sets.md" : {
       "cB" : 0,
       "cS" : 0,
       "eF" : 1,
@@ -144,7 +155,7 @@
       "ft" : 4096,
       "hM" : 0,
       "oA" : 1,
-      "oAP" : "\/docs\/feature-tour\/icon-fonts.html",
+      "oAP" : "\/docs\/feature-tour\/icon-sets.html",
       "oF" : 0,
       "oFM" : 0,
       "oS" : 0,
@@ -164,44 +175,6 @@
       "hM" : 0,
       "oA" : 1,
       "oAP" : "\/docs\/feature-tour\/redactor.html",
-      "oF" : 0,
-      "oFM" : 0,
-      "oS" : 0,
-      "pHT" : 0,
-      "pME" : 1,
-      "rFN" : 0,
-      "uCM" : 0
-    },
-    "\/docs\/feature-tour\/svg-icons.md" : {
-      "cB" : 0,
-      "cS" : 0,
-      "eF" : 1,
-      "eL" : 1,
-      "ema" : 1,
-      "eSQ" : 1,
-      "ft" : 4096,
-      "hM" : 0,
-      "oA" : 1,
-      "oAP" : "\/docs\/feature-tour\/svg-icons.html",
-      "oF" : 0,
-      "oFM" : 0,
-      "oS" : 0,
-      "pHT" : 0,
-      "pME" : 1,
-      "rFN" : 0,
-      "uCM" : 0
-    },
-    "\/docs\/feature-tour\/svg-sprites.md" : {
-      "cB" : 0,
-      "cS" : 0,
-      "eF" : 1,
-      "eL" : 1,
-      "ema" : 1,
-      "eSQ" : 1,
-      "ft" : 4096,
-      "hM" : 0,
-      "oA" : 1,
-      "oAP" : "\/docs\/feature-tour\/svg-sprites.html",
       "oF" : 0,
       "oFM" : 0,
       "oS" : 0,
@@ -375,6 +348,22 @@
       "rFN" : 0,
       "uCM" : 0
     },
+    "\/package-lock.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/package-lock-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/package.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/package-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
     "\/README.md" : {
       "cB" : 0,
       "cS" : 0,
@@ -412,12 +401,20 @@
       "oAP" : "\/src\/controllers",
       "oF" : 0
     },
-    "\/src\/events\/RegisterIconSourceEvent.php" : {
+    "\/src\/events\/IconSetEvent.php" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 2,
-      "oAP" : "\/src\/events\/RegisterIconSourceEvent.php",
+      "oAP" : "\/src\/events\/IconSetEvent.php",
+      "oF" : 0
+    },
+    "\/src\/events\/RegisterIconSetsEvent.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/events\/RegisterIconSetsEvent.php",
       "oF" : 0
     },
     "\/src\/fields" : {
@@ -460,10 +457,242 @@
       "oAP" : "\/src\/IconPicker.php",
       "oF" : 0
     },
-    "\/src\/json\/font-awesome.json" : {
+    "\/src\/iconsets\/CssGg.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/iconsets\/CssGg.php",
+      "oF" : 0
+    },
+    "\/src\/iconsets\/Feather.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/iconsets\/Feather.php",
+      "oF" : 0
+    },
+    "\/src\/iconsets\/FontAwesome.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/iconsets\/FontAwesome.php",
+      "oF" : 0
+    },
+    "\/src\/iconsets\/Ionicons.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/iconsets\/Ionicons.php",
+      "oF" : 0
+    },
+    "\/src\/iconsets\/MaterialSymbols.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/iconsets\/MaterialSymbols.php",
+      "oF" : 0
+    },
+    "\/src\/iconsets\/SvgFolder.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/iconsets\/SvgFolder.php",
+      "oF" : 0
+    },
+    "\/src\/iconsets\/SvgSprite.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/iconsets\/SvgSprite.php",
+      "oF" : 0
+    },
+    "\/src\/iconsets\/WebFont.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/iconsets\/WebFont.php",
+      "oF" : 0
+    },
+    "\/src\/integrations\/feedme\/fields\/IconPicker.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/integrations\/feedme\/fields\/IconPicker.php",
+      "oF" : 0
+    },
+    "\/src\/json\/css-gg.json" : {
       "ft" : 524288,
       "oA" : 1,
-      "oAP" : "\/src\/json\/font-awesome-min.json",
+      "oAP" : "\/src\/json\/css-gg-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/feather.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/feather-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/font-awesome-5.15.4-free-all.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/font-awesome-5.15.4-free-all-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/font-awesome-5.15.4-free-brands.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/font-awesome-5.15.4-free-brands-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/font-awesome-5.15.4-free-regular.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/font-awesome-5.15.4-free-regular-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/font-awesome-5.15.4-free-solid.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/font-awesome-5.15.4-free-solid-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/font-awesome-5.15.4-pro-all.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/font-awesome-5.15.4-pro-all-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/font-awesome-5.15.4-pro-brands.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/font-awesome-5.15.4-pro-brands-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/font-awesome-5.15.4-pro-duotone.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/font-awesome-5.15.4-pro-duotone-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/font-awesome-5.15.4-pro-light.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/font-awesome-5.15.4-pro-light-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/font-awesome-5.15.4-pro-regular.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/font-awesome-5.15.4-pro-regular-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/font-awesome-5.15.4-pro-solid.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/font-awesome-5.15.4-pro-solid-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/font-awesome-6.2.0-free-all.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/font-awesome-6.2.0-free-all-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/font-awesome-6.2.0-free-brands.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/font-awesome-6.2.0-free-brands-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/font-awesome-6.2.0-free-regular.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/font-awesome-6.2.0-free-regular-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/font-awesome-6.2.0-free-solid.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/font-awesome-6.2.0-free-solid-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/ionicons-all.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/ionicons-all-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/ionicons-filled.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/ionicons-filled-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/ionicons-outline.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/ionicons-outline-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/ionicons-sharp.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/ionicons-sharp-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/json\/material-symbols.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/json\/material-symbols-min.json",
       "oF" : 0,
       "oO" : 0,
       "oS" : 1
@@ -496,84 +725,17 @@
       "oAP" : "\/src\/queue\/jobs\/GenerateIconSetCache.php",
       "oF" : 0
     },
+    "\/src\/records" : {
+      "ft" : 65536,
+      "oA" : 1,
+      "oAP" : "\/src\/records",
+      "oF" : 0
+    },
     "\/src\/resources\/dist" : {
       "ft" : 65536,
       "oA" : 1,
       "oAP" : "\/src\/resources\/dist",
       "oF" : 0
-    },
-    "\/src\/resources\/src\/css\/icon-picker-redactor.scss" : {
-      "aP" : 1,
-      "bl" : 0,
-      "co" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 4,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/src\/resources\/dist\/css\/icon-picker-redactor.css",
-      "oF" : 0,
-      "oS" : 3,
-      "pg" : 0,
-      "sct" : 1
-    },
-    "\/src\/resources\/src\/css\/icon-picker.scss" : {
-      "aP" : 1,
-      "bl" : 0,
-      "co" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 4,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/src\/resources\/dist\/css\/icon-picker.css",
-      "oF" : 0,
-      "oS" : 3,
-      "pg" : 0,
-      "sct" : 1
-    },
-    "\/src\/resources\/src\/js\/icon-picker-cache.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 1,
-      "mi" : 1,
-      "oA" : 0,
-      "oAP" : "\/src\/resources\/dist\/js\/icon-picker-cache.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/resources\/src\/js\/icon-picker-redactor.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 1,
-      "mi" : 1,
-      "oA" : 0,
-      "oAP" : "\/src\/resources\/dist\/js\/icon-picker-redactor.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/resources\/src\/js\/icon-picker.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 1,
-      "mi" : 1,
-      "oA" : 0,
-      "oAP" : "\/src\/resources\/dist\/js\/icon-picker.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/resources\/src\/svg\/icon-blank.svg" : {
-      "ft" : 2097152,
-      "miP" : 0,
-      "oA" : 2,
-      "oAP" : "\/src\/resources\/src\/svg\/icon-blank.svg",
-      "oF" : 0,
-      "opt" : 0,
-      "plM" : 3758088159,
-      "prP" : 0
     },
     "\/src\/services" : {
       "ft" : 65536,
@@ -608,6 +770,185 @@
       "oA" : 1,
       "oAP" : "\/src\/variables",
       "oF" : 0
+    },
+    "\/src\/web\/assets\/field\/dist\/assets\/icon-picker.731df519.css" : {
+      "aP" : 1,
+      "bl" : 0,
+      "ci" : 0,
+      "co" : 0,
+      "ft" : 16,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/src\/web\/assets\/field\/dist\/assets\/icon-picker.731df519-min.css",
+      "oF" : 0,
+      "pg" : 0
+    },
+    "\/src\/web\/assets\/field\/dist\/assets\/icon-picker.731df519.css.gz" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/web\/assets\/field\/dist\/assets\/icon-picker.731df519.css.gz",
+      "oF" : 0
+    },
+    "\/src\/web\/assets\/field\/dist\/assets\/icon-picker.59743fb6.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 1,
+      "oA" : 0,
+      "oAP" : "\/src\/web\/assets\/field\/dist\/js\/icon-picker.59743fb6.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/web\/assets\/field\/dist\/assets\/icon-picker.59743fb6.js.gz" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/web\/assets\/field\/dist\/assets\/icon-picker.59743fb6.js.gz",
+      "oF" : 0
+    },
+    "\/src\/web\/assets\/field\/dist\/assets\/icon-picker.59743fb6.js.map" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/web\/assets\/field\/dist\/assets\/icon-picker.59743fb6.js.map",
+      "oF" : 0
+    },
+    "\/src\/web\/assets\/field\/dist\/assets\/icon-picker.59743fb6.js.map.gz" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/web\/assets\/field\/dist\/assets\/icon-picker.59743fb6.js.map.gz",
+      "oF" : 0
+    },
+    "\/src\/web\/assets\/field\/dist\/manifest.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/web\/assets\/field\/dist\/manifest-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/web\/assets\/field\/IconPickerAsset.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/web\/assets\/field\/IconPickerAsset.php",
+      "oF" : 0
+    },
+    "\/src\/web\/assets\/field\/src\/js\/components\/Icon.vue" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/web\/assets\/field\/src\/js\/components\/Icon.vue",
+      "oF" : 0
+    },
+    "\/src\/web\/assets\/field\/src\/js\/components\/IconPickerInput.vue" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/web\/assets\/field\/src\/js\/components\/IconPickerInput.vue",
+      "oF" : 0
+    },
+    "\/src\/web\/assets\/field\/src\/js\/config.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/web\/assets\/field\/dist\/js\/config.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/web\/assets\/field\/src\/js\/icon-picker.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 1,
+      "oA" : 0,
+      "oAP" : "\/src\/web\/assets\/field\/dist\/js\/icon-picker.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/web\/assets\/field\/src\/js\/utils\/object.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 1,
+      "oA" : 0,
+      "oAP" : "\/src\/web\/assets\/field\/src\/dist\/js\/object.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/web\/assets\/field\/src\/js\/utils\/tippy.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 1,
+      "oA" : 0,
+      "oAP" : "\/src\/web\/assets\/field\/src\/dist\/js\/tippy.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/web\/assets\/field\/src\/js\/utils\/translations.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 1,
+      "oA" : 0,
+      "oAP" : "\/src\/web\/assets\/field\/src\/dist\/js\/translations.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/web\/assets\/field\/src\/js\/vendor\/vue-unique-id\/index.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 1,
+      "oA" : 0,
+      "oAP" : "\/src\/web\/assets\/field\/src\/js\/dist\/js\/index.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/web\/assets\/field\/src\/scss\/style.scss" : {
+      "aP" : 1,
+      "bl" : 0,
+      "co" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 4,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/src\/web\/assets\/field\/dist\/css\/style.css",
+      "oF" : 0,
+      "oS" : 3,
+      "pg" : 0,
+      "sct" : 1
+    },
+    "\/vite.config.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 1,
+      "mi" : 1,
+      "oA" : 0,
+      "oAP" : "\/dist\/js\/vite.config.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
     }
   },
   "hooks" : [
