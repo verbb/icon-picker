@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.7 - 2022-12-01
+
+### Fixed
+- Fix an error when installing Icon Picker as a fresh plugin.
+
 ## 2.0.6 - 2022-11-30
 
 ### Fixed
