@@ -13,7 +13,6 @@ class Install extends Migration
     public function safeUp(): bool
     {
         $this->createTables();
-        $this->insertDefaultData();
 
         return true;
     }
@@ -58,30 +57,5 @@ class Install extends Migration
     public function dropProjectConfig(): void
     {
         Craft::$app->projectConfig->remove('icon-picker');
-    }
-
-    public function insertDefaultData(): void
-    {
-        $projectConfig = Craft::$app->projectConfig;
-
-        // Don't make the same config changes twice
-        $installed = ($projectConfig->get('plugins.icon-picker', true) !== null);
-        $configExists = ($projectConfig->get('icon-picker', true) !== null);
-
-        if (!$installed && !$configExists) {
-            $this->_defaultStatuses();
-            $this->_defaultStencils();
-        }
-
-        // If the config data exists, but we're re-installing, apply it
-        if (!$installed && $configExists) {
-            $allowAdminChanges = Craft::$app->getConfig()->getGeneral()->allowAdminChanges;
-
-            if (!$allowAdminChanges) {
-                return;
-            }
-
-            //
-        }
     }
 }
