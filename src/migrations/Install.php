@@ -45,17 +45,11 @@ class Install extends Migration
 
     public function removeTables(): void
     {
-        $tables = [
-            'iconpicker_iconsets',
-        ];
-
-        foreach ($tables as $table) {
-            $this->dropTableIfExists('{{%' . $table . '}}');
-        }
+        $this->dropTableIfExists('{{%iconpicker_iconsets}}');
     }
 
     public function dropProjectConfig(): void
     {
-        Craft::$app->projectConfig->remove('icon-picker');
+        Craft::$app->getProjectConfig()->remove('icon-picker');
     }
 }
