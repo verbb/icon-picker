@@ -127,7 +127,7 @@ class IconSetsController extends Controller
         }
 
         $iconSetData = [
-            'id' => $iconSetId,
+            'id' => $iconSetId ?: null,
             'name' => $this->request->getParam('name'),
             'handle' => $this->request->getParam('handle'),
             'type' => $type,
