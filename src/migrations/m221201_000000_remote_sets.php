@@ -11,7 +11,7 @@ use craft\db\Query;
 use craft\helpers\ElementHelper;
 use craft\helpers\Json;
 
-class m221111_000000_modernize_model extends Migration
+class m221201_000000_remote_sets extends Migration
 {
     /**
      * @inheritdoc
@@ -135,60 +135,27 @@ class m221111_000000_modernize_model extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m221111_000000_modernize_model cannot be reverted.\n";
+        echo "m221201_000000_remote_sets cannot be reverted.\n";
         return false;
     }
 
-    private function convertModel($field, $oldSettings)
+    private function convertModel($field, $settings)
     {
-        if (is_array($oldSettings)) {
-            $type = $oldSettings['type'] ?? null;
-            $iconSet = $oldSettings['iconSet'] ?? null;
-            $value = $oldSettings['value'] ?? null;
+        if (is_array($settings)) {
+            $type = $settings['type'] ?? null;
+            $iconSet = $settings['iconSet'] ?? null;
+            $value = $settings['value'] ?? null;
 
-            if ($type) {
-                $icon = new Icon([
-                    'type' => $type,
-                    'iconSet' => $iconSet,
-                    'value' => $value,
-                ]);
-
-                if ($type === 'svg') {
-                    $icon->value = $oldSettings['icon'] ?? $value;
+            // Check if Font Awesome remote icon set
+            if ($type === 'css' && $iconSet === 'font-awesome-all') {
+                if (!str_contains($value, 'fa fa-')) {
+                    $settings['value'] = 'fa fa-' . $value;
+                } else {
+                    $settings['value'] = $value;
                 }
-
-                if ($type === 'glyph') {
-                    $glyphId = $oldSettings['glyphId'] ?? null;
-                    $glyphName = $oldSettings['glyphName'] ?? null;
-
-                    if ($glyphId && $glyphName) {
-                        $icon->value = "{$glyphName}:{$glyphId}";
-                    }
-                }
-
-                if ($type === 'css') {
-                    $css = $oldSettings['css'] ?? null;
-
-                    // Check if Font Awesome remote icon set
-                    if ($iconSet === 'font-awesome-all') {
-                        if (!str_contains($css, 'fa fa-')) {
-                            $icon->value = 'fa fa-' . $css;
-                        } else {
-                            $icon->value = $css;
-                        }
-                    } else {
-                        $icon->value = $css;
-                    }
-                }
-
-                if ($type === 'sprite') {
-                    $icon->value = $oldSettings['sprite'] ?? $value;
-                }
-
-                return $icon->serializeValueForDb();
             }
         }
 
-        return [];
+        return $settings;
     }
 }

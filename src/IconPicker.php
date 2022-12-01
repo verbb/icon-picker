@@ -41,7 +41,7 @@ class IconPicker extends Plugin
     // =========================================================================
 
     public bool $hasCpSettings = true;
-    public string $schemaVersion = '1.2.2';
+    public string $schemaVersion = '1.2.3';
     public string $minVersionRequired = '1.1.12';
 
 

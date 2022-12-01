@@ -39,8 +39,13 @@ class m221116_000000_migrate_iconsets extends Migration
         foreach ($fields as $fieldData) {
             $settings = Json::decode($fieldData['settings']);
             $iconSets = $settings['iconSets'] ?? [];
+            $remoteSets = $settings['remoteSets'] ?? [];
 
-            // Can't really be migrated = too different
+            // Only handle remote sets for Font Awesome 5 (our core one), and keep relying on the `font-awesome-all` handle
+            if ($remoteSets) {
+                $this->getOrCreateSet(registerediconsets\FontAwesome::class, 'font-awesome-all');
+            }
+
             unset($settings['remoteSets']);
 
             if (is_array($iconSets)) {
@@ -115,10 +120,17 @@ class m221116_000000_migrate_iconsets extends Migration
                     return $allIconSet;
                 }
             }
+
+            if (get_class($allIconSet) === $type && $type === registerediconsets\FontAwesome::class) {
+                if ($allIconSet->handle === $key) {
+                    return $allIconSet;
+                }
+            }
         }
 
         // Create the icon set
-        $name = '';
+        $name = null;
+        $handle = null;
         $settings = [];
 
         if ($type === registerediconsets\SvgFolder::class) {
@@ -136,9 +148,18 @@ class m221116_000000_migrate_iconsets extends Migration
             $settings['fontFile'] = $key;
         }
 
+        if ($type === registerediconsets\FontAwesome::class) {
+            $name = $key;
+            $handle = $key;
+            $settings['type'] = 'cdn';
+            $settings['cdnCollections'] = '*';
+            $settings['cdnLicense'] = 'free';
+            $settings['cdnVersion'] = '5.15.4';
+        }
+
         $iconSetData = [
             'name' => $name,
-            'handle' => StringHelper::camelCase($name . ' ' . rand()),
+            'handle' => $handle ?? StringHelper::camelCase($name . ' ' . rand()),
             'type' => $type,
             'enabled' => true,
             'settings' => $settings,
