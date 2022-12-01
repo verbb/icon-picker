@@ -117,8 +117,13 @@ class IconSetsController extends Controller
                 throw new BadRequestHttpException("Invalid icon set ID: $iconSetId");
             }
 
-            // Be sure to merge with any existing settings
-            $settings = array_merge($savedIconSet->settings, $settings);
+            // Be sure to merge with any existing settings, but make sure we also check if it's the same
+            // type. If we're changing the type of icon set, that would bleed incorrect settings
+            // Have we changed type? Wipe the settings
+            if ($type === get_class($savedIconSet)) {
+                // Be sure to merge with any existing settings
+                $settings = array_merge($savedIconSet->settings, $settings);
+            }
         }
 
         $iconSetData = [
