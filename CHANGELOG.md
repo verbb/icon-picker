@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.8 - 2022-12-01
+
+### Fixed
+- Fix lack of support for migrating remote icon sets.
+- Fix a potential error when saving a new icon set.
+- Fix an error when switching icon set type.
+
 ## 2.0.7 - 2022-12-01
 
 ### Fixed
