@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.9 - 2022-12-14
+
+### Fixed
+- Fix when migrating field content, not to wipe old values if invalid.
+- Fix SVG icons not rendering correctly in some instances.
+
 ## 2.0.8 - 2022-12-01
 
 ### Fixed
