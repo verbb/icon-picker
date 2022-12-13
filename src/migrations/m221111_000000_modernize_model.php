@@ -142,7 +142,7 @@ class m221111_000000_modernize_model extends Migration
     private function convertModel($field, $oldSettings)
     {
         if (is_array($oldSettings)) {
-            $type = $oldSettings['type'] ?? null;
+            $type = $oldSettings['type'] ?? 'svg';
             $iconSet = $oldSettings['iconSet'] ?? null;
             $value = $oldSettings['value'] ?? null;
 
@@ -189,6 +189,6 @@ class m221111_000000_modernize_model extends Migration
             }
         }
 
-        return [];
+        return $oldSettings;
     }
 }
