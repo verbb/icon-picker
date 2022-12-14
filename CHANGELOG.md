@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.10 - 2022-12-14
+
+### Fixed
+- Fix an issue where Redactor-based Icon Picker fields weren’t being initialized.
+- Fix remote icon sets (Font Awesome) not migrating properly.
+- Fix not migrating fields in Matrix and Super Table properly.
+
 ## 2.0.9 - 2022-12-14
 
 ### Fixed
