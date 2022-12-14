@@ -10,6 +10,7 @@ use verbb\iconpicker\models\Icon;
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
+use craft\helpers\ArrayHelper;
 use craft\helpers\ElementHelper;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
@@ -39,14 +40,20 @@ class m221116_000000_migrate_iconsets extends Migration
         foreach ($fields as $fieldData) {
             $settings = Json::decode($fieldData['settings']);
             $iconSets = $settings['iconSets'] ?? [];
-            $remoteSets = $settings['remoteSets'] ?? [];
+            $remoteSets = ArrayHelper::remove($settings, 'remoteSets');
 
-            // Only handle remote sets for Font Awesome 5 (our core one), and keep relying on the `font-awesome-all` handle
+             // Only handle remote sets for Font Awesome 5 (our core one), and keep relying on the `font-awesome-all` handle
             if ($remoteSets) {
-                $this->getOrCreateSet(registerediconsets\FontAwesome::class, 'font-awesome-all');
-            }
+                $newIconSet = $this->getOrCreateSet(registerediconsets\FontAwesome::class, 'font-awesome-all');
 
-            unset($settings['remoteSets']);
+                if ($newIconSet) {
+                    if (!is_array($iconSets)) {
+                        $iconSets = [];
+                    }
+                    
+                    $iconSets['font-awesome-all'] = $newIconSet->uid;
+                }
+            }
 
             if (is_array($iconSets)) {
                 foreach ($iconSets as $key => $iconSetKey) {
