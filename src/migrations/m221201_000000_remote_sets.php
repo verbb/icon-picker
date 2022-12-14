@@ -25,7 +25,7 @@ class m221201_000000_remote_sets extends Migration
 
         foreach ($fields as $fieldData) {
             // Fetch the field model because we'll need it later
-            $field = Craft::$app->getFields()->getFieldByHandle($fieldData['handle'], false);
+            $field = Craft::$app->getFields()->getFieldByHandle($fieldData['handle'], $fieldData['context']);
 
             if ($field) {
                 $column = ElementHelper::fieldColumnFromField($field);
