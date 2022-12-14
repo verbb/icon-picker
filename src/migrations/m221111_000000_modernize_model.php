@@ -25,7 +25,7 @@ class m221111_000000_modernize_model extends Migration
 
         foreach ($fields as $fieldData) {
             // Fetch the field model because we'll need it later
-            $field = Craft::$app->getFields()->getFieldByHandle($fieldData['handle'], false);
+            $field = Craft::$app->getFields()->getFieldByHandle($fieldData['handle'], $fieldData['context']);
 
             if ($field) {
                 $column = ElementHelper::fieldColumnFromField($field);
@@ -95,31 +95,35 @@ class m221111_000000_modernize_model extends Migration
                     // Get the Super Table field, and the content table
                     $blockTypeUid = explode(':', $field->context)[1];
 
-                    $superTableFieldId = (new Query())
+                    $superTableInfo = (new Query())
                         ->select(['fieldId'])
                         ->from('{{%supertableblocktypes}}')
                         ->where(['uid' => $blockTypeUid])
-                        ->scalar();
+                        ->one();
 
-                    $superTableField = Craft::$app->getFields()->getFieldById($superTableFieldId, false);
+                    if ($superTableInfo) {
+                        $superTableFieldId = $superTableInfo['fieldId'];
 
-                    if ($superTableField) {
-                        $column = ElementHelper::fieldColumn($field->columnPrefix, $field->handle, $field->columnSuffix);
+                        $superTableField = Craft::$app->getFields()->getFieldById($superTableFieldId, false);
 
-                        $content = (new Query())
-                            ->select([$column, 'id', 'elementId'])
-                            ->from($superTableField->contentTable)
-                            ->where(['not', [$column => null]])
-                            ->andWhere(['not', [$column => '']])
-                            ->all();
+                        if ($superTableField) {
+                            $column = ElementHelper::fieldColumn($field->columnPrefix, $field->handle, $field->columnSuffix);
 
-                        foreach ($content as $row) {
-                            $settings = $this->convertModel($field, Json::decodeIfJson($row[$column]));
+                            $content = (new Query())
+                                ->select([$column, 'id', 'elementId'])
+                                ->from($superTableField->contentTable)
+                                ->where(['not', [$column => null]])
+                                ->andWhere(['not', [$column => '']])
+                                ->all();
 
-                            if ($settings) {
-                                $this->update($superTableField->contentTable, [$column => Json::encode($settings)], ['id' => $row['id']]);
-                            
-                                echo 'Migrating Super Table content (' . $superTableField->contentTable . '_' . $column . ') #' . $row['id'] . ' for element #' . $row['elementId'] . PHP_EOL;
+                            foreach ($content as $row) {
+                                $settings = $this->convertModel($field, Json::decodeIfJson($row[$column]));
+
+                                if ($settings) {
+                                    $this->update($superTableField->contentTable, [$column => Json::encode($settings)], ['id' => $row['id']]);
+                                
+                                    echo 'Migrating Super Table content (' . $superTableField->contentTable . '_' . $column . ') #' . $row['id'] . ' for element #' . $row['elementId'] . PHP_EOL;
+                                }
                             }
                         }
                     }
