@@ -18,16 +18,21 @@ class RedactorController extends Controller
     {
         $settings = IconPicker::$plugin->getSettings();
         $request = Craft::$app->getRequest();
+        $view = Craft::$app->getView();
 
         $field = Craft::$app->getFields()->getFieldByHandle($settings->redactorFieldHandle);
 
-        Craft::$app->getView()->startJsBuffer();
+        $view->startJsBuffer();
+
         $inputHtml = Html::tag('div', Html::tag('div', $field->getInputHtml(null), [
             'class' => 'input',
         ]), [
             'id' => 'iconPickerRedactor-field'
         ]);
-        $footHtml = Craft::$app->getView()->clearJsBuffer();
+
+        $footHtml = $view->clearJsBuffer();
+
+        $footHtml .= IconPicker::$plugin->getVite()->script('field/src/js/icon-picker.js');
 
         return $this->asJson([
             'inputHtml' => $inputHtml,
