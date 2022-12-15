@@ -209,7 +209,6 @@ class Icon extends Model implements \JsonSerializable, \Countable
             if ($path = $this->getPath()) {
                 return Template::raw(@file_get_contents($path));
             }
-
         }
 
         return null;

@@ -56,7 +56,7 @@ class SvgFolder extends IconSet
 
         if (is_dir($iconSetsPath)) {
             $folders = FileHelper::findDirectories($iconSetsPath, [
-                'recursive' => false,
+                'recursive' => true,
             ]);
 
             foreach ($folders as $folder) {
@@ -83,7 +83,7 @@ class SvgFolder extends IconSet
         $files = IconPickerHelper::getFiles($folderPath, [
             'only' => ['*.svg'],
             'except' => ['*-sprites.svg'],
-            'recursive' => false,
+            'recursive' => true,
         ]);
 
         foreach ($files as $key => $file) {
