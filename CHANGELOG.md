@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.11 - 2022-12-16
+
+### Fixed
+- Add back support for subfolders for SVG icon sets.
+- Fix an error being thrown when the path to an SVG cannot be determined.
+
 ## 2.0.10 - 2022-12-14
 
 ### Fixed
