@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.12 - 2022-12-24
+
+### Fixed
+- Fix SVG folder icon sets being mis-ordered when scrolling the icon picker dropdown.
+
 ## 2.0.11 - 2022-12-16
 
 ### Fixed
