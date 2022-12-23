@@ -95,6 +95,7 @@ class SvgFolder extends IconSet
 
             $this->icons[] = new Icon([
                 'type' => Icon::TYPE_SVG,
+                'iconSet' => $this->handle,
                 'value' => $item,
                 'keywords' => $keywords,
             ]);

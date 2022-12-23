@@ -1,6 +1,6 @@
 <template>
     <template v-if="item.type === 'svg'">
-        <svg v-inline-svg v-html="item.displayValue" />
+        <div v-html="item.displayValue"></div>
     </template>
 
     <template v-if="item.type === 'sprite'">

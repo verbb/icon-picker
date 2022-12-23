@@ -31,27 +31,6 @@ export const createVueApp = (props) => {
     // Custom - waiting for https://github.com/berniegp/vue-unique-id
     app.use(VueUniqueId);
 
-    // Custom directive to fix `<svg><svg ...>` extra wrapper, due to saving the `<svg> element in the cache`
-    app.directive('inline-svg', (el) => {
-        if (!el) {
-            return;
-        }
-
-        // copy attributes to first child
-        const content = el.tagName === 'TEMPLATE' ? el.content : el;
-
-        if (content.children.length === 1) {
-            [...el.attributes].forEach((attr) => { return content.firstChild.setAttribute(attr.name, attr.value); });
-        }
-
-        // replace element with content
-        if (el.tagName === 'TEMPLATE') {
-            el.replaceWith(el.content);
-        } else {
-            el.replaceWith(...el.children);
-        }
-    });
-
     //
     // Global properties
     // Create global properties here, shared across multiple Vue apps.
