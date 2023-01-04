@@ -1,6 +1,6 @@
 {
     "name": "verbb/icon-picker",
-    "description": "Provide content editors a field to pick an icon from a public directory.",
+    "description": "A slick field to pick icons from. Supports SVGs, Sprites, Webfonts, Font Awesome and more.",
     "type": "craft-plugin",
     "version": "2.0.12",
     "keywords": [
