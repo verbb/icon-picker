@@ -27,7 +27,7 @@ class RedactorController extends Controller
         $inputHtml = Html::tag('div', Html::tag('div', $field->getInputHtml(null), [
             'class' => 'input',
         ]), [
-            'id' => 'iconPickerRedactor-field'
+            'id' => $field->handle . '-field'
         ]);
 
         $footHtml = $view->clearJsBuffer();
