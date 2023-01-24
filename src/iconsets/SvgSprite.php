@@ -8,6 +8,7 @@ use verbb\iconpicker\models\Icon;
 
 use Craft;
 use craft\helpers\FileHelper;
+use craft\helpers\Json;
 
 use Throwable;
 
