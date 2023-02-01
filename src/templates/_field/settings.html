@@ -13,11 +13,19 @@
     {% set iconSetOptions = iconSetOptions | merge([{ label: iconSet.name, value: iconSet.uid }]) %}
 {% endfor %}
 
-{{ forms.checkboxSelectField({
-    label: 'Available Icon Sets' | t('icon-picker'),
-    instructions: 'Select which icon sets should be available for this field. Manage these through [Icon Sets]({url}).' | t('icon-picker', { url: cpUrl('icon-picker/settings/icon-sets') }),
-    name: 'iconSets',
-    options: iconSetOptions,
-    values: field.iconSets ?? (field.id ? '' : '*'),
-    showAllOption: true,
-}) }}
+{% if not iconSetOptions | length %}
+    {{ forms.checkboxSelectField({
+        label: 'Available Icon Sets' | t('icon-picker'),
+        instructions: 'Select which icon sets should be available for this field. Manage these through [Icon Sets]({url}).' | t('icon-picker', { url: cpUrl('icon-picker/settings/icon-sets') }),
+        warning: 'You must create at least one icon set to proceed.',
+    }) }}
+{% else %}
+    {{ forms.checkboxSelectField({
+        label: 'Available Icon Sets' | t('icon-picker'),
+        instructions: 'Select which icon sets should be available for this field. Manage these through [Icon Sets]({url}).' | t('icon-picker', { url: cpUrl('icon-picker/settings/icon-sets') }),
+        name: 'iconSets',
+        options: iconSetOptions,
+        values: field.iconSets ?? (field.id ? '' : '*'),
+        showAllOption: true,
+    }) }}
+{% endif %}
