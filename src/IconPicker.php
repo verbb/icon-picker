@@ -90,7 +90,7 @@ class IconPicker extends Plugin
     // Protected Methods
     // =========================================================================
 
-    protected function createSettingsModel(): ?Model
+    protected function createSettingsModel(): Settings
     {
         return new Settings();
     }
