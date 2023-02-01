@@ -1,6 +1,9 @@
 <?php
 namespace verbb\iconpicker\migrations;
 
+use verbb\iconpicker\IconPicker;
+use verbb\iconpicker\iconsets\SvgFolder;
+
 use Craft;
 use craft\db\Migration;
 use craft\helpers\MigrationHelper;
@@ -13,6 +16,7 @@ class Install extends Migration
     public function safeUp(): bool
     {
         $this->createTables();
+        $this->insertDefaultData();
 
         return true;
     }
@@ -51,5 +55,30 @@ class Install extends Migration
     public function dropProjectConfig(): void
     {
         Craft::$app->getProjectConfig()->remove('icon-picker');
+    }
+
+    public function insertDefaultData(): void
+    {
+        $projectConfig = Craft::$app->projectConfig;
+
+        // Don't make the same config changes twice
+        $installed = ($projectConfig->get('plugins.icon-picker', true) !== null);
+        $configExists = ($projectConfig->get('icon-picker', true) !== null);
+
+        if (!$installed && !$configExists) {
+            $this->_defaultIconSet();
+        }
+    }
+
+    private function _defaultIconSet(): void
+    {
+        $iconSet = new SvgFolder([
+            'name' => 'Root',
+            'handle' => 'root',
+            'enabled' => true,
+            'folder' => '[root]',
+        ]);
+
+        IconPicker::$plugin->getIconSets()->saveIconSet($iconSet);
     }
 }
