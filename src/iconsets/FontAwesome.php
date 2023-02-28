@@ -167,12 +167,13 @@ class FontAwesome extends IconSet
 
     public function getKits(): array
     {
-        $cacheKey = 'icon-picker:fa-kits-cache';
+        $apiKey = App::parseEnv($this->apiKey);
+        $cacheKey = 'icon-picker:fa-kits-cache:' . $apiKey;
         $cacheDuration = 60 * 60; // 1 hour
 
-        return Craft::$app->getCache()->getOrSet($cacheKey, function() {
+        return Craft::$app->getCache()->getOrSet($cacheKey, function() use ($apiKey) {
             try {
-                if ($apiKey = App::parseEnv($this->apiKey)) {
+                if ($apiKey) {
                     // Get an access token first
                     $response = $this->request('POST', 'token', [
                         'headers' => [
