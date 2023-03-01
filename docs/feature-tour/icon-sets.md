@@ -45,6 +45,10 @@ With [kits](https://fontawesome.com/kits) you can create collections of icons (a
 
 Adding the provided API key to the settings, you'll be able to select which kits to include in your Icon Set, to in turn be able to be picked from in the field. 
 
+:::warning
+You'll need to set your Font Awesome Kit **Technology** settings to use **Web Fonts** in order for Icon Picker to display them properly. **SVG** kits are not currently supported.
+:::
+
 This is also the only method to use **Font Awesome 6 Pro**.
 
 ### CDN
