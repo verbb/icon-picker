@@ -36,6 +36,7 @@ class IconPickerField extends Field
     public string $columnType = Schema::TYPE_TEXT;
     public bool $showLabels = false;
     public mixed $iconSets = null;
+    public ?string $renderId = null;
 
 
     // Public Methods
@@ -60,7 +61,7 @@ class IconPickerField extends Field
         $view = Craft::$app->getView();
         $iconPickerService = IconPicker::$plugin->getService();
 
-        $id = Html::id($this->handle);
+        $id = $this->renderId ?? Html::id($this->handle);
         $nameSpacedId = $view->namespaceInputId($id);
         $pluginSettings = IconPicker::$plugin->getSettings();
 

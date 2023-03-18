@@ -5,6 +5,7 @@ use verbb\iconpicker\IconPicker;
 
 use Craft;
 use craft\helpers\Html;
+use craft\helpers\StringHelper;
 use craft\web\Controller;
 
 use yii\web\Response;
@@ -21,13 +22,14 @@ class RedactorController extends Controller
         $view = Craft::$app->getView();
 
         $field = Craft::$app->getFields()->getFieldByHandle($settings->redactorFieldHandle);
+        $field->renderId = Html::id($field->handle) . '-' . StringHelper::randomString(10);
 
         $view->startJsBuffer();
 
         $inputHtml = Html::tag('div', Html::tag('div', $field->getInputHtml(null), [
             'class' => 'input',
         ]), [
-            'id' => $field->handle . '-field'
+            'id' => $field->renderId . '-field'
         ]);
 
         $footHtml = $view->clearJsBuffer();
