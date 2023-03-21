@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.0.13 - 2023-03-21
+
+### Added
+- Add warning to field settings when no icon sets are available.
+
+### Changed
+- Only admins are now allowed to access plugin settings.
+
+### Fixed
+- Fix multiple Redactor fields with Icon Picker enabled not working.
+- Fix icon sets cache not working correctly for multiple Font Awesome API keys.
+- Fix `Root` default icon set not being created on install.
+- Fix Icon Picker fields not working correctly in Redactor fields.
+
 ## 2.0.12 - 2022-12-24
 
 ### Fixed
