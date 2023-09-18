@@ -82,7 +82,7 @@ class SvgFolder extends IconSet
 
         $files = IconPickerHelper::getFiles($folderPath, [
             'only' => ['*.svg'],
-            'except' => ['*-sprites.svg'],
+            'except' => ['*-sprites.svg', '_*'],
             'recursive' => true,
         ]);
 
