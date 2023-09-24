@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.14 - 2023-09-25
+
+### Changed
+- Hidden folders are now excluded from searches to find svg icons. (thanks @sfsmfc).
+
 ## 2.0.13 - 2023-03-21
 
 ### Added
