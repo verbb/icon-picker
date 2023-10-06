@@ -27,11 +27,11 @@ Type | Description | Example
 Method | Description
 --- | ---
 `isEmpty()` | Returns whether or not there's an icon selected for this field.
-`getUrl()` | Return the full URL to the icon. [SVG Icons](docs:feature-tour/svg-icons) only.
-`getPath()` | Return the full path to the icon. [SVG Icons](docs:feature-tour/svg-icons) only.
-`getInline()` | Returns the raw contents of the icon. [SVG Icons](docs:feature-tour/svg-icons) only.
-`getGlyph(format)` | Returns the character representation of a font glyph. [Icon Font](docs:feature-tour/icon-fonts) only.
-`getGlyphName()` | Returns the named representation of a font glyph. [Icon Font](docs:feature-tour/icon-fonts) only.
+`getUrl()` | Return the full URL to the icon. [SVG Icons](docs:feature-tour/icon-sets#svg-folders) only.
+`getPath()` | Return the full path to the icon. [SVG Icons](docs:feature-tour/icon-sets#svg-folders) only.
+`getInline()` | Returns the raw contents of the icon. [SVG Icons](docs:feature-tour/icon-sets#svg-folders) only.
+`getGlyph(format)` | Returns the character representation of a font glyph. [Icon Font](docs:feature-tour/icon-sets#web-fonts) only.
+`getGlyphName()` | Returns the named representation of a font glyph. [Icon Font](docs:feature-tour/icon-sets#web-fonts) only.
 
 ### Glyph formats
 
