@@ -36,7 +36,7 @@
     },
     "autoload": {
         "psr-4": {
-          "verbb\\iconpicker\\": "src/"
+            "verbb\\iconpicker\\": "src/"
         }
     },
     "extra": {
