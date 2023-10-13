@@ -35,15 +35,6 @@ class SvgSprite extends IconSet
     // Public Methods
     // =========================================================================
 
-    public function defineRules(): array
-    {
-        $rules = parent::defineRules();
-
-        $rules[] = [['spriteFile'], 'required'];
-
-        return $rules;
-    }
-
     public function getSettingsHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate('icon-picker/icon-sets/svg-sprite', [
@@ -105,6 +96,19 @@ class SvgSprite extends IconSet
 
             $this->spriteSheets[$spriteSheet] = $files;
         }
+    }
+
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+
+        $rules[] = [['spriteFile'], 'required'];
+
+        return $rules;
     }
 
 

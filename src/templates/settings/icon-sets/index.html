@@ -19,7 +19,7 @@
     {% set tableData = tableData | merge([{
         id: iconSet.id,
         title: iconSet.getName() | t('icon-picker'),
-        url: iconSet.cpEditUrl,
+        url: iconSet.getCpEditUrl(),
         name: iconSet.getName() | t('icon-picker') | e,
         enabled: iconSet.getEnabled(),
         type: {

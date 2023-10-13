@@ -1,5 +1,5 @@
 # Upgrading from v1
-While the [changelog](https://github.com/verbb/icon-picker/blob/craft-4/CHANGELOG.md) is the most comprehensive list of changes, this guide provides high-level overview and organizes changes by category.
+While the [changelog](https://github.com/verbb/icon-picker/blob/craft-5/CHANGELOG.md) is the most comprehensive list of changes, this guide provides high-level overview and organizes changes by category.
 
 ## Icon Sets
 An Icon Set is the concept of a collection of icons. You can create and manage these in **Icon Picker** > **Settings** > **Icon Sets**, and are stored in project config.

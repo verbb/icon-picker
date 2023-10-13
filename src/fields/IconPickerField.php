@@ -33,7 +33,6 @@ class IconPickerField extends Field
     // Properties
     // =========================================================================
 
-    public string $columnType = Schema::TYPE_TEXT;
     public bool $showLabels = false;
     public mixed $iconSets = null;
     public ?string $renderId = null;
@@ -44,15 +43,13 @@ class IconPickerField extends Field
 
     public function __construct(array $config = [])
     {
-        // Config normalization
-        if (array_key_exists('remoteSets', $config)) {
-            unset($config['remoteSets']);
-        }
+        // Remove unused settings
+        unset($config['remoteSets'], $config['columnType']);
 
         parent::__construct($config);
     }
 
-    public function getInputHtml(mixed $value, ?ElementInterface $element = null): string
+    protected function inputHtml(mixed $value, ?ElementInterface $element, bool $inline): string
     {
         if (!$value) {
             $value = new Icon();
@@ -130,7 +127,7 @@ class IconPickerField extends Field
         return new Icon($value);
     }
 
-    public function serializeValue(mixed $value, ?ElementInterface $element = null): mixed
+    public function serializeValue(mixed $value, ElementInterface $element = null): mixed
     {
         if ($value instanceof Icon) {
             $value = $value->serializeValueForDb();

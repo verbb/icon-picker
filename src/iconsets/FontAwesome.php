@@ -47,15 +47,6 @@ class FontAwesome extends IconSet
     // Public Methods
     // =========================================================================
 
-    public function defineRules(): array
-    {
-        $rules = parent::defineRules();
-
-        $rules[] = [['apiKey'], 'required', 'when' => fn() => $this->type === self::TYPE_KIT];
-
-        return $rules;
-    }
-
     public function getSettingsHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate('icon-picker/icon-sets/font-awesome', [
@@ -298,6 +289,19 @@ class FontAwesome extends IconSet
     public function getApiError(): ?string
     {
         return $this->_apiError;
+    }
+
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+
+        $rules[] = [['apiKey'], 'required', 'when' => fn() => $this->type === self::TYPE_KIT];
+
+        return $rules;
     }
 
 

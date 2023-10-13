@@ -59,7 +59,7 @@ class Install extends Migration
 
     public function insertDefaultData(): void
     {
-        $projectConfig = Craft::$app->projectConfig;
+        $projectConfig = Craft::$app->getProjectConfig();
 
         // Don't make the same config changes twice
         $installed = ($projectConfig->get('plugins.icon-picker', true) !== null);

@@ -166,7 +166,7 @@ class IconSets extends Component
         }
 
         if ($runValidation && !$iconSet->validate()) {
-            IconPicker::log('Icon set not saved due to validation error.');
+            IconPicker::info('Icon set not saved due to validation error.');
 
             return false;
         }

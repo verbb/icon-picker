@@ -75,11 +75,6 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
         return null;
     }
 
-    public function getCpEditUrl(): string
-    {
-        return UrlHelper::cpUrl('icon-picker/settings/icon-sets/edit/' . $this->id);
-    }
-
     public function populateIcons(bool $fromCache = true): void
     {
         $settings = IconPicker::$plugin->getSettings();
@@ -154,6 +149,11 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
         }
 
         return $spriteSheets;
+    }
+
+    public function getCpEditUrl(): ?string
+    {
+        return UrlHelper::cpUrl('icon-picker/settings/icon-sets/edit/' . $this->id);
     }
 
 

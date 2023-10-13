@@ -60,13 +60,11 @@ class IconPicker extends Plugin
 
         self::$plugin = $this;
 
-        $this->_registerComponents();
-        $this->_registerLogTarget();
         $this->_registerVariables();
         $this->_registerFieldTypes();
         $this->_registerCacheTypes();
-        $this->_registerProjectConfigEventListeners();
-        $this->_registerThirdPartyEventListeners();
+        $this->_registerProjectConfigEventHandlers();
+        $this->_registerEventHandlers();
 
         if (Craft::$app->getRequest()->getIsCpRequest()) {
             $this->_registerCpRoutes();
@@ -143,7 +141,7 @@ class IconPicker extends Plugin
         });
     }
 
-    private function _registerProjectConfigEventListeners(): void
+    private function _registerProjectConfigEventHandlers(): void
     {
         $projectConfigService = Craft::$app->getProjectConfig();
 
@@ -169,7 +167,7 @@ class IconPicker extends Plugin
         }
     }
 
-    private function _registerThirdPartyEventListeners(): void
+    private function _registerEventHandlers(): void
     {
         if (class_exists(FeedMeFields::class)) {
             Event::on(FeedMeFields::class, FeedMeFields::EVENT_REGISTER_FEED_ME_FIELDS, function(RegisterFeedMeFieldsEvent $event) {

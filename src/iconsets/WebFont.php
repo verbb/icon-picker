@@ -33,15 +33,6 @@ class WebFont extends IconSet
     // Public Methods
     // =========================================================================
 
-    public function defineRules(): array
-    {
-        $rules = parent::defineRules();
-
-        $rules[] = [['fontFile'], 'required'];
-
-        return $rules;
-    }
-
     public function getSettingsHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate('icon-picker/icon-sets/web-font', [
@@ -106,6 +97,19 @@ class WebFont extends IconSet
                 'url' => IconPickerHelper::getUrlForPath($file),
             ];
         }
+    }
+
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+
+        $rules[] = [['fontFile'], 'required'];
+
+        return $rules;
     }
 
 

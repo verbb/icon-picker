@@ -23,9 +23,6 @@ class IconPicker extends Field implements FieldInterface
     // Templates
     // =========================================================================
 
-    /**
-     * @inheritDoc
-     */
     public function getMappingTemplate(): string
     {
         return 'feed-me/_includes/fields/default';
@@ -35,9 +32,6 @@ class IconPicker extends Field implements FieldInterface
     // Public Methods
     // =========================================================================
 
-    /**
-     * @inheritDoc
-     */
     public function parseField(): string
     {
         $value = $this->fetchValue();
