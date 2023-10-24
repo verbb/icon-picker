@@ -62,7 +62,17 @@
                 },
 
                 insert: function($modal, $form) {
-                    var iconHtml = $modal.$modalBody.find('.ipui-icon-input-item .ipui-icon-input-svg').html();
+                    // Solo SVGs will be in a div, while others won't
+                    var $icon = $modal.$modalBody.find('.ipui-icon-input-item .ipui-icon-input-svg');
+
+                    if ($icon.find('div').length) {
+                        $icon = $icon.find('div');
+                    }
+
+                    var iconHtml = $icon.html();
+
+                    // Replace any xmlns attributes which don't place nice in Redactor
+                    iconHtml = iconHtml.replace(/xmlns=\"(.*?)\"/g, '');
 
                     this.app.api('module.modal.close');
                     this.app.selection.restore();
