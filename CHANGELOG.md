@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.15 - 2023-10-25
+
+### Fixed
+- Fix an error when using Icon Picker with Redactor.
+
 ## 2.0.14 - 2023-09-25
 
 ### Changed
