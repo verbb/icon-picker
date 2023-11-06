@@ -123,3 +123,7 @@ For example, with Font Awesome:
 <span class="fa fa-air-freshener"></span>
 ```
 
+:::tip
+Icon Picker won't include any front-end resources for Font Awesome, or any third-party icon set. It will be up to you to include these resources for your front-end.
+:::
+
