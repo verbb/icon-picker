@@ -173,12 +173,11 @@ class IconSetsController extends Controller
     {
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-        $iconSetsId = $request->getRequiredParam('id');
+        $iconSetsId = $this->request->getRequiredParam('id');
 
         IconPicker::$plugin->getIconSets()->deleteIconSetById($iconSetsId);
 
-        if ($request->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson([
                 'success' => true,
             ]);

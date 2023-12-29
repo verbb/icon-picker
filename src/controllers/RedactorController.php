@@ -18,7 +18,6 @@ class RedactorController extends Controller
     public function actionIndex(): Response
     {
         $settings = IconPicker::$plugin->getSettings();
-        $request = Craft::$app->getRequest();
         $view = Craft::$app->getView();
 
         $field = Craft::$app->getFields()->getFieldByHandle($settings->redactorFieldHandle);

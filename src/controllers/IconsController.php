@@ -31,15 +31,13 @@ class IconsController extends Controller
 
     private function _getIconSetData(bool $includeIcons = true): ?Response
     {
-        $request = Craft::$app->getRequest();
-
         // Ensure we look at all fields, not just global ones...
         $fieldsById = ArrayHelper::index(Craft::$app->getFields()->getAllFields(false), 'id');
 
-        $fieldId = $request->getRequiredParam('fieldId');
+        $fieldId = $this->request->getRequiredParam('fieldId');
         $field = $fieldsById[$fieldId] ?? null;
 
-        $fieldId = $request->getRequiredParam('fieldId');
+        $fieldId = $this->request->getRequiredParam('fieldId');
         $field = Craft::$app->getFields()->getFieldById($fieldId);
 
         if (!$field) {

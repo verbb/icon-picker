@@ -27,11 +27,9 @@ class SettingsController extends Controller
     {
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-
         /* @var Settings $settings */
         $settings = IconPicker::$plugin->getSettings();
-        $settings->setAttributes($request->getParam('settings'), false);
+        $settings->setAttributes($this->request->getParam('settings'), false);
 
         if (!$settings->validate()) {
             Craft::$app->getSession()->setError(Craft::t('icon-picker', 'Couldn’t save settings.'));
