@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.0.16 - 2023-12-08
+
+### Added
+- Add logging for Font Awesome kits.
+
+### Fixed
+- Fix a PHP 8.2 warning.
+
+## 2.0.15 - 2023-10-25
+
+### Fixed
+- Fix an error when using Icon Picker with Redactor.
+
 ## 2.0.14 - 2023-09-25
 
 ### Changed

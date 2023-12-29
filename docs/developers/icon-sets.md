@@ -2,13 +2,14 @@
 You can register your own Icon Sets to add support for third-party remote services, or even extend the existing Icon Set functionality.
 
 ```php
-use modules\IonicIconSet;
+namespace modules\sitemodule;
 
+use modules\sitemodule\IonicIconSet;
 use verbb\iconpicker\events\RegisterIconSetsEvent;
 use verbb\iconpicker\services\IconSets;
 use yii\base\Event;
 
-Event::on(IconSets::class, IconSets::EVENT_REGISTER_INTEGRATIONS, function(RegisterIconSetsEvent $event) {
+Event::on(IconSets::class, IconSets::EVENT_REGISTER_ICON_SETS, function(RegisterIconSetsEvent $event) {
     $event->iconSets[] = IonicIconSet::class;
 });
 ```
@@ -18,7 +19,7 @@ The below shows an example of using [Ionicons](https://ionicons.com).
 
 ```php
 <?php
-namespace modules;
+namespace modules\sitemodule;
 
 use verbb\iconpicker\base\IconSet;
 use verbb\iconpicker\models\Icon;

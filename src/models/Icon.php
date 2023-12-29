@@ -135,7 +135,7 @@ class Icon extends Model implements \JsonSerializable, \Countable
             return $this->value;
         }
 
-        if ($this->type === self::TYPE_SVG) {
+        if ($this->value && $this->type === self::TYPE_SVG) {
             return pathinfo($this->value, PATHINFO_FILENAME);
         }
 

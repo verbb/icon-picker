@@ -209,13 +209,16 @@ class FontAwesome extends IconSet
                     $messageText = (string)$e->getResponse()->getBody()->getContents();
                 }
 
-                $this->_apiError = Craft::t('icon-picker', 'API error: “{message}” {file}:{line}', [
+                $this->_apiError = Craft::t('icon-picker', '{name} API error: “{message}” {file}:{line}', [
+                    'name' => $this->name,
                     'message' => $messageText,
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
                 ]);
+
+                IconPicker::error($this->_apiError);
             }
-        });
+        }) ?? [];
     }
 
     public function getKit(string $kitId, string $license): array
@@ -277,11 +280,14 @@ class FontAwesome extends IconSet
                     $messageText = (string)$e->getResponse()->getBody()->getContents();
                 }
 
-                $this->_apiError = Craft::t('icon-picker', 'API error: “{message}” {file}:{line}', [
+                $this->_apiError = Craft::t('icon-picker', '{name} API error: “{message}” {file}:{line}', [
+                    'name' => $this->name,
                     'message' => $messageText,
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
                 ]);
+
+                IconPicker::error($this->_apiError);
             }
         });
     }
