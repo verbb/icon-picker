@@ -49,57 +49,6 @@ class IconPickerField extends Field
         parent::__construct($config);
     }
 
-    protected function inputHtml(mixed $value, ?ElementInterface $element, bool $inline): string
-    {
-        if (!$value) {
-            $value = new Icon();
-        }
-
-        $view = Craft::$app->getView();
-        $iconPickerService = IconPicker::$plugin->getService();
-
-        $id = $this->renderId ?? Html::id($this->handle);
-        $nameSpacedId = $view->namespaceInputId($id);
-        $pluginSettings = IconPicker::$plugin->getSettings();
-
-        // Check if this is a non-SVG icon. We will need to trigger a lazy-load of any
-        // spritesheets, fonts, or remote CSS, but we don't want to fire that here before load.
-        $loadResources = false;
-
-        if ($value->value && $value->type !== Icon::TYPE_SVG) {
-            $loadResources = true;
-        }
-
-        Plugin::registerAsset('field/src/js/icon-picker.js');
-
-        // Create the IconPicker Input Vue component
-        $js = 'new Craft.IconPicker.Input(' . Json::encode([
-            'id' => $id,
-            'inputId' => $nameSpacedId,
-            'name' => $this->handle,
-            'loadResources' => $loadResources,
-            'settings' => $this->settings,
-            'fieldId' => $this->id,
-            'itemSize' => $pluginSettings->iconItemSize,
-            'itemSizeLarge' => $pluginSettings->iconItemSizeLarge,
-            'itemWrapperSize' => $pluginSettings->iconItemWrapperSize,
-            'itemWrapperSizeLarge' => $pluginSettings->iconItemWrapperSizeLarge,
-        ]) . ');';
-
-        // Wait for IconPicker JS to be loaded, either through an event listener, or by a flag.
-        // This covers if this script is run before, or after the IconPicker JS has loaded
-        $view->registerJs('document.addEventListener("vite-script-loaded", function(e) {' .
-            'if (e.detail.path === "field/src/js/icon-picker.js") {' . $js . '}' .
-        '}); if (Craft.IconPickerReady) {' . $js . '}');
-
-        return $view->renderTemplate('icon-picker/_field/input', [
-            'id' => $id,
-            'name' => $this->handle,
-            'namespaceId' => $nameSpacedId,
-            'value' => $value,
-        ]);
-    }
-
     public function getSettingsHtml(): ?string
     {
         $iconSets = IconPicker::$plugin->getIconSets()->getAllEnabledIconSets();
@@ -219,5 +168,60 @@ class IconPickerField extends Field
         });
 
         return $iconType;
+    }
+
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function inputHtml(mixed $value, ?ElementInterface $element, bool $inline): string
+    {
+        if (!$value) {
+            $value = new Icon();
+        }
+
+        $view = Craft::$app->getView();
+        $iconPickerService = IconPicker::$plugin->getService();
+
+        $id = $this->renderId ?? Html::id($this->handle);
+        $nameSpacedId = $view->namespaceInputId($id);
+        $pluginSettings = IconPicker::$plugin->getSettings();
+
+        // Check if this is a non-SVG icon. We will need to trigger a lazy-load of any
+        // spritesheets, fonts, or remote CSS, but we don't want to fire that here before load.
+        $loadResources = false;
+
+        if ($value->value && $value->type !== Icon::TYPE_SVG) {
+            $loadResources = true;
+        }
+
+        Plugin::registerAsset('field/src/js/icon-picker.js');
+
+        // Create the IconPicker Input Vue component
+        $js = 'new Craft.IconPicker.Input(' . Json::encode([
+            'id' => $id,
+            'inputId' => $nameSpacedId,
+            'name' => $this->handle,
+            'loadResources' => $loadResources,
+            'settings' => $this->settings,
+            'fieldId' => $this->id,
+            'itemSize' => $pluginSettings->iconItemSize,
+            'itemSizeLarge' => $pluginSettings->iconItemSizeLarge,
+            'itemWrapperSize' => $pluginSettings->iconItemWrapperSize,
+            'itemWrapperSizeLarge' => $pluginSettings->iconItemWrapperSizeLarge,
+        ]) . ');';
+
+        // Wait for IconPicker JS to be loaded, either through an event listener, or by a flag.
+        // This covers if this script is run before, or after the IconPicker JS has loaded
+        $view->registerJs('document.addEventListener("vite-script-loaded", function(e) {' .
+            'if (e.detail.path === "field/src/js/icon-picker.js") {' . $js . '}' .
+        '}); if (Craft.IconPickerReady) {' . $js . '}');
+
+        return $view->renderTemplate('icon-picker/_field/input', [
+            'id' => $id,
+            'name' => $this->handle,
+            'namespaceId' => $nameSpacedId,
+            'value' => $value,
+        ]);
     }
 }
