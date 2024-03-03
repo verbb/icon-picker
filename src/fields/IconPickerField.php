@@ -29,6 +29,11 @@ class IconPickerField extends Field
         return Craft::t('icon-picker', 'Icon Picker');
     }
 
+    public static function icon(): string
+    {
+        return '@verbb/iconpicker/icon-mask.svg';
+    }
+
 
     // Properties
     // =========================================================================
