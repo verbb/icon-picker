@@ -31,7 +31,7 @@ Rendering an SVG inline, will directly render the contents of the SVG file on th
 You can use Craft's own `svg()` Twig function by using the path. [Read more](https://craftcms.com/docs/4.x/functions.html#svg).
 
 ```twig
-{{ svg(entry.iconPickerField.path, class='lemon-icon') }}
+{{ svg(entry.iconPickerField.path) | attr({ class: 'lemon-icon' }) }}
 ```
 
 Note that this cannot be used for SVG Sprites, only singular SVG icons.
