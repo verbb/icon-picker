@@ -1,5 +1,5 @@
-# Icon Picker plugin for Craft CMS
-<img width="500" src="https://verbb.imgix.net/plugins/icon-picker/icon-picker-social-card.png?v=4">
+<p align="center"><img src="https://verbb.imgix.net/plugins/icon-picker/icon-picker-icon.svg" width="100" height="100" alt="Icon Picker icon"></p>
+<h1 align="center">Icon Picker for Craft CMS</h1>
 
 Icon Picker is a Craft CMS plugin to let your content editors select an icon from a selected folder for your project.
 
