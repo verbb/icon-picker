@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.0-beta.3 - 2024-03-21
+
+### Fixed
+- Fix an install error related to `cakephp/core`, conflicting with Feed Me.
+
 ## 3.0.0-beta.2 - 2024-03-05
 
 ### Fixed
