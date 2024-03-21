@@ -26,8 +26,8 @@
     ],
     "require": {
         "php": "^8.2",
-        "cakephp/core": "^3.5",
-        "cakephp/utility": "^3.3.12",
+        "cakephp/core": "^5.0.0",
+        "cakephp/utility": "^5.0.0",
         "craftcms/cms": "^5.0.0-beta.1",
         "glenscott/url-normalizer": "^1.4",
         "nystudio107/craft-plugin-vite": "^5.0.0-beta.1",
