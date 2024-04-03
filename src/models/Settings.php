@@ -41,11 +41,18 @@ class Settings extends Model
 
     public function getIconSetsPath(): string
     {
-        if ($this->iconSetsPath) {
-            return FileHelper::normalizePath(App::parseEnv($this->iconSetsPath));
+        $path = $this->iconSetsPath;
+
+        if ($path) {
+            $path = FileHelper::normalizePath(App::parseEnv($path));
         }
 
-        return $this->iconSetsPath;
+        // Create the path if not set
+        if (!is_dir($path)) {
+            FileHelper::createDirectory($path);
+        }
+
+        return $path;
     }
 
     public function getIconSetsUrl(): bool|string|null
