@@ -37,6 +37,7 @@ class FontAwesome extends IconSet
     public ?string $type = null;
     public ?string $apiKey = null;
     public array $kits = [];
+    public array|string $styles = '*';
     public ?string $cdnLicense = null;
     public ?string $cdnVersion = null;
     public array $cdnCollections = [];
@@ -79,12 +80,14 @@ class FontAwesome extends IconSet
                         foreach ($style as $key => $familyStyle) {
                             $class = $this->_getAbbreviationForFamilyStyle($familyStyle);
 
-                            $this->icons[] = new Icon([
-                                'type' => Icon::TYPE_CSS,
-                                'value' => $class . ' fa-' . $icon['id'],
-                                'label' => $icon['label'],
-                                'keywords' => $icon['label'],
-                            ]);
+                            if ($this->_shouldIncludeStyle($familyStyle)) {
+                                $this->icons[] = new Icon([
+                                    'type' => Icon::TYPE_CSS,
+                                    'value' => $class . ' fa-' . $icon['id'],
+                                    'label' => $icon['label'],
+                                    'keywords' => $icon['label'],
+                                ]);
+                            }
                         }
                     }
                 }
@@ -354,5 +357,22 @@ class FontAwesome extends IconSet
         }
 
         return 'fa';
+    }
+
+    private function _shouldIncludeStyle(array $familyStyle): bool
+    {
+        if ($this->styles === '*') {
+            return true;
+        }
+
+        $family = $familyStyle['family'] ?? null;
+        $style = $familyStyle['style'] ?? null;
+        $key = implode(':', array_filter([$family, $style]));
+
+        if (in_array($key, $this->styles)) {
+            return true;
+        }
+
+        return false;
     }
 }
