@@ -235,7 +235,8 @@ class FontAwesome extends IconSet
 
     public function getKit(string $kitId, string $license): array
     {
-        $cacheKey = 'icon-picker:fa-icons-' . $kitId . '-cache';
+        $styles = is_array($this->styles) ? implode('-', $this->styles) : $this->styles;
+        $cacheKey = 'icon-picker:fa-icons-' . $kitId . '-' . $styles . '-cache';
         $cacheDuration = 60 * 60; // 1 hour
 
         return Craft::$app->getCache()->getOrSet($cacheKey, function() use ($kitId, $license) {
