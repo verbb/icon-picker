@@ -6,6 +6,14 @@
 - Now requires PHP `8.2.0+`.
 - Now requires Craft `5.0.0+`.
 
+## 2.0.18 - 2024-05-18
+
+### Added
+- Add the ability to restrict Font Awesome kits by style.
+
+### Changed
+- Update English translations.
+
 ## 2.0.17 - 2024-03-04
 
 ### Fixed

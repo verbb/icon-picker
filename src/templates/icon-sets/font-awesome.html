@@ -49,6 +49,28 @@
         {% if iconSet.getApiError() %}
             <p class="error">{{ iconSet.getApiError() }}</p>
         {% endif %}
+
+        {{ forms.checkboxSelectField({
+            label: 'Styles' | t('icon-picker'),
+            instructions: 'Select the styles this kit should include.' | t('icon-picker'),
+            name: 'styles',
+            options: [
+                { label: 'Classic - Solid' | t('icon-picker'), value: 'classic:solid' },
+                { label: 'Classic - Regular' | t('icon-picker'), value: 'classic:regular' },
+                { label: 'Classic - Light' | t('icon-picker'), value: 'classic:light' },
+                { label: 'Classic - Thin' | t('icon-picker'), value: 'classic:thin' },
+                { label: 'Classic - Duotone' | t('icon-picker'), value: 'duotone:solid' },
+                { label: 'Sharp - Solid' | t('icon-picker'), value: 'sharp:solid' },
+                { label: 'Sharp - Regular' | t('icon-picker'), value: 'sharp:regular' },
+                { label: 'Sharp - Light' | t('icon-picker'), value: 'sharp:light' },
+                { label: 'Sharp - Thin' | t('icon-picker'), value: 'sharp:thin' },
+                { label: 'Brands' | t('icon-picker'), value: 'brands' },
+            ],
+            showAllOption: true,
+            values: iconSet.styles ?? '',
+            warning: macros.configWarning('styles', 'icon-picker'),
+            errors: iconSet.getErrors('styles'),
+        }) }}
     {% endif %}
 </div>
 
