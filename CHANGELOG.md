@@ -1,20 +1,10 @@
 # Changelog
 
-## 3.0.0-beta.3 - 2024-03-21
-
-### Fixed
-- Fix an install error related to `cakephp/core`, conflicting with Feed Me.
-
-## 3.0.0-beta.2 - 2024-03-05
-
-### Fixed
-- Fix an install error related to `nystudio107/craft-plugin-vite`.
-
-## 3.0.0-beta.1 - 2024-03-04
+## 3.0.0 - 2024-05-18
 
 ### Changed
 - Now requires PHP `8.2.0+`.
-- Now requires Craft `5.0.0-beta.1+`.
+- Now requires Craft `5.0.0+`.
 
 ## 2.0.17 - 2024-03-04
 
