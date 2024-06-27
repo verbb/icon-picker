@@ -36,25 +36,31 @@ class IconPicker extends Field implements FieldInterface
     {
         $value = $this->fetchValue();
 
-        $iconModel = '';
-
         // Find the provided value in the first icon set for the field
-        foreach ($this->field->iconSets as $iconSetUid) {
-            $iconSet = IconPickerPlugin::$plugin->getIconSets()->getIconSetByUid($iconSetUid);
+        if (is_array($this->field->iconSets)) {
+            $iconModel = '';
 
-            if ($iconSet) {
-                $iconSet->populateIcons();
+            foreach ($this->field->iconSets as $iconSetUid) {
+                $iconSet = IconPickerPlugin::$plugin->getIconSets()->getIconSetByUid($iconSetUid);
 
-                foreach ($iconSet->icons as $icon) {
-                    if ($icon->value === $value) {
-                        $iconModel = $icon;
+                if ($iconSet) {
+                    $iconSet->populateIcons();
 
-                        break 2;
+                    foreach ($iconSet->icons as $icon) {
+                        if ($icon->value === $value) {
+                            $iconModel = $icon;
+
+                            break 2;
+                        }
                     }
                 }
             }
+
+            if ($iconModel instanceof Icon) {
+                return Json::encode($iconModel->serializeValueForDb());
+            }
         }
 
-        return Json::encode($iconModel->serializeValueForDb());
+        return '';
     }
 }
