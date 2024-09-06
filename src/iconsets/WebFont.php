@@ -86,6 +86,7 @@ class WebFont extends IconSet
                 $this->icons[] = new Icon([
                     'type' => Icon::TYPE_GLYPH,
                     'iconSet' => $fontFilename,
+                    'iconSetHandle' => $this->handle,
                     'value' => $glyph['name'] . ':' . $glyph['glyphId'],
                     'keywords' => $keywords,
                 ]);

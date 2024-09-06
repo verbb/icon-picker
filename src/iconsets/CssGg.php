@@ -39,6 +39,7 @@ class CssGg extends IconSet
             foreach ($json as $icon) {
                 $this->icons[] = new Icon([
                     'type' => Icon::TYPE_CSS,
+                    'iconSetHandle' => $this->handle,
                     'value' => 'gg-' . $icon['label'],
                     'label' => $icon['label'],
                 ]);

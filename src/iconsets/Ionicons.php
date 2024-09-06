@@ -60,6 +60,7 @@ class Ionicons extends IconSet
         foreach ($icons as $icon) {
             $this->icons[] = new Icon([
                 'type' => Icon::TYPE_CSS,
+                'iconSetHandle' => $this->handle,
                 'value' => 'icon-' . $icon['label'],
                 'label' => $icon['label'],
                 'keywords' => $icon['keywords'],

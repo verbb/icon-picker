@@ -25,6 +25,7 @@
 
             <input type="hidden" :name="name + '[value]'" :value="get(selected, 'value')">
             <input type="hidden" :name="name + '[iconSet]'" :value="get(selected, 'iconSet')">
+            <input type="hidden" :name="name + '[iconSetHandle]'" :value="get(selected, 'iconSetHandle')">
             <input type="hidden" :name="name + '[type]'" :value="get(selected, 'type')">
             <input type="hidden" :name="name + '[label]'" :value="get(selected, 'label')">
             <input type="hidden" :name="name + '[keywords]'" :value="get(selected, 'keywords')">

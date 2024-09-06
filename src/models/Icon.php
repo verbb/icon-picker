@@ -29,6 +29,7 @@ class Icon extends Model implements \JsonSerializable, \Countable
 
     public ?string $value = null;
     public ?string $iconSet = null;
+    public ?string $iconSetHandle = null;
     public ?string $type = null;
     public ?string $label = null;
     public ?string $keywords = null;

@@ -89,6 +89,7 @@ class SvgSprite extends IconSet
                 $this->icons[] = new Icon([
                     'type' => Icon::TYPE_SPRITE,
                     'iconSet' => $iconSetName,
+                    'iconSetHandle' => $this->handle,
                     'value' => $file['@id'],
                     'keywords' => $keywords,
                 ]);

@@ -39,6 +39,7 @@ class MaterialSymbols extends IconSet
             foreach ($json as $icon) {
                 $this->icons[] = new Icon([
                     'type' => Icon::TYPE_GLYPH,
+                    'iconSetHandle' => $this->handle,
                     'iconSet' => 'material-symbols-outlined',
                     'value' => $icon['label'] . ':' . $icon['glyph'],
                 ]);

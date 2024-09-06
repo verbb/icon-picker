@@ -74,6 +74,7 @@ class FontAwesome extends IconSet
                             if ($this->_shouldIncludeStyle($familyStyle)) {
                                 $this->icons[] = new Icon([
                                     'type' => Icon::TYPE_CSS,
+                                    'iconSetHandle' => $this->handle,
                                     'value' => $class . ' fa-' . $icon['id'],
                                     'label' => $icon['label'],
                                     'keywords' => $icon['label'],
@@ -114,6 +115,7 @@ class FontAwesome extends IconSet
             foreach ($icons as $icon) {
                 $this->icons[] = new Icon([
                     'type' => Icon::TYPE_CSS,
+                    'iconSetHandle' => $this->handle,
                     'value' => $icon['classes'],
                     'label' => $icon['label'],
                     'keywords' => $icon['label'],

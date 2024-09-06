@@ -47,6 +47,7 @@ class Feather extends IconSet
             foreach ($json as $icon) {
                 $this->icons[] = new Icon([
                     'type' => Icon::TYPE_CSS,
+                    'iconSetHandle' => $this->handle,
                     'value' => $icon['label'],
                     'label' => $icon['label'],
                     'keywords' => $icon['keywords'],
