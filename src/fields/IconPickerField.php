@@ -8,18 +8,22 @@ use verbb\iconpicker\models\Icon;
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
+use craft\base\PreviewableFieldInterface;
+use craft\base\ThumbableFieldInterface;
 use craft\gql\GqlEntityRegistry;
 use craft\gql\TypeLoader;
 use craft\helpers\ArrayHelper;
+use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\helpers\Json;
+use craft\web\View;
 
 use yii\db\Schema;
 
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\ObjectType;
 
-class IconPickerField extends Field
+class IconPickerField extends Field implements ThumbableFieldInterface, PreviewableFieldInterface
 {
     // Static Methods
     // =========================================================================
@@ -52,6 +56,16 @@ class IconPickerField extends Field
         unset($config['remoteSets'], $config['columnType']);
 
         parent::__construct($config);
+    }
+
+    public function getPreviewHtml(mixed $value, ElementInterface $element): string
+    {
+        return $value ? $this->_renderIcon($value, 'renderedPreviewResources') : '';
+    }
+
+    public function getThumbHtml(mixed $value, ElementInterface $element, int $size): ?string
+    {
+        return $value ? $this->_renderIcon($value, 'renderedThumbResources') : '';
     }
 
     public function getSettingsHtml(): ?string
@@ -228,5 +242,96 @@ class IconPickerField extends Field
             'namespaceId' => $nameSpacedId,
             'value' => $value,
         ]);
+    }
+
+
+    // Private Methods
+    // =========================================================================
+
+    private function _renderIcon(mixed $value, string $cacheCategory): string
+    {
+        $view = Craft::$app->getView();
+        $settings = IconPicker::$plugin->getSettings();
+
+        // Check if any of the icons have additional resources to include
+        // Adding the `iconSetHandle` was a recent addition, so best to check
+        if ($value->iconSetHandle) {
+            // Have we already rendered this spritesheet?
+            if (!in_array($value->iconSetHandle, IconPicker::$plugin->getService()->$cacheCategory)) {
+                if ($iconSet = IconPicker::$plugin->getIconSets()->getIconSetByHandle($value->iconSetHandle)) {
+                    // Ensure the icons are loaded (from the cache)
+                    $iconSet->populateIcons();
+
+                    // Add all spritesheets to the DOM
+                    foreach ($iconSet->getSpriteSheets() as $spriteSheet) {
+                        $spriteSheetData = file_get_contents($spriteSheet['url']);
+                        $spriteSheetHtml = '<div id="icon-picker-spritesheet-' . $spriteSheet['name'] . '" style="display: none;">' . $spriteSheetData . '</div>';
+
+                        $view->registerHtml($spriteSheetHtml, View::POS_BEGIN);
+                    }
+
+                    foreach ($iconSet->fonts as $font) {
+                        if ($font['type'] === 'local') {
+                            $view->registerCss(<<<CSS
+                                @font-face {
+                                    font-family: "{$font['name']}";
+                                    src: url("{$font['url']}");
+                                    font-weight: normal;
+                                    font-style: normal;
+                                }
+
+                                .{$font['name']} {
+                                    font-family: "{$font['name']}" !important;
+                                }
+                            CSS);
+                        } else if ($font['type'] === 'proxy') {
+                            $view->registerCss(<<<CSS
+                                .{$font['id']} {
+                                    font-family: "{$font['name']}" !important;
+                                }
+                            CSS);
+                        } else if ($font['type'] === 'remote') {
+                            // Support multiple remote stylesheets
+                            if (!is_array($font['url'])) {
+                                $font['url'] = [$font['url']];
+                            }
+
+                            foreach ($font['url'] as $url) {
+                                $view->registerCssFile($url);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Store the spritesheet in a flag plugin-wide to prevent multiple rendering
+            IconPicker::$plugin->getService()->$cacheCategory[] = $value->iconSetHandle;
+        }
+
+        if ($value->type === Icon::TYPE_SVG) {
+            $iconHtml = Cp::iconSvg($value->displayValue);
+
+            return Html::tag('div', $iconHtml, ['class' => 'cp-icon']);
+        }
+
+        if ($value->type === Icon::TYPE_SPRITE) {
+            $iconHtml = '<svg viewBox="0 0 1000 1000"><use xlink:href="#' . $value->displayValue . '" /></svg>';
+
+            return Html::tag('div', $iconHtml, ['class' => 'cp-icon']);
+        }
+
+        if ($value->type === Icon::TYPE_GLYPH) {
+            $iconHtml = '<span class="ipui-font font-face-' . $value->iconSet . '">' . $value->displayValue . '</span>';
+
+            return Html::tag('div', $iconHtml, ['class' => 'cp-icon']);
+        }
+
+        if ($value->type === Icon::TYPE_CSS) {
+            $iconHtml = '<span class="' . $value->displayValue . '"></span>';
+
+            return Html::tag('div', $iconHtml, ['class' => 'cp-icon']);
+        }
+
+        return '';
     }
 }

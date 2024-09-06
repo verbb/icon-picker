@@ -10,6 +10,13 @@ use craft\base\Field;
 
 class Service extends Component
 {
+    // Properties
+    // =========================================================================
+
+    public array $renderedPreviewResources = [];
+    public array $renderedThumbResources = [];
+
+
     // Public Methods
     // =========================================================================
 
