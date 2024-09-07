@@ -7,6 +7,7 @@ use verbb\iconpicker\queue\jobs\GenerateIconSetCache;
 use Craft;
 use craft\base\Component;
 use craft\base\Field;
+use craft\helpers\App;
 
 class Service extends Component
 {
@@ -59,6 +60,11 @@ class Service extends Component
 
     public function checkToInvalidateCache(): void
     {
+        // This only needs to be done on a dev-environment. Any other environment should rely on the cache-clear utility.
+        if (!App::devMode()) {
+            return;
+        }
+
         $iconSetsPath = IconPicker::$plugin->getSettings()->getIconSetsPath();
 
         // Prevent failure when installing

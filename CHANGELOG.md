@@ -6,6 +6,12 @@
 - Now requires PHP `8.2.0+`.
 - Now requires Craft `5.0.0+`.
 
+## 2.0.19 - 2024-09-07
+
+### Changed
+- Automatic icon cache invalidation now only happens when `devMode` is enabled. To invalidate the cache, use the “Caches” utility and/or console commands.
+- Update English translations.
+
 ## 2.0.18 - 2024-05-18
 
 ### Added
