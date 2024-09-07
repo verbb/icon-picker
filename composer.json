@@ -2,7 +2,7 @@
     "name": "verbb/icon-picker",
     "description": "A slick field to pick icons from. Supports SVGs, Sprites, Webfonts, Font Awesome and more.",
     "type": "craft-plugin",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "keywords": [
         "craft",
         "cms",

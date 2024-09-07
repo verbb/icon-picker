@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.0.1 - 2024-09-07
+
+### Added
+- Add the ability to use Icon Picker’s icon in element thumnbails and cards.
+- Add `iconSetHandle` to each chosen icon, to keep track of which Icon Set an icon belongs to.
+
+### Changed
+- Automatic icon cache invalidation now only happens when `devMode` is enabled. To invalidate the cache, use the “Caches” utility and/or console commands.
+- Update English translations.
+
+### Fixed
+- Fix an error with Feed Me integration.
+
 ## 3.0.0 - 2024-05-18
 
 ### Changed
