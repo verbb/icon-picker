@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.2 - 2024-10-20
+
+### Fixed
+- Fix Font Awesome Brands style.
+
 ## 3.0.1 - 2024-09-07
 
 ### Added
