@@ -295,7 +295,7 @@ class FontAwesome extends IconSet
 
                 IconPicker::error($this->_apiError);
             }
-        });
+        }) ?? [];
     }
 
     public function getApiError(): ?string
@@ -376,7 +376,7 @@ class FontAwesome extends IconSet
         $style = $familyStyle['style'] ?? null;
         $key = implode(':', array_filter([$family, $style]));
 
-        if (in_array($key, $this->styles)) {
+        if (is_array($this->styles) && in_array($key, $this->styles)) {
             return true;
         }
 
