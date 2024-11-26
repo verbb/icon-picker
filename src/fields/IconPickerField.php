@@ -139,6 +139,11 @@ class IconPickerField extends Field
         return $value;
     }
 
+    public function isValueEmpty(mixed $value, ElementInterface $element): bool
+    {
+        return $value->isEmpty();
+    }
+
     public function afterSave(bool $isNew): void
     {
         // When saving the field, fire off queue jobs to prime the icon cache
