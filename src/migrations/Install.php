@@ -70,6 +70,10 @@ class Install extends Migration
         }
     }
 
+    
+    // Private Methods
+    // =========================================================================
+
     private function _defaultIconSet(): void
     {
         $iconSet = new SvgFolder([
