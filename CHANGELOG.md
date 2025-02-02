@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.0.3 - 2025-02-02
+
+### Added
+- Add extra error handling for Font Awesome kit icons.
+
+### Fixed
+- Fix lack of required field validation.
+
 ## 3.0.2 - 2024-10-20
 
 ### Fixed
