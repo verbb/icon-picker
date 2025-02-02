@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.20 - 2025-02-02
+
+### Fixed
+- Fix lack of required field validation.
+
 ## 2.0.19 - 2024-09-07
 
 ### Changed
