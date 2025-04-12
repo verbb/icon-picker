@@ -198,7 +198,7 @@ export default {
                 placement: 'bottom-start',
                 theme: 'light-border icon-picker',
                 maxWidth: 'none',
-                zIndex: 10,
+                zIndex: 1001,
                 hideOnClick: true,
                 plugins: [hideOnEsc],
 
