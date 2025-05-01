@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.4 - 2025-05-01
+
+### Fixed
+- Fix z-index issue with field, in combination with CKEditor, and the element slide-out editor.
+
 ## 3.0.3 - 2025-02-02
 
 ### Added
