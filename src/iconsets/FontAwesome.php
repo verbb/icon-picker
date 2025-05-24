@@ -70,8 +70,11 @@ class FontAwesome extends IconSet
             foreach ($this->kits as $kit) {
                 [$kitToken, $version, $license] = explode(':', $kit);
 
-                $icons = $this->getKit($kitToken, $license);
+                $data = $this->getKit($kitToken, $license);
+                $customIcons = $data['iconUploads'] ?? [];
+                $icons = $data['release']['icons'] ?? [];
 
+                // Support both custom and core icons
                 foreach ($icons as $icon) {
                     // Create a new icon for each style
                     $styles = $icon['familyStylesByLicense'] ?? [];
@@ -90,6 +93,15 @@ class FontAwesome extends IconSet
                             }
                         }
                     }
+                }
+
+                foreach ($customIcons as $customIcon) {
+                    $this->icons[] = new Icon([
+                        'type' => Icon::TYPE_CSS,
+                        'value' => $customIcon['iconDefinition']['prefix'] . ' fa-' . $customIcon['iconDefinition']['iconName'],
+                        'label' => $customIcon['name'],
+                        'keywords' => $customIcon['name'],
+                    ]);
                 }
 
                 $this->scripts[] = [
@@ -263,6 +275,17 @@ class FontAwesome extends IconSet
                                 query {
                                     me {
                                         kit(token: "' . $kitId . '") {
+                                            iconUploads {
+                                                name
+                                                unicode
+                                                version
+                                                width
+                                                height
+                                                pathData
+                                                html
+                                                iconDefinition
+                                            }
+
                                             release {
                                                 ' . $iconsParam . ' {
                                                     id
@@ -283,7 +306,7 @@ class FontAwesome extends IconSet
                         ],
                     ]);
 
-                    return $response['data']['me']['kit']['release']['icons'] ?? [];
+                    return $response['data']['me']['kit'] ?? [];
                 }
             } catch (Throwable $e) {
                 $messageText = $e->getMessage();
