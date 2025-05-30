@@ -52,6 +52,11 @@ class IconPickerField extends Field
         parent::__construct($config);
     }
 
+    public function getContentColumnType(): array|string
+    {
+        return $this->columnType;
+    }
+
     public function getInputHtml(mixed $value, ?ElementInterface $element = null): string
     {
         if (!$value) {
