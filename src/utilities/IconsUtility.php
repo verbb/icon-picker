@@ -1,10 +1,12 @@
 <?php
 namespace verbb\iconpicker\utilities;
 
+use verbb\iconpicker\IconPicker;
+
 use Craft;
 use craft\base\Utility;
 
-class CacheUtility extends Utility
+class IconsUtility extends Utility
 {
     // Static Methods
     // =========================================================================
@@ -16,7 +18,7 @@ class CacheUtility extends Utility
 
     public static function id(): string
     {
-        return 'icon-picker-cache';
+        return 'icon-picker';
     }
 
     public static function icon(): ?string
@@ -26,6 +28,13 @@ class CacheUtility extends Utility
 
     public static function contentHtml(): string
     {
-        return Craft::$app->getView()->renderTemplate('icon-picker/_utility');
+        $view = Craft::$app->getView();
+        $data = Craft::$app->getSession()->getFlash('iconpickerTroubleshooterData') ?? [];
+        $iconSets = IconPicker::$plugin->getIconSets()->getAllIconSets();
+
+        return $view->renderTemplate('icon-picker/_utility', [
+            'iconSets' => $iconSets,
+            'data' => $data,
+        ]);
     }
 }

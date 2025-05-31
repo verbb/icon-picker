@@ -99,6 +99,19 @@ class SvgSprite extends IconSet
         }
     }
 
+    public function getDiagnosticsSummary(): array
+    {
+        $settings = IconPicker::$plugin->getSettings();
+        $iconSetsPath = $settings->getIconSetsPath();
+
+        $fullPath = $iconSetsPath . DIRECTORY_SEPARATOR . $this->spriteFile;
+
+        return [
+            'Spritesheet Path: ' . $fullPath,
+            'Spritesheet URL: ' . IconPickerHelper::getUrlForPath($fullPath),
+        ];
+    }
+
 
     // Protected Methods
     // =========================================================================

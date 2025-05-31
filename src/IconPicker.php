@@ -9,7 +9,7 @@ use verbb\iconpicker\helpers\ProjectConfigHelper;
 use verbb\iconpicker\integrations\feedme\fields\IconPicker as FeedMeIconPickerField;
 use verbb\iconpicker\models\Settings;
 use verbb\iconpicker\services\IconSets;
-use verbb\iconpicker\utilities\CacheUtility;
+use verbb\iconpicker\utilities\IconsUtility;
 use verbb\iconpicker\variables\IconPickerVariable;
 
 use Craft;
@@ -137,7 +137,7 @@ class IconPicker extends Plugin
     private function _registerUtilities(): void
     {
         Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITIES, function(RegisterComponentTypesEvent $event) {
-            $event->types[] = CacheUtility::class;
+            $event->types[] = IconsUtility::class;
         });
     }
 

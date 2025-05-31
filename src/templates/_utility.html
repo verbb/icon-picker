@@ -1,16 +1,139 @@
 {% import '_includes/forms' as forms %}
 
-<h1>{{ 'Icon Picker Cache' | t('icon-picker') }}</h1>
+<h2>{{ 'Icon Picker' | t('icon-picker') }}</h2>
+
+<h3>{{ 'Icon Cache' | t('icon-picker') }}</h3>
 
 <p>{{ 'For performance, each icon set for Icon Picker fields are cached. This means that the contents of the file or folder for the icon set is saved when you save your Icon Picker field. So, if you add or remove icons to your Icon Picker folder, you‘ll need to re-generate the cache. You can simply re-save your field for the cache to be updated, or regenerate all icon sets cache below.' | t('icon-picker') }}</p>
 
 <p class="light">{{ 'This will create a queue job for each icon set.' | t('icon-picker') }}</p>
 
 <form class="utility" method="post" accept-charset="UTF-8">
-    <input type="hidden" name="action" value="icon-picker/settings/clear-cache">
-
-    {{ redirectInput('utilities/icon-picker-cache') }}
+    {{ actionInput('icon-picker/settings/clear-cache') }}
+    {{ redirectInput('utilities/icon-picker') }}
     {{ csrfInput() }}
 
     <input type="submit" class="btn submit" value="{{ 'Re-generate all icon set caches' | t('icon-picker')  }}">
 </form>
+
+<hr>
+
+<h3>{{ 'Troubleshooting' | t('icon-picker') }}</h3>
+
+<p>{{ 'Use the utility below for troubleshooting any issues with the plugin, such as no icons being available, etc. This will confirm the paths and URLs to icons, and report back on findings.' | t('icon-picker') }}</p>
+
+<form class="utility" method="post" accept-charset="UTF-8">
+    {{ actionInput('icon-picker/settings/troubleshoot') }}
+    {{ csrfInput() }}
+
+    {% set iconSetOptions = [] %}
+    {% for handle, iconSet in iconSets %}
+        {% set iconSetOptions = iconSetOptions | merge([{
+            label: iconSet.name ?: handle,
+            value: handle
+        }]) %}
+    {% endfor %}
+
+    {{ forms.checkboxSelectField({
+        label: 'Icon Sets to Check' | t('icon-picker'),
+        instructions: 'Choose which icon sets to run diagnostics on.' | t('icon-picker'),
+        name: 'iconSets',
+        options: iconSetOptions,
+        values: '*',
+        showAllOption: true,
+    }) }}
+
+    <input type="submit" class="btn submit" value="{{ 'Run troubleshooting' | t('icon-picker')  }}">
+</form>
+
+{% if data %}
+    <hr>
+
+    <div id="iconpicker-troubleshooter">
+        <h3>{{ 'Troubleshooting Results'|t('icon-picker') }}</h3>
+
+        {% for result in data %}
+            <div class="iconpicker-result {{ result.status }}">
+                <h4>
+                    {% if result.status == 'success' %}✅{% elseif result.status == 'warning' %}⚠️{% else %}❌{% endif %}
+                    {{ result.label }}
+                </h4>
+
+                <p>{{ result.message }}</p>
+
+                {% if result.details %}
+                    <details>
+                        <summary class="iconpicker-summary">View details</summary>
+                        <ul>
+                            {% for detail in result.details %}
+                                <li>{{ detail }}</li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                {% endif %}
+
+                {% if result.raw is defined and result.raw | length %}
+                    <details>
+                        <summary class="iconpicker-summary">Raw data</summary>
+                        <pre>{{ result.raw | json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_SLASHES')) }}</pre>
+                    </details>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    {% css %}
+
+    .iconpicker-result {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border: 1px solid #dcdcdc;
+        border-radius: 4px;
+    }
+
+    .iconpicker-result.success {
+        border-color: #46b049;
+        background: #f3fdf3;
+    }
+
+    .iconpicker-result.warning {
+        border-color: #e6a100;
+        background: #fff9e5;
+    }
+
+    .iconpicker-result.error {
+        border-color: #da5a47;
+        background: #fdf2f2;
+    }
+
+    .iconpicker-result h4 {
+        margin: 0;
+        color: inherit;
+    }
+
+    .iconpicker-result details {
+        margin-top: 0.5rem;
+    }
+
+    .iconpicker-result ul {
+        margin-top: 0.3rem;
+        margin-left: 1.2rem;
+    }
+
+    .iconpicker-result li {
+        margin-bottom: 0.2rem;
+        font-size: 0.9em;
+    }
+
+    .iconpicker-summary {
+        font-size: 0.85em;
+        cursor: pointer;
+    }
+
+    .iconpicker-result details pre {
+        font-size: 0.75em;
+        line-height: 1.3;
+    }
+
+    {% endcss %}
+{% endif %}

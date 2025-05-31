@@ -94,6 +94,15 @@ class SvgFolder extends IconSet
         }
     }
 
+    public function getIconDiagnosticsSummary(Icon $icon): array
+    {
+        $options = parent::getIconDiagnosticsSummary($icon);
+        $options['path'] = $icon->getPath();
+        $options['url'] = $icon->getUrl();
+
+        return $options;
+    }
+
 
     // Protected Methods
     // =========================================================================

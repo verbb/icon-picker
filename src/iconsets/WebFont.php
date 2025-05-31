@@ -100,6 +100,19 @@ class WebFont extends IconSet
         }
     }
 
+    public function getDiagnosticsSummary(): array
+    {
+        $settings = IconPicker::$plugin->getSettings();
+        $iconSetsPath = $settings->getIconSetsPath();
+
+        $fullPath = $iconSetsPath . DIRECTORY_SEPARATOR . $this->fontFile;
+
+        return [
+            'Font Path: ' . $fullPath,
+            'Font URL: ' . IconPickerHelper::getUrlForPath($fullPath),
+        ];
+    }
+
 
     // Protected Methods
     // =========================================================================

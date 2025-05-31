@@ -156,6 +156,16 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
         return UrlHelper::cpUrl('icon-picker/settings/icon-sets/edit/' . $this->id);
     }
 
+    public function getIconDiagnosticsSummary(Icon $icon): array
+    {
+        return $icon->toArray();
+    }
+
+    public function getDiagnosticsSummary(): array
+    {
+        return [];
+    }
+
 
     // Private Methods
     // =========================================================================

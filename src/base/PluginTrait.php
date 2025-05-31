@@ -5,6 +5,7 @@ use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\services\IconSets;
 use verbb\iconpicker\services\IconSources;
 use verbb\iconpicker\services\Service;
+use verbb\iconpicker\services\Troubleshoot;
 use verbb\iconpicker\web\assets\field\IconPickerAsset;
 
 use verbb\base\LogTrait;
@@ -38,6 +39,7 @@ trait PluginTrait
                 'iconSets' => IconSets::class,
                 'iconSources' => IconSources::class,
                 'service' => Service::class,
+                'troubleshoot' => Troubleshoot::class,
                 'vite' => [
                     'class' => VitePluginService::class,
                     'assetClass' => IconPickerAsset::class,
@@ -70,6 +72,11 @@ trait PluginTrait
     public function getService(): Service
     {
         return $this->get('service');
+    }
+
+    public function getTroubleshoot(): Troubleshoot
+    {
+        return $this->get('troubleshoot');
     }
 
     public function getVite(): VitePluginService
