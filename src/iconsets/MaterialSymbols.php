@@ -31,19 +31,23 @@ class MaterialSymbols extends IconSet
 
     public function fetchIcons(): void
     {
-        $iconPath = __DIR__ . '/../json/material-symbols.json';
+        $metadata = file_get_contents(
+            'https://fonts.google.com/metadata/icons/Material%20Symbols%20Outlined?key=material_symbols&incomplete=true'
+        );
 
-        if (file_exists($iconPath)) {
-            $json = Json::decode(file_get_contents($iconPath));
+        $icons = json_decode(
+            substr($metadata, strpos($metadata, "\n") + 1),
+            true
+        )['icons'];
 
-            foreach ($json as $icon) {
-                $this->icons[] = new Icon([
-                    'type' => Icon::TYPE_GLYPH,
-                    'iconSetHandle' => $this->handle,
-                    'iconSet' => 'material-symbols-outlined',
-                    'value' => $icon['label'] . ':' . $icon['glyph'],
-                ]);
-            }
+        foreach ($icons as $icon) {
+            $this->icons[] = new Icon([
+                'type' => Icon::TYPE_GLYPH,
+                'iconSetHandle' => $this->handle,
+                'iconSet' => 'material-symbols-outlined',
+                'value' => $icon['name'] . ':' . $icon['codepoint'],
+                'keywords' => implode(' ', $icon['tags']),
+            ]);
         }
 
         $this->fonts[] = [
