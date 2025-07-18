@@ -37,6 +37,19 @@
 - Now requires PHP `8.2.0+`.
 - Now requires Craft `5.0.0+`.
 
+## 2.0.22 - 2025-07-18
+
+### Changed
+- Update English translations.
+
+## 2.0.21 - 2025-05-30
+
+### Added
+- Add support for custom Font Awesome icons.
+
+### Fixed
+- Fix lack of handling for database column type for field.
+
 ## 2.0.20 - 2025-02-02
 
 ### Fixed
