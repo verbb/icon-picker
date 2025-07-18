@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.0.5 - 2025-07-18
+
+### Added
+- Add troubleshooting and diagnostics utility.
+- Add support for custom Font Awesome icons.
+
+### Changed
+- Update English translations.
+- Update Material Icons symbols.
+
+### Fixed
+- Fix lack of handling for database column type for field.
+
 ## 3.0.4 - 2025-05-01
 
 ### Fixed
