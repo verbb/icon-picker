@@ -493,7 +493,7 @@ export default {
         height: 100%;
         display: block;
 
-        &:not([stroke]) {
+        &:not([stroke]):not([fill]) {
             fill: currentColor;
         }
     }
@@ -614,7 +614,7 @@ export default {
         height: 100%;
         display: block;
 
-        &:not([stroke]) {
+        &:not([stroke]):not([fill]) {
             fill: currentColor;
         }
     }
