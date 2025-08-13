@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.23 - 2025-08-12
+
+### Fixed
+- Fix visual issue for some icons and fill color.
+
 ## 2.0.22 - 2025-07-18
 
 ### Changed
