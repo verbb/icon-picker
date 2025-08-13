@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.6 - 2025-08-13
+
+### Fixed
+- Fix visual issue for some icons and fill color.
+
 ## 3.0.5 - 2025-07-18
 
 ### Added
