@@ -15,7 +15,7 @@ use craft\base\Field;
 use craft\base\MemoizableArray;
 use craft\db\Query;
 use craft\errors\MissingComponentException;
-use craft\events\ConfigEvent;
+use CraftCms\Cms\ProjectConfig\Events\ItemAdded;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Component as ComponentHelper;
 use craft\helpers\Db;
@@ -192,7 +192,7 @@ class IconSets extends Component
         return true;
     }
 
-    public function handleChangedIconSet(ConfigEvent $event): void
+    public function handleChangedIconSet($event): void
     {
         $iconSetUid = $event->tokenMatches[0];
         $data = $event->newValue;
@@ -310,7 +310,7 @@ class IconSets extends Component
         return true;
     }
 
-    public function handleDeletedIconSet(ConfigEvent $event): void
+    public function handleDeletedIconSet($event): void
     {
         $uid = $event->tokenMatches[0];
         $iconSetRecord = $this->_getIconSetRecord($uid);
