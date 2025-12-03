@@ -359,34 +359,111 @@ class FontAwesome extends IconSet
 
     private function _getAbbreviationForFamilyStyle($familyStyle): string
     {
+        $classes = [];
         $family = $familyStyle['family'] ?? '';
         $style = $familyStyle['style'] ?? '';
 
-        if ($family === 'duotone') {
-            return 'fad';
+        // https://docs.fontawesome.com/v6/web/dig-deeper/styles
+
+        // Families
+        if ($family === 'classic') {
+            $classes[] = 'fa-classic';
         }
 
+        if ($family === 'duotone') {
+            $classes[] = 'fa-duotone';
+        }
+
+        if ($family === 'sharp') {
+            $classes[] = 'fa-sharp';
+        }
+
+        if ($family === 'sharp-duotone') {
+            $classes[] = 'fa-sharp-duotone';
+        }
+
+        if ($family === 'chisel') {
+            $classes[] = 'fa-chisel';
+        }
+
+        if ($family === 'etch') {
+            $classes[] = 'fa-etch';
+        }
+
+        if ($family === 'jelly') {
+            $classes[] = 'fa-jelly';
+        }
+
+        if ($family === 'jelly-fill') {
+            $classes[] = 'fa-jelly-fill';
+        }
+
+        if ($family === 'jelly-duo') {
+            $classes[] = 'fa-jelly-duo';
+        }
+
+        if ($family === 'notdog') {
+            $classes[] = 'fa-notdog';
+        }
+
+        if ($family === 'notdog-duo') {
+            $classes[] = 'fa-notdog-duo';
+        }
+
+        if ($family === 'slab') {
+            $classes[] = 'fa-slab';
+        }
+
+        if ($family === 'slab-press') {
+            $classes[] = 'fa-slab-press';
+        }
+
+        if ($family === 'thumbprint') {
+            $classes[] = 'fa-thumbprint';
+        }
+
+        if ($family === 'utility') {
+            $classes[] = 'fa-utility';
+        }
+
+        if ($family === 'utility-fill') {
+            $classes[] = 'fa-utility-fill';
+        }
+
+        if ($family === 'utility-duo') {
+            $classes[] = 'fa-utility-duo';
+        }
+
+        if ($family === 'whiteboard') {
+            $classes[] = 'fa-whiteboard';
+        }
+
+        // Styles
         if ($style === 'brands') {
-            return 'fab';
+            $classes[] = 'fa-brands';
         }
 
         if ($style === 'solid') {
-            return 'fas';
+            $classes[] = 'fa-solid';
         }
 
         if ($style === 'regular') {
-            return 'far';
+            $classes[] = 'fa-regular';
         }
 
         if ($style === 'light') {
-            return 'fal';
+            $classes[] = 'fa-light';
         }
 
         if ($style === 'thin') {
-            return 'fat';
+            $classes[] = 'fa-thin';
         }
 
-        return 'fa';
+        if ($style === 'semibold') {
+            $classes[] = 'fa-semibold';
+        }
+
+        return implode(' ', $classes);
     }
 
     private function _shouldIncludeStyle(array $familyStyle): bool
