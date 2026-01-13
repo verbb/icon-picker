@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.7 - 2026-01-13
+
+### Fixed
+- Fix Font Awesome Sharp and Sharp Duotone styles for kits.
+
 ## 3.0.6 - 2025-08-13
 
 ### Fixed
