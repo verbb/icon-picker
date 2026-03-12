@@ -219,10 +219,7 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
             $loadResources = true;
         }
 
-        Plugin::registerAsset('field/src/js/icon-picker.js');
-
-        // Create the IconPicker Input Vue component
-        $js = 'new Craft.IconPicker.Input(' . Json::encode([
+        $componentSettings = [
             'id' => $id,
             'inputId' => $nameSpacedId,
             'name' => $this->handle,
@@ -233,19 +230,17 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
             'itemSizeLarge' => $pluginSettings->iconItemSizeLarge,
             'itemWrapperSize' => $pluginSettings->iconItemWrapperSize,
             'itemWrapperSizeLarge' => $pluginSettings->iconItemWrapperSizeLarge,
-        ]) . ');';
+        ];
 
-        // Wait for IconPicker JS to be loaded, either through an event listener, or by a flag.
-        // This covers if this script is run before, or after the IconPicker JS has loaded
-        $view->registerJs('document.addEventListener("vite-script-loaded", function(e) {' .
-            'if (e.detail.path === "field/src/js/icon-picker.js") {' . $js . '}' .
-        '}); if (Craft.IconPickerReady) {' . $js . '}');
+        // Register Icon Picker assets; roots are mounted automatically by icon-picker.js.
+        Plugin::registerAsset('field/src/js/icon-picker.js');
 
         return $view->renderTemplate('icon-picker/_field/input', [
             'id' => $id,
             'name' => $this->handle,
             'namespaceId' => $nameSpacedId,
             'value' => $value,
+            'componentSettings' => Json::encode($componentSettings, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
         ]);
     }
 
