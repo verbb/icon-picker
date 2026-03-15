@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.8 - 2026-03-15
+
+### Changed
+- Refactor Icon Picker field bootstrapping to DOM auto-mount.
+
 ## 3.0.7 - 2026-01-13
 
 ### Fixed
