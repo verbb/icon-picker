@@ -72,7 +72,7 @@ return [
   'Select a Icon Picker field to be used for Redactor fields.' => 'Select a Icon Picker field to be used for Redactor fields.',
   'Select an option' => 'Select an option',
   'Select how you want to use Font Awesome.' => 'Select how you want to use Font Awesome.',
-  'Select the folder where your SVG icons exist. This is relative to your [Icons Path]({url}) setting. Folders are not recursive.' => 'Select the folder where your SVG icons exist. This is relative to your [Icons Path]({url}) setting. Folders are not recursive.',
+  'Select the folder where your SVG icons exist. This is relative to your [Icons Path]({url}) setting. Folders are recursive.' => 'Select the folder where your SVG icons exist. This is relative to your [Icons Path]({url}) setting. Folders are recursive.',
   'Select the kits you would like included in this icon set.' => 'Select the kits you would like included in this icon set.',
   'Select the styles this kit should include.' => 'Select the styles this kit should include.',
   'Select the type of icon set to use.' => 'Select the type of icon set to use.',
