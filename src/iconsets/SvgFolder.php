@@ -24,6 +24,7 @@ class SvgFolder extends IconSet
     // =========================================================================
 
     public ?string $folder = null;
+    public bool $recursive = true;
 
 
     // Public Methods
@@ -74,7 +75,7 @@ class SvgFolder extends IconSet
         $files = IconPickerHelper::getFiles($folderPath, [
             'only' => ['*.svg'],
             'except' => ['*-sprites.svg', '_*'],
-            'recursive' => true,
+            'recursive' => $this->recursive,
         ]);
 
         foreach ($files as $key => $file) {
@@ -112,6 +113,7 @@ class SvgFolder extends IconSet
         $rules = parent::defineRules();
 
         $rules[] = [['folder'], 'required'];
+        $rules[] = [['recursive'], 'boolean'];
 
         return $rules;
     }
