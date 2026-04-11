@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.0.9 - 2026-04-11
+
+### Added
+- Add `recursive` setting for SVG Icon Sets.
+
+### Changed
+- Update SVG folder instruction text regarding recursive folders.
+
 ## 3.0.8 - 2026-03-15
 
 ### Changed
