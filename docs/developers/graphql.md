@@ -44,3 +44,45 @@ You can fetch field content via GraphQL for Icon Picker fields. The resulting va
     }
 }
 ```
+
+## The `IconInterface` Interface
+This is the interface implemented by every Icon Picker field’s GraphQL object type (`{fieldHandle}_Icon`). Use it when you want one fragment or selection set to work across different field handles.
+
+| Field | Type | Description
+| - | - | -
+| `value` | `String` | The value of the icon. This will vary depending on the type of icon.
+| `iconSet` | `String` | The icon set this icon belongs to.
+| `label` | `String` | The named representation of the icon.
+| `keywords` | `String` | The keywords used to search for the icon by. Defaults to the `label`.
+| `type` | `String` | What type of icon this is: `svg`, `sprite`, `glyph`, or `css`.
+| `isEmpty` | `Boolean` | Whether there is an icon selected for this field.
+| `url` | `String` | The full URL to the icon.
+| `path` | `String` | The full path to the icon.
+| `inline` | `String` | The raw contents of the icon (for example inline SVG).
+| `glyph` | `String` | The character representation of a font glyph.
+| `glyphName` | `String` | The named representation of a font glyph.
+
+## Reusable Fragments
+Because each `{fieldHandle}_Icon` type implements `IconInterface`, you can define a single fragment and spread it on any Icon Picker field:
+
+```graphql
+fragment Icon on IconInterface {
+    value
+    iconSet
+    label
+    keywords
+    type
+    isEmpty
+    url
+    path
+    inline
+    glyph
+    glyphName
+}
+
+fragment Example on blog_blog_Entry {
+    iconPickerField {
+        ...Icon
+    }
+}
+```

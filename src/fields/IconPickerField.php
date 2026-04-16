@@ -20,11 +20,18 @@ use craft\web\View;
 
 use yii\db\Schema;
 
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\Type;
 
 class IconPickerField extends Field implements ThumbableFieldInterface, PreviewableFieldInterface
 {
+    // Constants
+    // =========================================================================
+
+    private const GQL_ICON_INTERFACE_NAME = 'IconInterface';
+
+
     // Static Methods
     // =========================================================================
 
@@ -125,66 +132,10 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
 
         $iconType = GqlEntityRegistry::getEntity($typeName) ?: GqlEntityRegistry::createEntity($typeName, new ObjectType([
             'name' => $typeName,
-            'fields' => [
-                'value' => [
-                    'name' => 'value',
-                    'type' => Type::string(),
-                    'description' => 'The value of the icon. This will vary depending on the type of icon.',
-                ],
-                'iconSet' => [
-                    'name' => 'iconSet',
-                    'type' => Type::string(),
-                    'description' => 'The icon set this icon belongs to.',
-                ],
-                'label' => [
-                    'name' => 'label',
-                    'type' => Type::string(),
-                    'description' => 'The named representation of the icon.',
-                ],
-                'keywords' => [
-                    'name' => 'keywords',
-                    'type' => Type::string(),
-                    'description' => 'The keywords used to search for the icon by. Defaults to the `label`.',
-                ],
-                'type' => [
-                    'name' => 'type',
-                    'type' => Type::string(),
-                    'description' => 'What type of icon this is: `svg`, `sprite`, `glyph` or `css`.',
-                ],
-                'isEmpty' => [
-                    'name' => 'isEmpty',
-                    'type' => Type::boolean(),
-                    'description' => 'Returns whether or not there‘s an icon selected for this field.',
-                    'resolve' => function($model) {
-                        return $model->isEmpty();
-                    },
-                ],
-                'url' => [
-                    'name' => 'url',
-                    'type' => Type::string(),
-                    'description' => 'Return the full URL to the icon.',
-                ],
-                'path' => [
-                    'name' => 'path',
-                    'type' => Type::string(),
-                    'description' => 'Return the full path to the icon.',
-                ],
-                'inline' => [
-                    'name' => 'inline',
-                    'type' => Type::string(),
-                    'description' => 'Returns the raw contents of the icon.',
-                ],
-                'glyph' => [
-                    'name' => 'glyph',
-                    'type' => Type::string(),
-                    'description' => 'Returns the character representation of a font glyph.',
-                ],
-                'glyphName' => [
-                    'name' => 'glyphName',
-                    'type' => Type::string(),
-                    'description' => 'Returns the named representation of a font glyph.',
-                ],
+            'interfaces' => [
+                static::gqlIconInterface(),
             ],
+            'fields' => static::gqlIconFields(),
         ]));
 
         TypeLoader::registerType($typeName, static function() use ($iconType) {
@@ -192,6 +143,93 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
         });
 
         return $iconType;
+    }
+
+
+    private static function gqlIconFields(): array
+    {
+        return [
+            'value' => [
+                'name' => 'value',
+                'type' => Type::string(),
+                'description' => 'The value of the icon. This will vary depending on the type of icon.',
+            ],
+            'iconSet' => [
+                'name' => 'iconSet',
+                'type' => Type::string(),
+                'description' => 'The icon set this icon belongs to.',
+            ],
+            'label' => [
+                'name' => 'label',
+                'type' => Type::string(),
+                'description' => 'The named representation of the icon.',
+            ],
+            'keywords' => [
+                'name' => 'keywords',
+                'type' => Type::string(),
+                'description' => 'The keywords used to search for the icon by. Defaults to the `label`.',
+            ],
+            'type' => [
+                'name' => 'type',
+                'type' => Type::string(),
+                'description' => 'What type of icon this is: `svg`, `sprite`, `glyph` or `css`.',
+            ],
+            'isEmpty' => [
+                'name' => 'isEmpty',
+                'type' => Type::boolean(),
+                'description' => 'Returns whether or not there‘s an icon selected for this field.',
+                'resolve' => function($model) {
+                    return $model->isEmpty();
+                },
+            ],
+            'url' => [
+                'name' => 'url',
+                'type' => Type::string(),
+                'description' => 'Return the full URL to the icon.',
+            ],
+            'path' => [
+                'name' => 'path',
+                'type' => Type::string(),
+                'description' => 'Return the full path to the icon.',
+            ],
+            'inline' => [
+                'name' => 'inline',
+                'type' => Type::string(),
+                'description' => 'Returns the raw contents of the icon.',
+            ],
+            'glyph' => [
+                'name' => 'glyph',
+                'type' => Type::string(),
+                'description' => 'Returns the character representation of a font glyph.',
+            ],
+            'glyphName' => [
+                'name' => 'glyphName',
+                'type' => Type::string(),
+                'description' => 'Returns the named representation of a font glyph.',
+            ],
+        ];
+    }
+
+    private static function gqlIconInterface(): InterfaceType
+    {
+        $name = self::GQL_ICON_INTERFACE_NAME;
+
+        $interface = GqlEntityRegistry::getEntity($name);
+        if ($interface instanceof InterfaceType) {
+            return $interface;
+        }
+
+        $interface = GqlEntityRegistry::createEntity($name, new InterfaceType([
+            'name' => $name,
+            'description' => 'Fields shared by every Icon Picker field GraphQL type so a single fragment can target `IconInterface` across field handles.',
+            'fields' => static::gqlIconFields(),
+        ]));
+
+        TypeLoader::registerType($name, static function() use ($interface) {
+            return $interface;
+        });
+
+        return $interface;
     }
 
 
