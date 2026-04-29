@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.10 - 2026-04-29
+
+### Added
+- Add GraphQL IconInterface.
+
 ## 3.0.9 - 2026-04-11
 
 ### Added
