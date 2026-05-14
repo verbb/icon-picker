@@ -78,6 +78,11 @@
 - Now requires PHP `8.2.0+`.
 - Now requires Craft `5.0.0+`.
 
+## 2.0.24 - 2026-05-13
+
+### Fixed
+- Fix a z-index issue with the icon picker overlay.
+
 ## 2.0.23 - 2025-08-12
 
 ### Fixed

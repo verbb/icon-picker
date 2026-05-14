@@ -98,6 +98,7 @@ class FontAwesome extends IconSet
 
                 $this->scripts[] = [
                     'type' => 'remote',
+                    'name' => 'icon-picker-fa-kit-' . $kitToken,
                     'url' => "https://kit.fontawesome.com/{$kitToken}.js",
                 ];
             }

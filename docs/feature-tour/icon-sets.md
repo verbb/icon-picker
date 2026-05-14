@@ -46,7 +46,11 @@ With [kits](https://fontawesome.com/kits) you can create collections of icons (a
 Adding the provided API key to the settings, you'll be able to select which kits to include in your Icon Set, to in turn be able to be picked from in the field. 
 
 :::warning
-You'll need to set your Font Awesome Kit **Technology** settings to use **Web Fonts** in order for Icon Picker to display them properly. **SVG** kits are not currently supported.
+Set your Font Awesome Kit **Technology** to **Web Fonts with CSS**, not **SVG + JS**.
+
+**SVG + JS** kits load a script that runs across the **entire Control Panel page**, not only the Icon Picker field. Font Awesome will replace many CSS-based icons (for example `<i class="fa fa-bold">`–style markup) with inline SVG. Other plugins that rely on those elements—such as markdown editors whose toolbar uses Font Awesome classes—can end up with broken layout or **non-clickable** toolbar buttons after the kit loads.
+
+**Web Fonts** keeps icons as normal CSS glyphs, so Icon Picker and other CP fields can coexist without that document-wide replacement behavior.
 :::
 
 This is also the only method to use **Font Awesome 6 Pro**.
