@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.11 - 2026-05-14
+
+### Fixed
+- Fix a z-index issue with the icon picker overlay.
+
 ## 3.0.10 - 2026-04-29
 
 ### Added
