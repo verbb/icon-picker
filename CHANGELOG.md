@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.12 - 2026-05-30
+
+### Fixed
+- Fix Font Awesome “Brands” family.
+
 ## 3.0.11 - 2026-05-14
 
 ### Fixed
