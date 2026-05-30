@@ -83,6 +83,11 @@
 - Now requires PHP `8.2.0+`.
 - Now requires Craft `5.0.0+`.
 
+## 2.0.25 - 2026-05-30
+
+### Fixed
+- Fix Font Awesome “Brands” family.
+
 ## 2.0.24 - 2026-05-13
 
 ### Fixed
