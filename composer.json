@@ -31,7 +31,7 @@
         "craftcms/cms": "^5.0.0",
         "glenscott/url-normalizer": "^1.4",
         "nystudio107/craft-plugin-vite": "^5.0.0",
-        "phenx/php-font-lib": "^0.5.0",
+        "dompdf/php-font-lib": "^1.0",
         "verbb/base": "^3.0.0"
     },
     "autoload": {
