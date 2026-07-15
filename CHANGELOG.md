@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.13 - 2026-07-15
+
+### Fixed
+- Fix conflicting `phenx/php-font-lib` dependency when used alongside plugins that require dompdf v3 (e.g. Formie).
+
 ## 3.0.12 - 2026-05-30
 
 ### Fixed
