@@ -270,8 +270,9 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
             'itemWrapperSizeLarge' => $pluginSettings->iconItemWrapperSizeLarge,
         ];
 
-        // Register Icon Picker assets; roots are mounted automatically by icon-picker.js.
-        Plugin::registerAsset('field/src/js/icon-picker.js');
+        // Register Plugin Kit web components + Icon Picker field assets; roots are
+        // mounted automatically by icon-picker.ts.
+        Plugin::registerFieldAssets();
 
         return $view->renderTemplate('icon-picker/_field/input', [
             'id' => $id,

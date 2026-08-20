@@ -1,0 +1,292 @@
+/* Icon Picker field layout — composition only.
+ *
+ * Visible chrome (border, bg, focus ring, invalid) is owned by `pk-input`. This file
+ * only positions the selected-icon chip over that control and styles the grid pane.
+ * Do not reimplement focus/error on `.ipui-icon-input` — that drifts from Plugin Kit
+ * whenever Craft or the kit changes input chrome. */
+
+.ipui-input-component {
+    position: relative;
+    display: block;
+    width: 100%;
+    /* Sizes pushed from JS (showLabels toggles large cell / icon box). */
+    --ipui-cell-size: 56px;
+    --ipui-icon-size: 32px;
+    --ipui-icon-size-large: 40px;
+}
+
+/* Layout host only — no border/background/focus (those live on pk-input). */
+.ipui-icon-input {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+.ipui-icon-input-search {
+    display: block;
+    width: 100%;
+}
+
+/* Chip overlays the pk-input text row; clicks pass through to the control. */
+.ipui-icon-input-item {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-sizing: border-box;
+    /* Match pk-input shell padding; leave room for slot=end clear. */
+    padding-block: 6px;
+    padding-inline: 8px;
+    padding-inline-end: 2rem;
+    min-width: 0;
+    pointer-events: none;
+}
+
+/* Author `display: flex` above beats the UA `[hidden] { display: none }` rule — keep
+   the chip out of layout while the popover is open (search must be the only chrome). */
+.ipui-icon-input-item[hidden] {
+    display: none !important;
+}
+
+.ipui-icon-input-svg {
+    position: relative;
+    flex: 0 0 auto;
+    width: 1.125rem;
+    height: 1.125rem;
+    font-size: 1.125rem;
+    line-height: 1.125rem;
+    text-align: center;
+}
+
+.ipui-icon-input-svg svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.ipui-icon-input-svg svg:not([stroke]):not([fill]) {
+    fill: currentColor;
+}
+
+.ipui-icon-input-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--pk-font-size-base);
+    line-height: var(--pk-input-control-line-height, 1.25rem);
+    color: var(--pk-color-gray-700);
+}
+
+/* Closed + chip: hide caret/typed glyphs; pk-input still owns the visible box. */
+.ipui-icon-input:not(.is-open) .ipui-icon-input-search.is-covered::part(input) {
+    color: transparent;
+    caret-color: transparent;
+}
+
+/* Clear in pk-input `slot=end` — square hit target like BEFORE delete. */
+.ipui-icon-input-clear {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--pk-color-gray-700);
+    cursor: pointer;
+    transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.ipui-icon-input-clear pk-icon {
+    display: block;
+    width: 0.75rem;
+    height: 0.75rem;
+    font-size: 0.75rem;
+    line-height: 1;
+}
+
+.ipui-icon-input-clear:hover,
+.ipui-icon-input-clear:focus-visible {
+    background: var(--pk-color-gray-550);
+    color: var(--pk-color-white);
+    outline: none;
+}
+
+/* Popover: BEFORE tippy was full field width (`maxWidth: none` + popper width 100%).
+   Kit `flush` caps the panel at ~22.5rem — content was overflowing so the shadow only
+   covered ~1/3 of the visible pane. Drive panel width from --ipui-popover-width (JS).
+
+   Also: kit `:host { display: inline-block }` + sibling after a full-width control wraps
+   onto a new line and still reserves a line-box while closed (~20px gap under every
+   field). Same pattern shows up in other Plugin Kit plugins using external `for=`
+   triggers. Pull the host out of flow locally; upstream should treat non-wrapping
+   hosts as zero-layout (`display: contents` or absolute) when trigger is external. */
+.ipui-icons-popover {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: visible;
+    --pk-popover-flush-min-width: 0;
+    --pk-popover-flush-max-width: 100vw;
+}
+
+.ipui-icons-popover::part(panel) {
+    width: var(--ipui-popover-width, 100%);
+    max-width: none;
+    min-width: 0;
+    /* Clip scroller to the panel’s radius — otherwise a classic scrollbar can paint
+       a sharp stub past the rounded bottom-right corner. */
+    overflow: hidden;
+    /* Default kit popover shadow is modal-scale (0 25px 100px) and floods the
+       trigger. ::part wins where host token inheritance into the shadow tree didn’t;
+       match select/combobox lists (`--pk-shadow-popup`). */
+    box-shadow: var(--pk-shadow-popup);
+}
+
+/* Pane fills the panel; height comes from status/scroller, not a forced 50vh box.
+   Padding lives on the scroller (BEFORE tippy), not here — padding on this wrapper
+   + a 50vh virtualizer overflows the border-box and shoves the scrollbar past the panel. */
+.ipui-icons-pane {
+    box-sizing: border-box;
+    width: 100%;
+    max-height: 50vh;
+    padding: 0;
+    background: var(--pk-color-white);
+}
+
+.ipui-icons-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px; /* BEFORE tippy content min-height */
+    padding: 1rem;
+    color: var(--pk-color-gray-500);
+    font-size: var(--pk-font-size-sm);
+    text-align: center;
+}
+
+/* Same [hidden] vs display:flex trap as the chip — leftover spinner stayed visible. */
+.ipui-icons-status[hidden] {
+    display: none !important;
+}
+
+/* Height is set in JS from row count (min 100px, max 50vh) so one icon isn't a huge empty box.
+   Padding is inside the scrollport (BEFORE tippy `.scroller`) so the scrollbar sits flush
+   with the panel edge. lit-virtualizer inlines `overflow: auto` — hide X with !important
+   (BEFORE tippy was overflow-x:hidden) so a few px of grid spill can’t spawn a corner bar
+   that makes the Y track look shifted off the panel. */
+.ipui-icons-scroller {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    max-height: 50vh;
+    padding: 5px;
+    overflow-x: hidden !important;
+    overflow-y: auto;
+    outline: none;
+}
+
+/* Same [hidden] vs author `display` trap as chip/status — empty query left the previous
+   grid visible under “No icons match your query.” */
+.ipui-icons-scroller[hidden] {
+    display: none !important;
+}
+
+.ipui-icon-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: var(--ipui-cell-size);
+    height: var(--ipui-cell-size);
+    margin: 0;
+    padding: 0.25rem;
+    border: 0;
+    border-radius: var(--pk-radius-sm);
+    background: transparent;
+    color: var(--pk-color-gray-700);
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.ipui-icon-wrap:hover {
+    background: var(--pk-color-gray-100);
+}
+
+.ipui-icon-wrap:focus-visible {
+    background: var(--pk-color-gray-100);
+    outline: none;
+    /* Craft CP applies `body :focus-visible { box-shadow: var(--focus-ring) }` (outer
+       ring). That paints outside the cell and is clipped by lit-virtualizer’s
+       overflow. Use the inset ring Craft uses in other tight/overflow surfaces. */
+    box-shadow: var(--focus-ring-inner);
+}
+
+.ipui-icon-svg {
+    /* Match BEFORE tippy: box + webfont size share --ipui-icon-size (32). */
+    width: var(--ipui-icon-size);
+    height: var(--ipui-icon-size);
+    font-size: var(--ipui-icon-size);
+    line-height: var(--ipui-icon-size);
+    margin: auto;
+    text-align: center;
+}
+
+.ipui-icon-svg svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.ipui-icon-svg svg:not([stroke]):not([fill]) {
+    fill: currentColor;
+}
+
+.ipui-icon-label {
+    display: none;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    padding-inline: 2px;
+    font-size: 10px;
+    line-height: 10px;
+    color: var(--pk-color-gray-700);
+    text-align: center;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/*
+ * Labeled grid — match BEFORE tippy exactly:
+ * box grows to --ipui-icon-size-large (40), but font-size stays --ipui-icon-size (32).
+ * That slack is why wide FA webfonts fit without clipping or transform hacks.
+ */
+.ipui-icons-pane.show-labels .ipui-icon-wrap {
+    justify-content: flex-start;
+    padding: 0;
+    overflow: hidden;
+    font-size: 10px;
+}
+
+.ipui-icons-pane.show-labels .ipui-icon-svg {
+    margin: 5px auto;
+    width: var(--ipui-icon-size-large);
+    height: var(--ipui-icon-size-large);
+}
+
+.ipui-icons-pane.show-labels .ipui-icon-label {
+    display: block;
+}
+
+.ipui-font {
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+}

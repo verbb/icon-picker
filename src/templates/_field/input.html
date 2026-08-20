@@ -1,3 +1,16 @@
-<div class="ipui-input-component" data-icon-picker-auto-mount="input" data-settings="{{ componentSettings }}">
-    <icon-picker-input value="{{ value | json_encode }}" name="{{ name }}"></icon-picker-input>
+{#
+  Hidden inputs are server-rendered on purpose.
+
+  Craft's ElementEditor + FormObserver snapshot the form on load and treat later
+  insertion of named inputs as a change (provisional draft / "unsaved changes").
+  Emitting the value contract here means the baseline already includes these keys;
+  JS only adopts and updates them — it must not inject new named nodes on mount.
+#}
+<div class="ipui-input-component" data-icon-picker-auto-mount="input" data-name="{{ name }}" data-settings="{{ componentSettings }}" data-value="{{ value | json_encode }}">
+    <input type="hidden" data-icon-picker-key="value" name="{{ name }}[value]" value="{{ value.value ?? '' }}">
+    <input type="hidden" data-icon-picker-key="iconSet" name="{{ name }}[iconSet]" value="{{ value.iconSet ?? '' }}">
+    <input type="hidden" data-icon-picker-key="iconSetHandle" name="{{ name }}[iconSetHandle]" value="{{ value.iconSetHandle ?? '' }}">
+    <input type="hidden" data-icon-picker-key="type" name="{{ name }}[type]" value="{{ value.type ?? '' }}">
+    <input type="hidden" data-icon-picker-key="label" name="{{ name }}[label]" value="{{ value.label ?? '' }}">
+    <input type="hidden" data-icon-picker-key="keywords" name="{{ name }}[keywords]" value="{{ value.keywords ?? '' }}">
 </div>

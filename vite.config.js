@@ -1,94 +1,42 @@
 import path from 'path';
-
-// Vite Plugins
-import VuePlugin from '@vitejs/plugin-vue';
-import EslintPlugin from 'vite-plugin-eslint';
+import AnalyzePlugin from 'rollup-plugin-analyzer';
 import CompressionPlugin from 'vite-plugin-compression';
 
-// Rollup Plugins
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import AnalyzePlugin from 'rollup-plugin-analyzer';
-
-export default ({ command }) => ({
-    // Set the root to our source folder
+// Web-components field bundle (Plugin Kit v2), modelled on Hyper.
+// Two entries: `pluginKit` registers the `pk-*` custom elements first, then the
+// `icon-picker` app entry mounts field UI once those elements are defined.
+export default {
     root: './src/web/assets',
-
-    // When building update the destination base
-    base: command === 'serve' ? '' : '/dist/',
+    base: '',
 
     build: {
         outDir: 'field/dist',
         emptyOutDir: true,
-        manifest: true,
+        manifest: 'manifest.json',
         sourcemap: true,
         rollupOptions: {
             input: {
-                'icon-picker': '/field/src/js/icon-picker.js',
+                pluginKit: '/field/src/js/plugin-kit-register.ts',
+                'icon-picker': '/field/src/js/icon-picker.ts',
             },
         },
     },
 
     server: {
-        origin: 'http://localhost:4001',
+        origin: 'http://localhost:4005',
+        hmr: { protocol: 'ws' },
     },
 
     plugins: [
-        // Keep JS looking good with eslint
-        // https://github.com/gxmari007/vite-plugin-eslint
-        EslintPlugin({
-            cache: false,
-            fix: true,
-            include: './src/web/assets/**/*.{js,vue}',
-            exclude: './src/web/assets/field/src/js/vendor/**/*.{js,vue}',
-        }),
-
-        // Vue 3 support
-        // https://github.com/vitejs/vite/tree/main/packages/plugin-vue
-        VuePlugin(),
-
-        // Analyze bundle size
-        // https://github.com/doesdev/rollup-plugin-analyzer
-        AnalyzePlugin({
-            summaryOnly: true,
-            limit: 15,
-        }),
-
-        // Gzip assets
-        // https://github.com/vbenjs/vite-plugin-compression
-        CompressionPlugin({
-            filter: /\.(js|mjs|json|css|map)$/i,
-        }),
-
-        // Ensure Vite can find the modules it needs
-        // https://github.com/rollup/plugins/tree/master/packages/node-resolve
-        nodeResolve({
-            moduleDirectories: [
-                path.resolve('./node_modules'),
-            ],
-        }),
+        AnalyzePlugin({ summaryOnly: true, limit: 10 }),
+        CompressionPlugin({ filter: /\.(js|mjs|json|css|map)$/i }),
     ],
 
     resolve: {
-        alias: {
-            // // Allow us to use `@/` in JS, CSS and Twig for ease of development.
-            '@': path.resolve('./src/web/assets/field/src'),
-
-            // Allow us to use `@utils/` in JS for misc utilities.
-            '@utils': path.resolve('./src/web/assets/field/src/js/utils'),
-
-            // Allow us to use `@components/` in Vue components.
-            '@components': path.resolve('./src/web/assets/field/src/js/components'),
-
-            // Vue 3 doesn't support the template compiler out of the box
-            'vue': 'vue/dist/vue.esm-bundler.js',
-        },
+        alias: { '@': path.resolve('./src/web/assets/field/src') },
+        // Resolve kit peers (lit, @floating-ui/dom, …) from this plugin's node_modules.
+        preserveSymlinks: false,
     },
 
-    // Add in any components to optimise them early.
-    optimizeDeps: {
-        include: [
-            'lodash-es',
-            'vue',
-        ],
-    },
-});
+    optimizeDeps: { include: ['lodash-es', 'lit', '@lit-labs/virtualizer'] },
+};

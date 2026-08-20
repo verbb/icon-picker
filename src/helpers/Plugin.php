@@ -34,4 +34,12 @@ class Plugin
         }
     }
 
+    public static function registerFieldAssets(): void
+    {
+        // Register the Plugin Kit web components before the field app mounts, so custom
+        // element upgrades are page-level asset work rather than per-field init work.
+        self::registerAsset('field/src/js/plugin-kit-register.ts');
+        self::registerAsset('field/src/js/icon-picker.ts');
+    }
+
 }

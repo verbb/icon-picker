@@ -1,10 +1,47 @@
 {
-  "field/src/js/icon-picker.js": {
-    "file": "assets/icon-picker.9a105960.js",
-    "src": "field/src/js/icon-picker.js",
+  "../../../node_modules/@lit-labs/virtualizer/layouts/flow.js": {
+    "file": "assets/flow-DacSw0Md.js",
+    "name": "flow",
+    "src": "../../../node_modules/@lit-labs/virtualizer/layouts/flow.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_BaseLayout-BEpgs3hT.js"
+    ]
+  },
+  "_BaseLayout-BEpgs3hT.js": {
+    "file": "assets/BaseLayout-BEpgs3hT.js",
+    "name": "BaseLayout"
+  },
+  "_iconPickerPkComponents-B6ZyqdCy.js": {
+    "file": "assets/iconPickerPkComponents-B6ZyqdCy.js",
+    "name": "iconPickerPkComponents"
+  },
+  "field/src/js/icon-picker.ts": {
+    "file": "assets/icon-picker-pvlffCWN.js",
+    "name": "icon-picker",
+    "src": "field/src/js/icon-picker.ts",
     "isEntry": true,
+    "imports": [
+      "_iconPickerPkComponents-B6ZyqdCy.js",
+      "_BaseLayout-BEpgs3hT.js"
+    ],
+    "dynamicImports": [
+      "../../../node_modules/@lit-labs/virtualizer/layouts/flow.js"
+    ],
     "css": [
-      "assets/icon-picker.9047eb76.css"
+      "assets/icon-picker-BRfT4kSo.css"
+    ]
+  },
+  "field/src/js/plugin-kit-register.ts": {
+    "file": "assets/pluginKit-DS2eoMhT.js",
+    "name": "pluginKit",
+    "src": "field/src/js/plugin-kit-register.ts",
+    "isEntry": true,
+    "imports": [
+      "_iconPickerPkComponents-B6ZyqdCy.js"
+    ],
+    "css": [
+      "assets/pluginKit-Dum0oPe8.css"
     ]
   }
 }

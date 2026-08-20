@@ -11,6 +11,8 @@ use verbb\iconpicker\web\assets\field\IconPickerAsset;
 use verbb\base\LogTrait;
 use verbb\base\helpers\Plugin;
 
+use craft\helpers\App;
+
 use nystudio107\pluginvite\services\VitePluginService;
 
 trait PluginTrait
@@ -43,9 +45,9 @@ trait PluginTrait
                 'vite' => [
                     'class' => VitePluginService::class,
                     'assetClass' => IconPickerAsset::class,
-                    'useDevServer' => true,
+                    'useDevServer' => App::parseBooleanEnv('$ICON_PICKER_USE_VITE_DEV_SERVER') ?? false,
                     'devServerPublic' => 'http://localhost:4005/',
-                    'errorEntry' => 'js/main.js',
+                    'errorEntry' => 'field/src/js/icon-picker.ts',
                     'cacheKeySuffix' => '',
                     'devServerInternal' => 'http://localhost:4005/',
                     'checkDevServer' => true,
