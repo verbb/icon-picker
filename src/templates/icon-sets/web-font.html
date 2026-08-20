@@ -4,7 +4,7 @@
 {{ forms.selectField({
     first: true,
     label: 'Font File' | t('icon-picker'),
-    instructions: 'Select your font file. This is relative to your [Icons Path]({url}) setting.' | t('icon-picker', { url: cpUrl('icon-picker/settings/general') }),
+    instructions: 'Select a .ttf, .woff, or .otf font file (glyph indexing). Relative to your [Icons Path]({url}) setting. .woff2 alone is not supported for indexing.' | t('icon-picker', { url: cpUrl('icon-picker/settings/general') }),
     name: 'fontFile',
     required: true,
     options: iconSet.getFolderOptions(),

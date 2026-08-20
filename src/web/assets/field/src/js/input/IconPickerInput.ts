@@ -238,8 +238,9 @@ export class IconPickerInput {
     }
 
     private bindEvents(): void {
-        // Open on focus/click of the control; typing filters the grid.
-        this.wrap.addEventListener('focusin', () => this.setOpen(true));
+        // Open on explicit intent only — not raw focusin. Craft slideouts call
+        // setFocusWithin() / restore focus on close; focusin treated that as "open"
+        // and auto-popped the pane (#109). Click + keyboard openers stay.
         this.wrap.addEventListener('click', (event) => {
             // Clear button handles its own action — don't re-open after clear.
             if ((event.target as HTMLElement).closest('.ipui-icon-input-clear')) {
@@ -250,8 +251,24 @@ export class IconPickerInput {
             (this.searchInput as HTMLElement & { focus?: () => void }).focus?.();
         });
 
+        this.wrap.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (this.open) {
+                return;
+            }
+
+            if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                this.setOpen(true);
+                (this.searchInput as HTMLElement & { focus?: () => void }).focus?.();
+            }
+        });
+
         this.searchInput.addEventListener('input', () => {
             this.search = (this.searchInput as HTMLElement & { value?: string }).value ?? '';
+            // Tab into the field then type — open so filtering is visible.
+            if (!this.open) {
+                this.setOpen(true);
+            }
             this.refreshPane();
         });
 

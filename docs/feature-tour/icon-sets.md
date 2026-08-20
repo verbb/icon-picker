@@ -31,7 +31,7 @@ Read more about templating with [SVG Sprites](docs:template-guides/rendering-ico
 ## Web Fonts
 Creating a **Web Fonts** Icon Set allows you to pick a font file with definitions of font glyphs that represent icons. This is relative to your **Icons Path** plugin setting. These will need to be at the root level of your **Icons Path**.
 
-Icon Picker supports `*.tff`, `*.woff`, `*.woff2` and `*.oft` files.
+Icon Picker can index glyphs from `*.ttf`, `*.woff`, and `*.otf` files. **`.woff2` is not supported for indexing** (the glyph parser cannot read WOFF2). Prefer a `.ttf` or `.woff` sibling from your kit; you can still load `.woff2` yourself on the front end if needed.
 
 Read more about templating with [Icon Fonts](docs:template-guides/rendering-icons#icon-fonts)
 

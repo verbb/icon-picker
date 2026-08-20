@@ -7,10 +7,14 @@
 
 ### Changed
 - Field input rebuilt on [Plugin Kit](https://docs.verbb.io/plugin-kit/web/) (web components).
-- SVG icon catalogs no longer embed full markup in the set cache or CP picker JSON. The field paints SVG cells/chips via `<img src>` (URL), which shrinks large-folder payloads and avoids CSS/`id` bleed between icons (e.g. Carbon). Existing caches are superseded by a `icon-picker:v2:*` key on next load.
+- SVG icon catalogs no longer embed full markup in the set cache or CP picker JSON. The field paints SVG cells/chips via `<img src>` (URL), which shrinks large-folder payloads and avoids CSS/`id` bleed between icons (e.g. Carbon). Existing caches are superseded by a `icon-picker:v2:*` key on next load. ([#101](https://github.com/verbb/icon-picker/issues/101), [#103](https://github.com/verbb/icon-picker/issues/103)).
 - `resources-for-field` loads fonts/sprites/scripts without hydrating the full icon catalog.
 - Sprite sheet AJAX payloads omit the parsed `sprites` map (name + URL only).
-- Feather Icons no longer depend on remote `feather.min.js` / `feather.replace()`. Icon paths are bundled and cached as inline SVG for the CP (fixes empty cells on reopen / virtualizer recycle). #85.
+- Feather Icons no longer depend on remote `feather.min.js` / `feather.replace()`. Icon paths are bundled and cached as inline SVG for the CP (fixes empty cells on reopen / virtualizer recycle). ([#85](https://github.com/verbb/icon-picker/issues/85)).
+
+### Fixed
+- Don’t open the icon pane on programmatic focus (Craft slideout `setFocusWithin` / focus restore). Open on click, Enter/Space/ArrowDown, or typing instead. ([#109](https://github.com/verbb/icon-picker/issues/109)).
+- Clarify Web Font support: glyph indexing requires `.ttf` / `.woff` / `.otf` (not `.woff2` alone). Docs and icon-set UI updated; `.woff2` is rejected with a clear error. ([#107](https://github.com/verbb/icon-picker/issues/107)).
 
 ## 3.0.13 - 2026-07-15
 

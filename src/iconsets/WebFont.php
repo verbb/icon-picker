@@ -46,9 +46,10 @@ class WebFont extends IconSet
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->getIconSetsPath();
 
-        // Get all icon fonts
+        // Only formats FontLib can glyph-index (TTF / OTF / WOFF). WOFF2 is listed in
+        // some kits but cannot be parsed for the catalog — omit it from the picker (#107).
         $fonts = FileHelper::findFiles($iconSetsPath, [
-            'only' => ['*.ttf', '*.woff', '*.otf', '*.woff2'],
+            'only' => ['*.ttf', '*.woff', '*.otf'],
             'recursive' => false,
         ]);
 
@@ -66,6 +67,17 @@ class WebFont extends IconSet
     {
         $settings = IconPicker::$plugin->getSettings();
         $iconSetsPath = $settings->getIconSetsPath();
+
+        if (!$this->fontFile) {
+            return;
+        }
+
+        // Guard saved configs that still point at a .woff2 from older docs/UI.
+        if (strtolower(pathinfo($this->fontFile, PATHINFO_EXTENSION)) === 'woff2') {
+            IconPicker::error('Web Font icon set “' . $this->handle . '” uses a .woff2 file. Glyph indexing requires .ttf, .woff, or .otf — use one of those beside (or instead of) the woff2.');
+
+            return;
+        }
 
         $fontFilename = pathinfo($this->fontFile, PATHINFO_FILENAME);
 
@@ -107,10 +119,16 @@ class WebFont extends IconSet
 
         $fullPath = $iconSetsPath . DIRECTORY_SEPARATOR . $this->fontFile;
 
-        return [
+        $lines = [
             'Font Path: ' . $fullPath,
             'Font URL: ' . IconPickerHelper::getUrlForPath($fullPath),
         ];
+
+        if ($this->fontFile && strtolower(pathinfo($this->fontFile, PATHINFO_EXTENSION)) === 'woff2') {
+            $lines[] = 'Warning: .woff2 cannot be glyph-indexed. Use .ttf, .woff, or .otf for the Web Font icon set.';
+        }
+
+        return $lines;
     }
 
 
@@ -122,6 +140,28 @@ class WebFont extends IconSet
         $rules = parent::defineRules();
 
         $rules[] = [['fontFile'], 'required'];
+        $rules[] = [
+            ['fontFile'],
+            function(string $attribute) {
+                if (!$this->fontFile) {
+                    return;
+                }
+
+                $ext = strtolower(pathinfo($this->fontFile, PATHINFO_EXTENSION));
+
+                if ($ext === 'woff2') {
+                    $this->addError($attribute, Craft::t(
+                        'icon-picker',
+                        'WOFF2 files cannot be used for glyph indexing. Choose a .ttf, .woff, or .otf file (you can still serve .woff2 on the front end separately).'
+                    ));
+                } elseif (!in_array($ext, ['ttf', 'woff', 'otf'], true)) {
+                    $this->addError($attribute, Craft::t(
+                        'icon-picker',
+                        'Font file must be a .ttf, .woff, or .otf file.'
+                    ));
+                }
+            },
+        ];
 
         return $rules;
     }
