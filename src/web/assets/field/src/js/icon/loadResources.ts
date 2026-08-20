@@ -21,9 +21,10 @@ type ScriptResource = {
     onload?: string;
 };
 
-const ensureCache = (): { stylesheets: string[]; fonts: string[] } => {
+const ensureCache = (): { stylesheets: string[]; fonts: string[]; scripts: string[] } => {
     Craft.IconPicker = Craft.IconPicker || {};
-    Craft.IconPicker.Cache = Craft.IconPicker.Cache || { stylesheets: [], fonts: [] };
+    Craft.IconPicker.Cache = Craft.IconPicker.Cache || { stylesheets: [], fonts: [], scripts: [] };
+    Craft.IconPicker.Cache.scripts = Craft.IconPicker.Cache.scripts || [];
 
     return Craft.IconPicker.Cache;
 };
@@ -98,36 +99,60 @@ export const loadSpriteSheets = (spriteSheets: SpriteSheetResource[] | undefined
     }
 };
 
-export const loadScripts = (scripts: ScriptResource[] | undefined): void => {
+export const loadScripts = (scripts: ScriptResource[] | undefined): Promise<void> => {
     if (!scripts?.length) {
-        return;
+        return Promise.resolve();
     }
 
-    for (const script of scripts) {
-        if (document.getElementById(script.name)) {
-            continue;
-        }
+    const cache = ensureCache();
 
-        const el = document.createElement('script');
-        el.id = script.name;
-
-        if (script.type === 'remote' && script.url) {
-            el.src = script.url;
-            el.async = true;
-            el.defer = true;
-
-            // Preserve legacy onload string evaluation from the Vue field.
-            if (script.onload) {
-                // Indirect eval — preserves legacy remote-script onload strings from the Vue field
-                // without tripping Rollup's direct-eval warning.
-                el.onload = (0, eval)(script.onload) as (this: GlobalEventHandlers, ev: Event) => void;
+    return Promise.all(
+        scripts.map((script) => {
+            if (cache.scripts.includes(script.name) || document.getElementById(script.name)) {
+                if (!cache.scripts.includes(script.name)) {
+                    cache.scripts.push(script.name);
+                }
+                return Promise.resolve();
             }
-        }
 
-        if (script.type === 'local' && script.content) {
-            el.textContent = script.content;
-        }
+            return new Promise<void>((resolve, reject) => {
+                const el = document.createElement('script');
+                el.id = script.name;
 
-        document.body.appendChild(el);
-    }
+                if (script.type === 'remote' && script.url) {
+                    el.src = script.url;
+                    el.async = true;
+                    el.defer = true;
+                    el.onload = () => {
+                        cache.scripts.push(script.name);
+                        // Run legacy onload *after* the script is available (Vue used
+                        // bare eval at assign-time, which fired setTimeout too early).
+                        if (script.onload) {
+                            try {
+                                (0, eval)(script.onload);
+                            } catch (error) {
+                                console.error('[icon-picker] Script onload failed', script.name, error);
+                            }
+                        }
+                        resolve();
+                    };
+                    el.onerror = () => {
+                        reject(new Error(`Failed to load script ${script.name}`));
+                    };
+                    document.body.appendChild(el);
+                    return;
+                }
+
+                if (script.type === 'local' && script.content) {
+                    el.textContent = script.content;
+                    document.body.appendChild(el);
+                    cache.scripts.push(script.name);
+                    resolve();
+                    return;
+                }
+
+                resolve();
+            });
+        }),
+    ).then(() => undefined);
 };

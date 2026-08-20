@@ -635,6 +635,11 @@ export class IconPickerInput {
         }
 
         if (item.type === 'css') {
+            // Inline SVG cached as displayValue (Feather) — same as svg markup path.
+            if (display.trimStart().startsWith('<svg')) {
+                return html`<div>${unsafeHTML(display)}</div>`;
+            }
+
             // AJAX may name the attribute (`class`, etc.) — set it after the node exists.
             return html`
                 <span ${ref((el) => {
@@ -675,7 +680,7 @@ export class IconPickerInput {
 
             loadSpriteSheets(payload.spriteSheets);
             loadFonts(payload.fonts);
-            loadScripts(payload.scripts);
+            await loadScripts(payload.scripts);
         } catch (error) {
             console.error('[icon-picker] Failed to fetch icons', error);
             this.statusEl.hidden = false;

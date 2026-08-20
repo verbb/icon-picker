@@ -251,9 +251,18 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
 
         // Check if this is a non-SVG icon. We will need to trigger a lazy-load of any
         // spritesheets, fonts, or remote CSS, but we don't want to fire that here before load.
-        $loadResources = false;
+        // Feather-style CSS icons may already carry inline SVG in displayValue (hydrated
+        // from the set cache) and need no remote resources.
+        $this->_hydrateIconDisplay($value);
 
-        if ($value->value && $value->type !== Icon::TYPE_SVG) {
+        $loadResources = false;
+        $display = (string)$value->getDisplayValue();
+
+        if (
+            $value->value
+            && $value->type !== Icon::TYPE_SVG
+            && !str_starts_with(ltrim($display), '<svg')
+        ) {
             $loadResources = true;
         }
 
@@ -291,6 +300,10 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
     {
         $view = Craft::$app->getView();
         $settings = IconPicker::$plugin->getSettings();
+
+        if ($value instanceof Icon) {
+            $this->_hydrateIconDisplay($value);
+        }
 
         // Check if any of the icons have additional resources to include
         // Adding the `iconSetHandle` was a recent addition, so best to check
@@ -366,11 +379,59 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
         }
 
         if ($value->type === Icon::TYPE_CSS) {
-            $iconHtml = '<span class="' . $value->displayValue . '"></span>';
+            $display = (string)$value->getDisplayValue();
+
+            // Feather (and similar) may cache a full <svg> as displayValue so the CP
+            // does not depend on remote feather.replace().
+            if (str_starts_with(ltrim($display), '<svg')) {
+                $iconHtml = $display;
+            } else {
+                $iconHtml = '<span class="' . Html::encode($display) . '"></span>';
+            }
 
             return Html::tag('div', $iconHtml, ['class' => 'cp-icon']);
         }
 
         return '';
+    }
+
+    /**
+     * Fill `displayValue` from the icon-set cache when the element only stored the
+     * compact field value (e.g. Feather name → inline SVG for the chip / thumbs).
+     */
+    private function _hydrateIconDisplay(Icon $value): void
+    {
+        if (!$value->value || !$value->iconSetHandle || $value->type !== Icon::TYPE_CSS) {
+            return;
+        }
+
+        $current = ltrim((string)$value->getDisplayValue());
+
+        // Already rich (inline SVG) or empty.
+        if ($current === '' || str_starts_with($current, '<svg')) {
+            return;
+        }
+
+        $iconSet = IconPicker::$plugin->getIconSets()->getIconSetByHandle($value->iconSetHandle);
+
+        if (!$iconSet) {
+            return;
+        }
+
+        $iconSet->populateIcons();
+
+        foreach ($iconSet->icons as $icon) {
+            if ($icon->value !== $value->value) {
+                continue;
+            }
+
+            $fromSet = (string)$icon->getDisplayValue();
+
+            if ($fromSet !== '' && $fromSet !== (string)$value->value) {
+                $value->setDisplayValue($fromSet);
+            }
+
+            return;
+        }
     }
 }

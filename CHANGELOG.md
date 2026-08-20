@@ -7,6 +7,7 @@
 - SVG icon catalogs no longer embed full markup in the set cache or CP picker JSON. The field paints SVG cells/chips via `<img src>` (URL), which shrinks large-folder payloads and avoids CSS/`id` bleed between icons (e.g. Carbon). Existing caches are superseded by a `icon-picker:v2:*` key on next load.
 - `resources-for-field` loads fonts/sprites/scripts without hydrating the full icon catalog.
 - Sprite sheet AJAX payloads omit the parsed `sprites` map (name + URL only).
+- Feather Icons no longer depend on remote `feather.min.js` / `feather.replace()`. Icon paths are bundled and cached as inline SVG for the CP (fixes empty cells on reopen / virtualizer recycle). #85.
 
 ## 3.0.13 - 2026-07-15
 

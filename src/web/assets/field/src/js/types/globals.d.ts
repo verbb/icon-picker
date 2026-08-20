@@ -4,7 +4,7 @@ declare const Craft: {
     randomString: (length: number) => string;
     sendActionRequest: (method: string, action: string, options?: { data?: unknown }) => Promise<{ data: any }>;
     IconPicker?: {
-        Cache?: { stylesheets: string[]; fonts: string[] };
+        Cache?: { stylesheets: string[]; fonts: string[]; scripts?: string[] };
         mountAll?: (scope?: ParentNode) => void;
         startAutoMountObserver?: () => void;
         __autoMountObserverStarted?: boolean;

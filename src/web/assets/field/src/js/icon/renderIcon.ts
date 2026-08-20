@@ -89,6 +89,16 @@ export const renderIconInto = (
     }
 
     if (item.type === 'css') {
+        // Feather (and any set that caches inline SVG as displayValue): paint
+        // markup directly. Avoids remote feather.replace(), which only runs once
+        // and breaks when the virtualizer recycles cells or the pane reopens.
+        if (display.trimStart().startsWith('<svg')) {
+            const wrap = document.createElement('div');
+            wrap.innerHTML = display;
+            host.appendChild(wrap);
+            return;
+        }
+
         const span = document.createElement('span');
         span.setAttribute(cssAttribute, display);
         host.appendChild(span);
