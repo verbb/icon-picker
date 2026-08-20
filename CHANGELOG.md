@@ -93,6 +93,11 @@
 - Now requires PHP `8.2.0+`.
 - Now requires Craft `5.0.0+`.
 
+## 2.0.26 - 2026-08-20
+
+### Fixed
+- Fix conflicting `phenx/php-font-lib` dependency when used alongside plugins that require dompdf v3.
+
 ## 2.0.25 - 2026-05-30
 
 ### Fixed
