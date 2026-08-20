@@ -50,6 +50,8 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
     // =========================================================================
 
     public bool $showLabels = false;
+    /** Shown in the empty search control (e.g. “Choose an icon…”). */
+    public ?string $placeholder = null;
     public mixed $iconSets = null;
     public ?string $renderId = null;
 

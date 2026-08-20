@@ -7,6 +7,13 @@
     on: field.showLabels,
 }) }}
 
+{{ forms.textField({
+    label: 'Placeholder' | t('icon-picker'),
+    instructions: 'Optional placeholder text shown in the field when no icon is selected.' | t('icon-picker'),
+    name: 'placeholder',
+    value: field.placeholder ?? '',
+}) }}
+
 {% set iconSetOptions = [] %}
 
 {% for iconSet in iconSets %}

@@ -24,6 +24,7 @@ export interface IconPickerSettings {
     loadResources?: boolean;
     settings?: {
         showLabels?: boolean;
+        placeholder?: string | null;
         [key: string]: unknown;
     };
     fieldId?: number | null;
@@ -172,7 +173,7 @@ export class IconPickerInput {
         this.searchInput.setAttribute('autocorrect', 'off');
         this.searchInput.setAttribute('autocapitalize', 'off');
         this.searchInput.classList.add('ipui-icon-input-search');
-        // No placeholder — BEFORE empty state is a blank control until focus/open.
+        this.syncPlaceholder(false);
 
         // Clear in `slot=end` so it sits inside pk-input chrome (kit end adornment).
         // Native button (not pk-button icon-density) — 20×20 square like BEFORE delete.
@@ -390,6 +391,7 @@ export class IconPickerInput {
 
         // Closed + chip: hide caret/typed text so the overlay is the only readable chrome.
         this.searchInput.classList.toggle('is-covered', showChip);
+        this.syncPlaceholder(showChip);
     }
 
     /** Reflect Craft’s field error state onto `pk-input[invalid]` — kit paints the chrome. */
@@ -404,6 +406,21 @@ export class IconPickerInput {
 
     private get showLabels(): boolean {
         return Boolean(this.settings.settings?.showLabels);
+    }
+
+    private get placeholder(): string {
+        const raw = this.settings.settings?.placeholder;
+        return typeof raw === 'string' ? raw.trim() : '';
+    }
+
+    /** Drop placeholder while the selected chip covers the control. */
+    private syncPlaceholder(chipCovering: boolean): void {
+        if (chipCovering || !this.placeholder) {
+            this.searchInput.removeAttribute('placeholder');
+            return;
+        }
+
+        this.searchInput.setAttribute('placeholder', this.placeholder);
     }
 
     private get cellSize(): number {

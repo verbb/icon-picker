@@ -92,6 +92,10 @@
     caret-color: transparent;
 }
 
+.ipui-icon-input:not(.is-open) .ipui-icon-input-search.is-covered::part(input)::placeholder {
+    color: transparent;
+}
+
 /* Clear in pk-input `slot=end` — square hit target like BEFORE delete. */
 .ipui-icon-input-clear {
     display: inline-flex;

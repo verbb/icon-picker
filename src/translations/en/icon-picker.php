@@ -92,6 +92,8 @@ return [
   'Sharp - Solid' => 'Sharp - Solid',
   'Sharp - Thin' => 'Sharp - Thin',
   'Show Labels' => 'Show Labels',
+  'Optional placeholder text shown in the field when no icon is selected.' => 'Optional placeholder text shown in the field when no icon is selected.',
+  'Placeholder' => 'Placeholder',
   'Solid' => 'Solid',
   'Sprite File' => 'Sprite File',
   'Styles' => 'Styles',
