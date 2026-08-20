@@ -1,5 +1,9 @@
 // Renders a single Icon Picker icon into a host element (chip + grid cells).
 // Four types match the PHP Icon model: svg | sprite | glyph | css.
+//
+// SVG catalog/chip paint via <img src={url}> so large sets don't ship markup in
+// the AJAX payload, and so Carbon-style shared .cls-* / id="icon" can't bleed
+// across cells (inline SVG in the light DOM).
 
 import { startCase, toLower } from 'lodash-es';
 
@@ -10,7 +14,9 @@ export interface IconItem {
     type?: string | null;
     label?: string | null;
     keywords?: string | null;
-    /** UI-only — SVG markup, sprite id, glyph HTML, or CSS class. Not posted on save. */
+    /** Public URL for SVG files — preferred paint path for type=svg. */
+    url?: string | null;
+    /** Glyph entity / sprite id / CSS class. Not used for SVG catalog rows. */
     displayValue?: string | null;
     id?: string | null;
 }
@@ -42,9 +48,24 @@ export const renderIconInto = (
     const display = item.displayValue ?? '';
 
     if (item.type === 'svg') {
-        const wrap = document.createElement('div');
-        wrap.innerHTML = display;
-        host.appendChild(wrap);
+        // Prefer URL <img> (catalog + chip). Fall back to inline markup only if a
+        // legacy payload still embeds displayValue without url.
+        if (item.url) {
+            const img = document.createElement('img');
+            img.src = item.url;
+            img.alt = '';
+            img.decoding = 'async';
+            img.loading = 'lazy';
+            host.appendChild(img);
+            return;
+        }
+
+        if (display) {
+            const wrap = document.createElement('div');
+            wrap.innerHTML = display;
+            host.appendChild(wrap);
+        }
+
         return;
     }
 

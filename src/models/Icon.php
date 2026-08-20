@@ -6,9 +6,7 @@ use verbb\iconpicker\helpers\IconPickerHelper;
 
 use Craft;
 use craft\base\Model;
-use craft\helpers\ArrayHelper;
 use craft\helpers\FileHelper;
-use craft\helpers\StringHelper;
 use craft\helpers\Template;
 
 use Twig\Markup;
@@ -84,26 +82,41 @@ class Icon extends Model implements \JsonSerializable, \Countable
 
     public function serializeValueForCache(): ?array
     {
-        // For when saving the field and building the icon cache
+        // Catalog cache is an index only. SVG markup used to be embedded as
+        // `displayValue` to avoid disk IO, but that blew cache/AJAX payloads to
+        // multi-MB for large folders (Carbon ~2.6k icons → ~3.6MB). CP paints
+        // SVG cells via `url` + <img>; Twig/thumbs still call getInline() once.
         $array = $this->toArray();
 
-        // Save the `displayValue` to the cache for less disk IO (for SVGs)
-        $array['displayValue'] = $this->getDisplayValue();
+        // Non-SVG display strings are tiny (glyph entity, sprite id, CSS class)
+        // and still required to paint without extra work — keep those in cache.
+        if ($this->type !== self::TYPE_SVG) {
+            $array['displayValue'] = $this->getDisplayValue();
+        }
 
         return $array;
     }
 
     public function jsonSerialize(): mixed
     {
-        // For when converting this model into JSON for the Vue picker to use in the CP
-        // (either a selected value or the icons to pick from)
+        // CP field catalog / selected-value JSON (not a public API).
         $array = $this->toArray();
         $array['label'] = $this->getLabel();
         $array['keywords'] = $this->getKeywords();
-        $array['displayValue'] = $this->getDisplayValue();
 
-        // ID for vue-virtual-scroller
-        $array['id'] = $array['label'] ? StringHelper::appendRandomString($array['label'], 5) : rand();
+        if ($this->type === self::TYPE_SVG) {
+            // Catalog + chip paint from URL (isolated <img>), not inlined markup.
+            $array['url'] = $this->getUrl();
+        } else {
+            $array['displayValue'] = $this->getDisplayValue();
+        }
+
+        // Stable id for lit-virtualizer reuse (was a random suffix every response).
+        $array['id'] = implode(':', array_filter([
+            $this->type,
+            $this->iconSetHandle,
+            $this->value,
+        ])) ?: (string)random_int(1, PHP_INT_MAX);
 
         return $array;
     }

@@ -78,7 +78,9 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
     public function populateIcons(bool $fromCache = true): void
     {
         $settings = IconPicker::$plugin->getSettings();
-        $cacheKey = 'icon-picker:' . $this->handle;
+        // v2: SVG catalog no longer embeds full markup in the cache blob. Bump the
+        // key so fat v1 entries are ignored until natural eviction / Clear Caches.
+        $cacheKey = 'icon-picker:v2:' . $this->handle;
 
         // Check to see if loaded in-memory already, rather than loading from the cache
         if ($preloadedData = IconPicker::$plugin->getIconSets()->getPreloadedIconSet($cacheKey)) {
@@ -136,19 +138,63 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
         return null;
     }
 
-    public function getSpriteSheets(): array
+    public function getSpriteSheets(bool $includeSprites = false): array
     {
+        // CP only needs name + url to fetch the sheet once. The parsed `sprites`
+        // map is large and unused by the field UI — keep it opt-in for diagnostics.
         $spriteSheets = [];
 
         foreach ($this->spriteSheets as $spriteSheet => $sprites) {
-            $spriteSheets[] = [
+            $row = [
                 'url' => IconPickerHelper::getUrlForPath($spriteSheet),
                 'name' => pathinfo($spriteSheet, PATHINFO_FILENAME),
-                'sprites' => $sprites,
             ];
+
+            if ($includeSprites) {
+                $row['sprites'] = $sprites;
+            }
+
+            $spriteSheets[] = $row;
         }
 
         return $spriteSheets;
+    }
+
+    /**
+     * Load fonts / spritesheets / scripts for a field without hydrating the icon catalog.
+     * Used by `resources-for-field` so a saved glyph/sprite/css value can paint its chip
+     * without decoding thousands of Icon models.
+     */
+    public function populateResources(bool $fromCache = true): void
+    {
+        $settings = IconPicker::$plugin->getSettings();
+        $cacheKey = 'icon-picker:v2:' . $this->handle;
+
+        if ($preloadedData = IconPicker::$plugin->getIconSets()->getPreloadedIconSet($cacheKey)) {
+            $this->fonts = $preloadedData->fonts;
+            $this->spriteSheets = $preloadedData->spriteSheets;
+            $this->scripts = $preloadedData->scripts;
+            $this->cssAttribute = $preloadedData->cssAttribute;
+
+            return;
+        }
+
+        if ($fromCache && $settings->enableCache) {
+            if ($cachedData = Craft::$app->getCache()->get($cacheKey)) {
+                $data = Json::decode($cachedData);
+
+                $this->fonts = $data['fonts'] ?? [];
+                $this->spriteSheets = $data['spriteSheets'] ?? [];
+                $this->scripts = $data['scripts'] ?? [];
+                $this->cssAttribute = $data['cssAttribute'] ?? 'class';
+                // Intentionally leave `icons` empty — callers only need resources.
+
+                return;
+            }
+        }
+
+        // Cold cache: full populate (also writes the slim v2 blob).
+        $this->populateIcons($fromCache);
     }
 
     public function getCpEditUrl(): ?string
@@ -188,6 +234,11 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
         $icons = $data['icons'] ?? [];
 
         foreach ($icons as $key => $icon) {
+            // Drop any legacy SVG markup that may still sit in an old blob shape.
+            if (($icon['type'] ?? null) === Icon::TYPE_SVG) {
+                unset($icon['displayValue']);
+            }
+
             $data['icons'][$key] = new Icon($icon);
         }
 

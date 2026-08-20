@@ -4,8 +4,6 @@ namespace verbb\iconpicker\controllers;
 use verbb\iconpicker\IconPicker;
 
 use Craft;
-use craft\helpers\ArrayHelper;
-use craft\helpers\Json;
 use craft\web\Controller;
 
 use yii\web\Response;
@@ -31,20 +29,12 @@ class IconsController extends Controller
 
     private function _getIconSetData(bool $includeIcons = true): ?Response
     {
-        // Ensure we look at all fields, not just global ones...
-        $fieldsById = ArrayHelper::index(Craft::$app->getFields()->getAllFields(false), 'id');
-
-        $fieldId = $this->request->getRequiredParam('fieldId');
-        $field = $fieldsById[$fieldId] ?? null;
-
         $fieldId = $this->request->getRequiredParam('fieldId');
         $field = Craft::$app->getFields()->getFieldById($fieldId);
 
         if (!$field) {
             return $this->asFailure('Unable to find field #' . $fieldId);
         }
-
-        $iconSets = IconPicker::$plugin->getService()->getIconsForField($field);
 
         $json = [
             'icons' => [],
@@ -53,10 +43,15 @@ class IconsController extends Controller
             'scripts' => [],
         ];
 
-        // Combine all icons, fonts, spritesheets, etc
-        foreach ($iconSets as $key => $iconSet) {
+        $iconSets = IconPicker::$plugin->getIconSets()->getIconSetsForField($field);
+
+        foreach ($iconSets as $iconSet) {
             if ($includeIcons) {
+                $iconSet->populateIcons();
                 $json['icons'] = array_merge($json['icons'], $iconSet->icons);
+            } else {
+                // Chip preload for non-SVG values — skip catalog hydration.
+                $iconSet->populateResources();
             }
 
             $json['fonts'] = array_merge($json['fonts'], $iconSet->fonts);

@@ -606,7 +606,16 @@ export class IconPickerInput {
         const display = item.displayValue ?? '';
 
         if (item.type === 'svg') {
-            return html`<div>${unsafeHTML(display)}</div>`;
+            // URL <img> keeps catalog payloads small and isolates SVG CSS/ids (Carbon).
+            if (item.url) {
+                return html`<img src=${item.url} alt="" decoding="async" loading="lazy" />`;
+            }
+
+            if (display) {
+                return html`<div>${unsafeHTML(display)}</div>`;
+            }
+
+            return nothing;
         }
 
         if (item.type === 'sprite') {
