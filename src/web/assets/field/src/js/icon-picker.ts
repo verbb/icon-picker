@@ -8,14 +8,29 @@ import { IconPickerInput } from './input/IconPickerInput';
 const INPUT_SELECTOR = '[data-icon-picker-auto-mount="input"], .ipui-input-component';
 
 const mountedInputs = new WeakSet<Element>();
+/** Roots seen before Plugin Kit tags are defined (slideout HTML often lands first). */
+const queuedInputs = new Set<HTMLElement>();
+let pkReady = false;
 
 const mountInput = (root: Element): void => {
     if (!(root instanceof HTMLElement) || mountedInputs.has(root)) {
         return;
     }
 
-    new IconPickerInput(root).init();
-    mountedInputs.add(root);
+    // Craft slideouts append field HTML, then head/body module scripts. Those modules
+    // are deferred — MutationObserver can see roots before `allDefined` finishes.
+    if (!pkReady) {
+        queuedInputs.add(root);
+        return;
+    }
+
+    try {
+        new IconPickerInput(root).init();
+        mountedInputs.add(root);
+        queuedInputs.delete(root);
+    } catch (error) {
+        console.error('[icon-picker] Failed to mount field input', error);
+    }
 };
 
 const mountAll = (scope: ParentNode = document): void => {
@@ -24,6 +39,17 @@ const mountAll = (scope: ParentNode = document): void => {
     }
 
     scope.querySelectorAll(INPUT_SELECTOR).forEach(mountInput);
+};
+
+const flushQueue = (): void => {
+    for (const root of [...queuedInputs]) {
+        if (!root.isConnected) {
+            queuedInputs.delete(root);
+            continue;
+        }
+
+        mountInput(root);
+    }
 };
 
 const startObserver = (): void => {
@@ -40,6 +66,35 @@ const startObserver = (): void => {
     observer.observe(document.body, { childList: true, subtree: true });
 };
 
+/**
+ * Craft CpScreenSlideout: set content HTML → appendHead/BodyHtml (modules) →
+ * initUiElements → trigger('load'). Modules often run *after* that, so wrap
+ * initUiElements for a second-chance mount once our bundle is alive.
+ */
+const hookCraftSlideoutMount = (): void => {
+    if (typeof Craft === 'undefined') {
+        return;
+    }
+
+    if (typeof Craft.initUiElements === 'function' && !Craft.__iconPickerInitUiWrapped) {
+        Craft.__iconPickerInitUiWrapped = true;
+        const original = Craft.initUiElements.bind(Craft);
+        Craft.initUiElements = (element?: unknown) => {
+            original(element);
+            // WeakSet makes repeat scans cheap; covers slideouts + nested UI refreshes.
+            mountAll();
+        };
+    }
+
+    const Slideout = Craft.CpScreenSlideout;
+    if (Slideout && typeof Garnish !== 'undefined' && !Craft.__iconPickerSlideoutLoadHooked) {
+        Craft.__iconPickerSlideoutLoadHooked = true;
+        Garnish.on?.(Slideout, 'load', () => {
+            mountAll();
+        });
+    }
+};
+
 Craft.IconPicker = Craft.IconPicker || {};
 Craft.IconPicker.mountAll = mountAll;
 Craft.IconPicker.startAutoMountObserver = (): void => {
@@ -51,15 +106,24 @@ Craft.IconPicker.startAutoMountObserver = (): void => {
     startObserver();
 };
 
-const pkMatch = (tag: string): boolean => tag.startsWith('pk-');
+// Observe immediately so slideout roots arriving during `allDefined` are queued,
+// not missed (observer started only after await used to drop those mutations).
+Craft.IconPicker.startAutoMountObserver();
+hookCraftSlideoutMount();
 
-// The register bundle defines ICON_PICKER_PK_COMPONENTS before this runs; gate on
-// them so we never touch a `pk-*` element in field DOM before it has upgraded.
 const bootstrap = async (): Promise<void> => {
-    await allDefined({ match: pkMatch, additionalElements: [...ICON_PICKER_PK_COMPONENTS] });
+    // Wait only for *our* tags. Default `match: pk-*` scans the whole CP for any
+    // undefined pk-* (other plugins / FOUCE) and can stall mount until DevTools
+    // slows the page enough for them to register — classic intermittent slideout blank.
+    await allDefined({
+        match: () => false,
+        additionalElements: [...ICON_PICKER_PK_COMPONENTS],
+    });
 
-    Craft.IconPicker.mountAll();
-    Craft.IconPicker.startAutoMountObserver();
+    pkReady = true;
+    hookCraftSlideoutMount();
+    flushQueue();
+    mountAll();
 };
 
 void bootstrap();

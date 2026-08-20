@@ -8,6 +8,7 @@
 - `resources-for-field` loads fonts/sprites/scripts without hydrating the full icon catalog.
 - Sprite sheet AJAX payloads omit the parsed `sprites` map (name + URL only).
 - Feather Icons no longer depend on remote `feather.min.js` / `feather.replace()`. Icon paths are bundled and cached as inline SVG for the CP (fixes empty cells on reopen / virtualizer recycle). #85.
+- Harden CP field auto-mount for element editor slideouts: queue roots seen before Plugin Kit is ready, don’t stall on unrelated undefined `pk-*` tags, and remount via `Craft.initUiElements` / slideout `load`.
 
 ## 3.0.13 - 2026-07-15
 
