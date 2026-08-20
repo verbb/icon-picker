@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2.0.26 - 2026-08-20
 
 ### Fixed
 - Fix conflicting `phenx/php-font-lib` dependency when used alongside plugins that require dompdf v3.
