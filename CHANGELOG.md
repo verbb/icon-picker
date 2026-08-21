@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.14 - 2026-08-20
+
+### Fixed
+- Fix conflicting `phenx/php-font-lib` dependency (again).
+
 ## 3.0.13 - 2026-07-15
 
 ### Fixed
