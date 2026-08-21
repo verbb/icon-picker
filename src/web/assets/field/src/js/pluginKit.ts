@@ -15,9 +15,9 @@ import {
     check,
     chevronDown,
     ellipsis,
+    magnifyingGlass,
     plus,
     registerIcons,
-    search,
     xmark,
 } from '@verbb/plugin-kit-icons';
 
@@ -27,8 +27,8 @@ registerIcons({
     check,
     chevronDown,
     ellipsis,
+    magnifyingGlass,
     plus,
-    search,
     xmark,
 });
 
