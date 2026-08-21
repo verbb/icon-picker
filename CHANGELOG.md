@@ -4,6 +4,7 @@
 
 ### Added
 - Add field setting for optional input placeholder text when no icon is selected.
+- Icon grid supports arrow-key navigation (Left/Right, Up/Down by row, Home/End).
 
 ### Changed
 - Field input rebuilt on [Plugin Kit](https://docs.verbb.io/plugin-kit/web/) (web components).

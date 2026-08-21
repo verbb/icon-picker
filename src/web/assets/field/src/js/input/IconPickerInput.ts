@@ -82,6 +82,11 @@ export class IconPickerInput {
     /** Last `size:gap` applied to the virtualizer — avoid rebuilding layout on every open. */
     private layoutKey: string | null = null;
     private paneRefreshQueued = false;
+    /** Column count from the last layout pass — arrow Up/Down moves by this stride. */
+    private gridCols = 1;
+    /** Roving focus index into `iconsFiltered` (−1 = focus not in the grid). */
+    private activeGridIndex = -1;
+    private focusGridToken = 0;
     private hiddenInputs = new Map<string, HTMLInputElement>();
 
     private readonly onResize = (): void => {
@@ -269,7 +274,23 @@ export class IconPickerInput {
             if (!this.open) {
                 this.setOpen(true);
             }
+            // Filter changed — drop grid focus so the next ArrowDown starts at the top.
+            this.activeGridIndex = -1;
             this.refreshPane();
+        });
+
+        // From search: ArrowDown enters the grid (Tab still works; arrows are the fast path).
+        this.searchInput.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (!this.open || event.key !== 'ArrowDown') {
+                return;
+            }
+
+            if (!this.iconsFiltered.length || this.isFetching) {
+                return;
+            }
+
+            event.preventDefault();
+            this.focusGridIndex(this.activeGridIndex >= 0 ? this.activeGridIndex : 0);
         });
 
         this.clearButton.addEventListener('click', (event) => {
@@ -283,11 +304,13 @@ export class IconPickerInput {
         // icons). Virtualization limits DOM, but after-hide still feels lagged.
         this.popover.addEventListener('pk-hide', () => {
             this.open = false;
+            this.activeGridIndex = -1;
             this.syncChrome();
         });
 
         this.popover.addEventListener('pk-after-hide', () => {
             this.open = false;
+            this.activeGridIndex = -1;
             const hadSearch = this.search !== '';
             this.search = '';
             (this.searchInput as HTMLElement & { value?: string }).value = '';
@@ -493,6 +516,10 @@ export class IconPickerInput {
         this.statusEl.replaceChildren();
         this.ensureVirtualizer();
 
+        if (this.activeGridIndex >= items.length) {
+            this.activeGridIndex = items.length ? 0 : -1;
+        }
+
         if (this.virtualizer) {
             this.virtualizer.hidden = false;
             // Same array ref → virtualizer no-ops; skip the write so warm re-opens
@@ -536,10 +563,191 @@ export class IconPickerInput {
         const virtualizer = document.createElement('lit-virtualizer') as LitVirtualizer<IconItem>;
         virtualizer.className = 'ipui-icons-scroller';
         virtualizer.scroller = true;
-        virtualizer.renderItem = (item: IconItem) => this.renderGridItem(item);
+        virtualizer.renderItem = (item: IconItem, index: number) => this.renderGridItem(item, index);
+        // Capture so arrows win over scroll-default and recycled cell focus.
+        virtualizer.addEventListener(
+            'keydown',
+            (event) => this.onGridKeydown(event as KeyboardEvent),
+            true,
+        );
         this.pane.appendChild(virtualizer);
         this.virtualizer = virtualizer;
         this.syncVirtualizerLayout();
+    }
+
+    private onGridKeydown(event: KeyboardEvent): void {
+        if (!this.open || this.isFetching) {
+            return;
+        }
+
+        const items = this.iconsFiltered;
+        if (!items.length) {
+            return;
+        }
+
+        // Always trust the focused cell’s index — `activeGridIndex` can lag behind a
+        // programmatic focus or a recycled lit listener until the next @focus tick.
+        const focused = (event.target as HTMLElement | null)?.closest?.('.ipui-icon-wrap') as HTMLElement | null;
+        const fromDom = focused?.dataset.gridIndex;
+        let next =
+            fromDom != null && fromDom !== ''
+                ? Number(fromDom)
+                : this.activeGridIndex >= 0 && this.activeGridIndex < items.length
+                    ? this.activeGridIndex
+                    : 0;
+
+        // Column stride must match the painted grid (lit-virtualizer’s own math), not
+        // only our height-sizing estimate — mismatch makes ArrowDown miss the cell below.
+        const cols = this.resolveGridCols(focused);
+
+        switch (event.key) {
+            case 'ArrowRight':
+                next = Math.min(items.length - 1, next + 1);
+                break;
+            case 'ArrowLeft':
+                next = Math.max(0, next - 1);
+                break;
+            case 'ArrowDown':
+                next = Math.min(items.length - 1, next + cols);
+                break;
+            case 'ArrowUp':
+                if (next < cols) {
+                    event.preventDefault();
+                    this.activeGridIndex = next;
+                    (this.searchInput as HTMLElement & { focus?: () => void }).focus?.();
+                    return;
+                }
+                next = next - cols;
+                break;
+            case 'Home':
+                next = event.ctrlKey || event.metaKey ? 0 : next - (next % cols);
+                break;
+            case 'End': {
+                if (event.ctrlKey || event.metaKey) {
+                    next = items.length - 1;
+                } else {
+                    const rowEnd = next - (next % cols) + (cols - 1);
+                    next = Math.min(items.length - 1, rowEnd);
+                }
+                break;
+            }
+            default:
+                return;
+        }
+
+        event.preventDefault();
+        this.focusGridIndex(next);
+    }
+
+    /**
+     * Count cells that share a row’s Y — authoritative for arrow stride.
+     * Falls back to the last layout estimate when the scroller isn’t painted yet.
+     */
+    private resolveGridCols(focused: HTMLElement | null): number {
+        if (!this.virtualizer) {
+            return Math.max(1, this.gridCols);
+        }
+
+        const buttons = this.virtualizer.querySelectorAll<HTMLElement>('.ipui-icon-wrap');
+        if (buttons.length < 2) {
+            return Math.max(1, this.gridCols);
+        }
+
+        const counts = new Map<number, number>();
+        buttons.forEach((button) => {
+            const top = Math.round(button.getBoundingClientRect().top);
+            counts.set(top, (counts.get(top) ?? 0) + 1);
+        });
+
+        let measured = 0;
+        counts.forEach((count) => {
+            if (count > measured) {
+                measured = count;
+            }
+        });
+
+        // Prefer the focused row when it’s a full row (partial last rows under-count).
+        if (focused) {
+            const focusTop = Math.round(focused.getBoundingClientRect().top);
+            const focusRow = counts.get(focusTop) ?? 0;
+            if (focusRow >= measured) {
+                measured = focusRow;
+            }
+        }
+
+        if (measured >= 2) {
+            this.gridCols = measured;
+            return measured;
+        }
+
+        return Math.max(1, this.gridCols);
+    }
+
+    /**
+     * Scroll the virtualized cell into view, then focus its button.
+     * `element(i)` is only a scroll proxy — focus comes from the painted DOM node.
+     */
+    private focusGridIndex(index: number): void {
+        const items = this.iconsFiltered;
+        if (!this.virtualizer || !items.length) {
+            return;
+        }
+
+        const next = Math.max(0, Math.min(items.length - 1, index));
+        this.activeGridIndex = next;
+        const token = ++this.focusGridToken;
+
+        this.virtualizer.scrollToIndex(next, 'nearest');
+
+        const tryFocus = (): void => {
+            if (token !== this.focusGridToken || !this.virtualizer) {
+                return;
+            }
+
+            const button = this.virtualizer.querySelector(
+                `.ipui-icon-wrap[data-grid-index="${next}"]`,
+            ) as HTMLButtonElement | null;
+
+            if (!button) {
+                // Cell not painted yet (scroll pin / recycle) — retry once layout settles.
+                const settle = this.virtualizer.layoutComplete ?? Promise.resolve();
+                void settle.then(() => {
+                    if (token !== this.focusGridToken) {
+                        return;
+                    }
+
+                    requestAnimationFrame(() => {
+                        if (token !== this.focusGridToken || !this.virtualizer) {
+                            return;
+                        }
+
+                        const retry = this.virtualizer.querySelector(
+                            `.ipui-icon-wrap[data-grid-index="${next}"]`,
+                        ) as HTMLButtonElement | null;
+                        this.applyGridFocus(retry, next);
+                    });
+                });
+                return;
+            }
+
+            this.applyGridFocus(button, next);
+        };
+
+        requestAnimationFrame(tryFocus);
+    }
+
+    private applyGridFocus(button: HTMLButtonElement | null, index: number): void {
+        if (!button || !this.virtualizer) {
+            return;
+        }
+
+        // Roving tabindex: only the active cell stays in the Tab cycle.
+        this.virtualizer.querySelectorAll<HTMLButtonElement>('.ipui-icon-wrap').forEach((el) => {
+            el.tabIndex = -1;
+        });
+        button.tabIndex = 0;
+        button.focus({ preventScroll: true });
+        this.activeGridIndex = index;
     }
 
     /** Match BEFORE tippy: panel width = field width (kit flush max is ~360px otherwise). */
@@ -608,21 +816,32 @@ export class IconPickerInput {
             contentHeight = heightFor(cols);
         }
 
+        this.gridCols = cols;
+
         const height = Math.min(Math.max(contentHeight, minHeight), maxHeight);
         this.virtualizer.style.height = `${height}px`;
         this.virtualizer.style.minHeight = `${height}px`;
     }
 
-    private renderGridItem(item: IconItem) {
+    private renderGridItem(item: IconItem, index: number) {
         const label = humanizeLabel(item.label);
         const cssAttribute = this.cssAttribute;
         const showLabels = this.showLabels;
+        // One tab stop in the grid; arrows move focus (see onGridKeydown).
+        // When nothing has been arrow-focused yet, keep index 0 in the Tab cycle.
+        const tabIndex =
+            index === (this.activeGridIndex >= 0 ? this.activeGridIndex : 0) ? 0 : -1;
 
         return html`
             <button
                 type="button"
                 class="ipui-icon-wrap"
                 title=${item.label || ''}
+                data-grid-index=${String(index)}
+                tabindex=${tabIndex}
+                @focus=${() => {
+                    this.activeGridIndex = index;
+                }}
                 @click=${(event: Event) => {
                     event.preventDefault();
                     this.select(item);
