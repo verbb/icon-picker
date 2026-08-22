@@ -13,6 +13,7 @@ There are a few different types of Icon Sets you can create:
 - [Material Symbols](https://fonts.google.com/icons)
 - [Bootstrap Icons](https://icons.getbootstrap.com/)
 - [Remix Icon](https://remixicon.com/)
+- [Material Design Icons](https://pictogrammers.com/library/mdi/)
 
 ## SVG Folders
 Creating a **SVG Folder** Icon Set allows you to pick from a sub-folder (or the root folder) where a collection of `.svg` files sit. This is relative to your **Icons Path** plugin setting. Icon Picker will scan all `.svg` files in that folder, to be a pickable icon.
