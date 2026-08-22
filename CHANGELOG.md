@@ -5,6 +5,7 @@
 ### Added
 - Add field setting for optional input placeholder text when no icon is selected.
 - Icon grid supports arrow-key navigation (Left/Right, Up/Down by row, Home/End).
+- Built-in icon sets for Bootstrap Icons, Remix Icon, Material Design Icons, Phosphor, Lucide, Tabler Icons, Heroicons, and Octicons (CDN-backed catalogs — no icon files bundled in the plugin).
 
 ### Changed
 - Field input rebuilt on [Plugin Kit](https://docs.verbb.io/plugin-kit/web/) (web components).
@@ -14,6 +15,7 @@
 - Feather Icons no longer depend on remote `feather.min.js` / `feather.replace()`. Icon paths are bundled and cached as inline SVG for the CP (fixes empty cells on reopen / virtualizer recycle). ([#85](https://github.com/verbb/icon-picker/issues/85)).
 
 ### Fixed
+- Fix false "leave page" warnings on icon set create/edit screens when no changes were made.
 - Don’t open the icon pane on programmatic focus (Craft slideout `setFocusWithin` / focus restore). Open on click, Enter/Space/ArrowDown, or typing instead. ([#109](https://github.com/verbb/icon-picker/issues/109)).
 - Clarify Web Font support: glyph indexing requires `.ttf` / `.woff` / `.otf` (not `.woff2` alone). Docs and icon-set UI updated; `.woff2` is rejected with a clear error. ([#107](https://github.com/verbb/icon-picker/issues/107)).
 
