@@ -52,6 +52,9 @@
 
 .ipui-icon-input-svg {
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex: 0 0 auto;
     width: 1.125rem;
     height: 1.125rem;
@@ -242,12 +245,31 @@
 
 .ipui-icon-svg {
     /* Match BEFORE tippy: box + webfont size share --ipui-icon-size (32). */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: var(--ipui-icon-size);
     height: var(--ipui-icon-size);
     font-size: var(--ipui-icon-size);
     line-height: var(--ipui-icon-size);
     margin: auto;
     text-align: center;
+}
+
+/* css.gg paints fixed-size boxes (often 22px) and scales with `--ggs`. Unlike Bootstrap
+   and other webfont sets, font-size on the host does nothing — set --ggs from our targets.
+   Divide by 22px (not 22) so calc() stays unitless for transform:scale(). */
+.ipui-icon-input-svg:has([class^='gg-']),
+.ipui-icon-svg:has([class^='gg-']) {
+    --ggs: calc(var(--ipui-icon-size) / 22px);
+}
+
+.ipui-icon-input-svg:has([class^='gg-']) {
+    --ggs: calc(1.125rem / 22px);
+}
+
+.ipui-icons-pane.show-labels .ipui-icon-svg:has([class^='gg-']) {
+    --ggs: calc(var(--ipui-icon-size-large) / 22px);
 }
 
 .ipui-icon-svg svg {

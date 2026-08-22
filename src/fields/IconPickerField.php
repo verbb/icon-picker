@@ -363,6 +363,14 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
         }
 
         if ($value->type === Icon::TYPE_SVG) {
+            $url = $value->getUrl();
+
+            if ($url && str_starts_with($url, 'http')) {
+                $iconHtml = Html::img($url, ['alt' => '', 'loading' => 'lazy']);
+
+                return Html::tag('div', $iconHtml, ['class' => 'cp-icon']);
+            }
+
             $iconHtml = Cp::iconSvg($value->displayValue);
 
             return Html::tag('div', $iconHtml, ['class' => 'cp-icon']);

@@ -17,7 +17,7 @@
     "name": "iconPickerPkComponents"
   },
   "field/src/js/icon-picker.ts": {
-    "file": "assets/icon-picker-BOuxuOBB.js",
+    "file": "assets/icon-picker-BOfuXjRm.js",
     "name": "icon-picker",
     "src": "field/src/js/icon-picker.ts",
     "isEntry": true,
@@ -29,7 +29,7 @@
       "../../../node_modules/@lit-labs/virtualizer/layouts/flow.js"
     ],
     "css": [
-      "assets/icon-picker-BjF-tWtc.css"
+      "assets/icon-picker-BcLzigDI.css"
     ]
   },
   "field/src/js/plugin-kit-register.ts": {

@@ -115,6 +115,7 @@ class Icon extends Model implements \JsonSerializable, \Countable
         $array['id'] = implode(':', array_filter([
             $this->type,
             $this->iconSetHandle,
+            $this->iconSet,
             $this->value,
         ])) ?: (string)random_int(1, PHP_INT_MAX);
 
@@ -187,11 +188,23 @@ class Icon extends Model implements \JsonSerializable, \Countable
 
     public function getUrl(): ?string
     {
-        if ($this->type === self::TYPE_SVG) {
-            return IconPickerHelper::getIconUrl($this->value);
+        if ($this->type !== self::TYPE_SVG) {
+            return null;
         }
 
-        return null;
+        if ($this->_isAbsoluteUrl($this->value)) {
+            return $this->value;
+        }
+
+        if ($this->iconSetHandle) {
+            $iconSet = IconPicker::$plugin->getIconSets()->getIconSetByHandle($this->iconSetHandle);
+
+            if ($iconSet instanceof \verbb\iconpicker\base\RemoteSvgIconSet) {
+                return $iconSet->resolveSvgUrl($this);
+            }
+        }
+
+        return IconPickerHelper::getIconUrl($this->value);
     }
 
     public function getPath(): string
@@ -222,6 +235,16 @@ class Icon extends Model implements \JsonSerializable, \Countable
 
             if ($path = $this->getPath()) {
                 return Template::raw(@file_get_contents($path));
+            }
+
+            $url = $this->getUrl();
+
+            if ($url && $this->_isAbsoluteUrl($url)) {
+                $contents = IconPickerHelper::getFileContents($url);
+
+                if ($contents) {
+                    return Template::raw($contents);
+                }
             }
         }
 
@@ -259,5 +282,10 @@ class Icon extends Model implements \JsonSerializable, \Countable
         }
 
         return null;
+    }
+
+    private function _isAbsoluteUrl(?string $value): bool
+    {
+        return $value !== null && (str_starts_with($value, 'http://') || str_starts_with($value, 'https://'));
     }
 }

@@ -131,4 +131,41 @@
     new Craft.HandleGenerator('#name', '#handle');
 {% endif %}
 
+// Every icon set type's settings are rendered in the DOM (hidden panels included).
+// Disable inputs in hidden panels so they don't affect confirm-unload or POST noise,
+// and re-sync Craft's serialized baseline after nested type templates finish init.
+(function() {
+    const $form = $('#main-form');
+
+    const syncHiddenTypePanels = () => {
+        $('#settings > div[id]').each(function() {
+            const $panel = $(this);
+            const hidden = $panel.hasClass('hidden');
+            $panel.find('input, select, textarea').prop('disabled', hidden);
+        });
+    };
+
+    const resetConfirmUnloadBaseline = () => {
+        if (!$form.length || !Garnish.hasAttr($form, 'data-confirm-unload')) {
+            return;
+        }
+
+        const serializer = $form.data('serializer') || (() => $form.serialize());
+        $form.data('initialSerializedValue', serializer());
+    };
+
+    $('#type').on('change', () => {
+        // FieldToggle updates `.hidden` on the same tick; sync on the next.
+        setTimeout(syncHiddenTypePanels, 0);
+    });
+
+    syncHiddenTypePanels();
+
+    // Nested templates (e.g. Font Awesome CDN license) may still adjust fields async.
+    setTimeout(() => {
+        syncHiddenTypePanels();
+        resetConfirmUnloadBaseline();
+    }, 100);
+})();
+
 {% endjs %}
