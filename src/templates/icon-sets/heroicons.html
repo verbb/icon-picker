@@ -1,0 +1,7 @@
+{% include 'icon-picker/icon-sets/_variants' with {
+    iconSet: iconSet,
+    options: [
+        { label: 'Outline' | t('icon-picker'), value: 'outline' },
+        { label: 'Solid' | t('icon-picker'), value: 'solid' },
+    ],
+} only %}
