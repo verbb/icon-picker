@@ -74,6 +74,7 @@ class IconSets extends Component
             registerediconsets\Lucide::class,
             registerediconsets\TablerIcons::class,
             registerediconsets\Heroicons::class,
+            registerediconsets\Octicons::class,
         ];
 
         $event = new RegisterIconSetsEvent([
