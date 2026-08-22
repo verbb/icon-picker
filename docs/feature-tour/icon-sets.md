@@ -16,6 +16,7 @@ There are a few different types of Icon Sets you can create:
 - [Material Design Icons](https://pictogrammers.com/library/mdi/)
 - [Phosphor](https://phosphoricons.com/)
 - [Lucide](https://lucide.dev/)
+- [Tabler Icons](https://tabler.io/icons)
 
 ## SVG Folders
 Creating a **SVG Folder** Icon Set allows you to pick from a sub-folder (or the root folder) where a collection of `.svg` files sit. This is relative to your **Icons Path** plugin setting. Icon Picker will scan all `.svg` files in that folder, to be a pickable icon.

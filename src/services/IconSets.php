@@ -72,6 +72,7 @@ class IconSets extends Component
             registerediconsets\MaterialDesignIcons::class,
             registerediconsets\Phosphor::class,
             registerediconsets\Lucide::class,
+            registerediconsets\TablerIcons::class,
         ];
 
         $event = new RegisterIconSetsEvent([
