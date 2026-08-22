@@ -68,6 +68,7 @@ class IconSets extends Component
             registerediconsets\CssGg::class,
             registerediconsets\MaterialSymbols::class,
             registerediconsets\BootstrapIcons::class,
+            registerediconsets\RemixIcon::class,
         ];
 
         $event = new RegisterIconSetsEvent([
