@@ -179,33 +179,37 @@
     $('[data-attribute="cdn-version"] select').on('change', onChange);
     $('[data-attribute="cdn-license"] select').on('change', onChange);
 
+    // Toggle disabled state for hidden license collection panels. Kept out of `change`
+    // handlers on init — a synthetic `change` after Craft snapshots the form causes a
+    // false confirm-unload warning on icon set edit screens.
+    const syncLicenseContainers = () => {
+        $('[data-container="license"]').each(function(index, element) {
+            const $container = $(element);
 
-    // Toggle the disabled state of any inputs in the target, hidden container
-    $('[data-attribute="cdn-license"] select').on('change', function(e) {
-        // Wait for Craft's jQuery to trigger first
-        setTimeout(function() {
-            $('[data-container="license"]').each(function(index, element) {
-                const $container = $(element);
+            if ($container.hasClass('hidden')) {
+                $container.find('input, select, textarea').prop('disabled', true);
+                $container.find('input, select, textarea').addClass('disabled');
+            } else {
+                $container.find('input, select, textarea').prop('disabled', false);
+                $container.find('input, select, textarea').removeClass('disabled');
 
-                if ($container.hasClass('hidden')) {
-                    $container.find('input, select, textarea').prop('disabled', true);
-                    $container.find('input, select, textarea').addClass('disabled');
-                } else {
-                    $container.find('input, select, textarea').prop('disabled', false);
-                    $container.find('input, select, textarea').removeClass('disabled');
+                // Annoying use-case for checkbox groups and "All", where all others are disabled
+                // and re-enabling it turns them back as enabled when they shouldn't
+                $container.find('input[type="checkbox"][value="*"]:checked').each(function(i, el) {
+                    // Trigger a double-click
+                    $(el).trigger('click').trigger('click');
+                });
+            }
+        });
+    };
 
-                    // Annoying use-case for checkbox groups and "All", where all others are disabled
-                    // and re-enabling it turns them back as enabled when they shouldn't
-                    $container.find('input[type="checkbox"][value="*"]:checked').each(function(i, el) {
-                        // Trigger a double-click
-                        $(el).trigger('click').trigger('click');
-                    });
-                }
-            });
-        }, 50);
+    $('[data-attribute="cdn-license"] select').on('change', function() {
+        // Wait for Craft's FieldToggle to update `.hidden` first
+        setTimeout(syncLicenseContainers, 50);
     });
 
-    $('[data-attribute="cdn-license"] select').trigger('change');
+    onChange();
+    syncLicenseContainers();
 {% endjs %}
 
 {% css %}
