@@ -70,6 +70,7 @@ class IconSets extends Component
             registerediconsets\BootstrapIcons::class,
             registerediconsets\RemixIcon::class,
             registerediconsets\MaterialDesignIcons::class,
+            registerediconsets\Phosphor::class,
         ];
 
         $event = new RegisterIconSetsEvent([
