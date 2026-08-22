@@ -1,0 +1,17 @@
+{% import '_includes/forms' as forms %}
+{% import 'verbb-base/_macros' as macros %}
+
+{{ forms.textField({
+    first: true,
+    label: 'Package version' | t('icon-picker'),
+    instructions: 'npm package version for CDN URLs. Leave blank to use the plugin default ({version}). Catalog JSON is built for the default; a custom version may not match every icon name.' | t('icon-picker', { version: defaultVersion }),
+    name: 'cdnVersion',
+    value: iconSet.cdnVersion ?? '',
+    placeholder: defaultVersion,
+    warning: macros.configWarning('cdnVersion', 'icon-picker'),
+    errors: iconSet.getErrors('cdnVersion'),
+}) }}
+
+{% if variantSettingsHtml %}
+    {{ variantSettingsHtml | raw }}
+{% endif %}

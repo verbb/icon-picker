@@ -14,7 +14,7 @@ class Feather extends IconSet
 
     public static function displayName(): string
     {
-        return Craft::t('icon-picker', 'Feather Icons');
+        return Craft::t('icon-picker', 'Feather Icons (Legacy)');
     }
 
 

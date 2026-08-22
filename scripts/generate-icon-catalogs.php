@@ -1,13 +1,27 @@
 <?php
 /**
- * One-off catalog generator for remote icon sets (metadata only — no SVG/font files).
+ * Regenerate name-only catalogs for remote icon sets (metadata only — no SVG/font files).
  *
  * Usage: php scripts/generate-icon-catalogs.php
+ *
+ * Keep versions in sync with each icon set’s defaultVersion() (and Lucide/Heroicons class constants).
  */
 
 declare(strict_types=1);
 
 $jsonDir = dirname(__DIR__) . '/src/json';
+
+// Plugin-pinned npm versions — bump here and in icon set classes on release.
+$versions = [
+    'bootstrap' => '1.13.1',
+    'remix' => '4.9.1',
+    'tabler' => '3.46.0',
+    'cssGg' => '2.1.4',
+    'ionicons' => '8.1.0',
+    'lucide' => '1.33.0',
+    'heroicons' => '2.2.0',
+    'octicons' => '19.12.0',
+];
 
 function fetchJson(string $url): array
 {
@@ -36,7 +50,8 @@ function iconRow(string $label, ?string $keywords = null): array
 }
 
 // Bootstrap Icons — name list from official glyph map.
-$bootstrap = fetchJson('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.json');
+$bootstrapVersion = $versions['bootstrap'];
+$bootstrap = fetchJson("https://cdn.jsdelivr.net/npm/bootstrap-icons@{$bootstrapVersion}/font/bootstrap-icons.json");
 $bootstrapIcons = [];
 
 foreach (array_keys($bootstrap) as $name) {
@@ -46,7 +61,8 @@ foreach (array_keys($bootstrap) as $name) {
 writeCatalog($jsonDir . '/bootstrap-icons.json', $bootstrapIcons);
 
 // Remix Icon — glyph map keys end with -line / -fill.
-$remixGlyphs = fetchJson('https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.glyph.json');
+$remixVersion = $versions['remix'];
+$remixGlyphs = fetchJson("https://cdn.jsdelivr.net/npm/remixicon@{$remixVersion}/fonts/remixicon.glyph.json");
 $remixLine = [];
 $remixFill = [];
 
@@ -68,6 +84,13 @@ $mdi = fetchJson('https://api.iconify.design/collection?prefix=mdi');
 $mdiIcons = array_map(fn(string $name) => iconRow($name), $mdi['uncategorized'] ?? []);
 sort($mdiIcons);
 writeCatalog($jsonDir . '/mdi.json', $mdiIcons);
+
+// css.gg — icon names from package icons.json (catalog pin; CSS URL remains legacy all.css).
+$cssGgVersion = $versions['cssGg'];
+$cssGgIcons = fetchJson("https://cdn.jsdelivr.net/npm/css.gg@{$cssGgVersion}/icons/icons.json");
+$cssGgRows = array_map(fn(string $name) => iconRow($name), array_keys($cssGgIcons));
+sort($cssGgRows);
+writeCatalog($jsonDir . '/css-gg.json', $cssGgRows);
 
 // Phosphor — group Iconify ph collection by base name and weight suffix.
 $phCollection = fetchJson('https://api.iconify.design/collection?prefix=ph');
@@ -111,8 +134,8 @@ foreach ($phByWeight as $weight => $icons) {
     writeCatalog($jsonDir . "/phosphor-{$weight}.json", $icons);
 }
 
-// Lucide — icon names from lucide-static SVGs (keep version in sync with Lucide::defaultVersion()).
-$lucideVersion = '1.33.0';
+// Lucide — icon names from lucide-static SVGs.
+$lucideVersion = $versions['lucide'];
 $lucidePackage = fetchJson("https://data.jsdelivr.com/v1/package/npm/lucide-static@{$lucideVersion}/flat");
 $lucideIcons = [];
 
@@ -130,7 +153,8 @@ usort($lucideIcons, fn($a, $b) => strcmp($a['label'], $b['label']));
 writeCatalog($jsonDir . '/lucide.json', $lucideIcons);
 
 // Tabler — outline + filled from icons.json
-$tablerMeta = fetchJson('https://cdn.jsdelivr.net/npm/@tabler/icons@3.28.1/icons.json');
+$tablerVersion = $versions['tabler'];
+$tablerMeta = fetchJson("https://cdn.jsdelivr.net/npm/@tabler/icons@{$tablerVersion}/icons.json");
 $tablerOutline = [];
 $tablerFilled = [];
 
@@ -157,8 +181,8 @@ usort($tablerFilled, fn($a, $b) => strcmp($a['label'], $b['label']));
 writeCatalog($jsonDir . '/tabler-outline.json', $tablerOutline);
 writeCatalog($jsonDir . '/tabler-filled.json', $tablerFilled);
 
-// Heroicons — icon names from npm heroicons@2 (keep version in sync with Heroicons::defaultVersion()).
-$heroiconsVersion = '2.2.0';
+// Heroicons — icon names from npm heroicons@2.
+$heroiconsVersion = $versions['heroicons'];
 $heroiconsPackage = fetchJson("https://data.jsdelivr.com/v1/package/npm/heroicons@{$heroiconsVersion}/flat");
 $heroOutline = [];
 $heroSolid = [];
@@ -182,8 +206,41 @@ usort($heroSolid, fn($a, $b) => strcmp($a['label'], $b['label']));
 writeCatalog($jsonDir . '/heroicons-outline.json', $heroOutline);
 writeCatalog($jsonDir . '/heroicons-solid.json', $heroSolid);
 
+// Ionicons (modern SVG) — outline, sharp, and default (no suffix) sets.
+$ioniconsVersion = $versions['ionicons'];
+$ioniconsPackage = fetchJson("https://data.jsdelivr.com/v1/package/npm/ionicons@{$ioniconsVersion}/flat");
+$ioniconsOutline = [];
+$ioniconsSharp = [];
+$ioniconsDefault = [];
+
+foreach ($ioniconsPackage['files'] ?? [] as $file) {
+    $path = $file['name'] ?? '';
+
+    if (!str_contains($path, '/dist/ionicons/svg/') || !str_ends_with($path, '.svg')) {
+        continue;
+    }
+
+    $name = substr(basename($path), 0, -4);
+
+    if (str_ends_with($name, '-outline')) {
+        $ioniconsOutline[] = iconRow($name);
+    } elseif (str_ends_with($name, '-sharp')) {
+        $ioniconsSharp[] = iconRow($name);
+    } else {
+        $ioniconsDefault[] = iconRow($name);
+    }
+}
+
+usort($ioniconsOutline, fn($a, $b) => strcmp($a['label'], $b['label']));
+usort($ioniconsSharp, fn($a, $b) => strcmp($a['label'], $b['label']));
+usort($ioniconsDefault, fn($a, $b) => strcmp($a['label'], $b['label']));
+writeCatalog($jsonDir . '/ionicons-modern-outline.json', $ioniconsOutline);
+writeCatalog($jsonDir . '/ionicons-modern-sharp.json', $ioniconsSharp);
+writeCatalog($jsonDir . '/ionicons-modern-default.json', $ioniconsDefault);
+
 // Octicons — default to 24px SVG filenames ({name}-24.svg).
-$octiconsData = fetchJson('https://cdn.jsdelivr.net/npm/@primer/octicons@19.12.0/build/data.json');
+$octiconsVersion = $versions['octicons'];
+$octiconsData = fetchJson("https://cdn.jsdelivr.net/npm/@primer/octicons@{$octiconsVersion}/build/data.json");
 $octicons24 = [];
 
 foreach ($octiconsData as $name => $entry) {

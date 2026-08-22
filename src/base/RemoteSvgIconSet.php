@@ -3,6 +3,7 @@ namespace verbb\iconpicker\base;
 
 use verbb\iconpicker\models\Icon;
 
+use Craft;
 use craft\helpers\Json;
 
 /**
@@ -21,6 +22,15 @@ abstract class RemoteSvgIconSet extends IconSet
 
     // Public Methods
     // =========================================================================
+
+    public function getSettingsHtml(): ?string
+    {
+        return Craft::$app->getView()->renderTemplate('icon-picker/icon-sets/_remote-package', [
+            'iconSet' => $this,
+            'defaultVersion' => $this->defaultVersion(),
+            'variantSettingsHtml' => $this->getVariantSettingsHtml(),
+        ]);
+    }
 
     public function fetchIcons(): void
     {
@@ -102,5 +112,10 @@ abstract class RemoteSvgIconSet extends IconSet
     abstract protected function defaultVersion(): string;
 
     abstract protected function buildSvgUrl(string $iconName, string $variant): string;
+
+    protected function getVariantSettingsHtml(): ?string
+    {
+        return null;
+    }
 
 }

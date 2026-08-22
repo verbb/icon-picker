@@ -3,6 +3,7 @@ namespace verbb\iconpicker\base;
 
 use verbb\iconpicker\models\Icon;
 
+use Craft;
 use craft\helpers\Json;
 
 /**
@@ -20,6 +21,15 @@ abstract class RemoteCssIconSet extends IconSet
 
     // Public Methods
     // =========================================================================
+
+    public function getSettingsHtml(): ?string
+    {
+        return Craft::$app->getView()->renderTemplate('icon-picker/icon-sets/_remote-package', [
+            'iconSet' => $this,
+            'defaultVersion' => $this->defaultVersion(),
+            'variantSettingsHtml' => $this->getVariantSettingsHtml(),
+        ]);
+    }
 
     public function fetchIcons(): void
     {
@@ -105,5 +115,10 @@ abstract class RemoteCssIconSet extends IconSet
     abstract protected function cssUrls(): array|string;
 
     abstract protected function buildCssValue(string $label, ?string $variant = null): string;
+
+    protected function getVariantSettingsHtml(): ?string
+    {
+        return null;
+    }
 
 }

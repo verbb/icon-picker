@@ -5,53 +5,48 @@ use verbb\iconpicker\base\RemoteSvgIconSet;
 
 use Craft;
 
-class TablerIcons extends RemoteSvgIconSet
+class IoniconsSvg extends RemoteSvgIconSet
 {
     // Static Methods
     // =========================================================================
 
     public static function displayName(): string
     {
-        return Craft::t('icon-picker', 'Tabler Icons');
-    }
-
-
-    // Public Methods
-    // =========================================================================
-
-    protected function getVariantSettingsHtml(): ?string
-    {
-        return Craft::$app->getView()->renderTemplate('icon-picker/icon-sets/tabler-icons', [
-            'iconSet' => $this,
-        ]);
+        return Craft::t('icon-picker', 'Ionicons');
     }
 
 
     // Protected Methods
     // =========================================================================
 
+    protected function getVariantSettingsHtml(): ?string
+    {
+        return Craft::$app->getView()->renderTemplate('icon-picker/icon-sets/ionicons-svg', [
+            'iconSet' => $this,
+        ]);
+    }
+
     protected function catalogMap(): array
     {
         return [
-            'outline' => 'tabler-outline.json',
-            'filled' => 'tabler-filled.json',
+            'default' => 'ionicons-modern-default.json',
+            'outline' => 'ionicons-modern-outline.json',
+            'sharp' => 'ionicons-modern-sharp.json',
         ];
     }
 
     protected function defaultVariant(): string
     {
-        return 'outline';
+        return 'default';
     }
 
     protected function defaultVersion(): string
     {
-        return '3.46.0';
+        return '8.1.0';
     }
 
     protected function buildSvgUrl(string $iconName, string $variant): string
     {
-        $folder = $variant === 'filled' ? 'filled' : 'outline';
-
-        return "https://cdn.jsdelivr.net/npm/@tabler/icons@{$this->version()}/icons/{$folder}/{$iconName}.svg";
+        return "https://cdn.jsdelivr.net/npm/ionicons@{$this->version()}/dist/ionicons/svg/{$iconName}.svg";
     }
 }

@@ -1,0 +1,8 @@
+{% include 'icon-picker/icon-sets/_variants' with {
+    iconSet: iconSet,
+    options: [
+        { label: 'Default' | t('icon-picker'), value: 'default' },
+        { label: 'Outline' | t('icon-picker'), value: 'outline' },
+        { label: 'Sharp' | t('icon-picker'), value: 'sharp' },
+    ],
+} only %}

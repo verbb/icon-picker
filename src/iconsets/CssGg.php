@@ -1,14 +1,11 @@
 <?php
 namespace verbb\iconpicker\iconsets;
 
-use verbb\iconpicker\IconPicker;
-use verbb\iconpicker\base\IconSet;
-use verbb\iconpicker\models\Icon;
+use verbb\iconpicker\base\RemoteCssIconSet;
 
 use Craft;
-use craft\helpers\Json;
 
-class CssGg extends IconSet
+class CssGg extends RemoteCssIconSet
 {
     // Static Methods
     // =========================================================================
@@ -19,37 +16,33 @@ class CssGg extends IconSet
     }
 
 
-    // Public Methods
+    // Protected Methods
     // =========================================================================
 
-    public function getSettingsHtml(): ?string
+    protected function catalogFiles(): array
     {
-        return Craft::$app->getView()->renderTemplate('icon-picker/icon-sets/css-gg', [
-            'iconSet' => $this,
-        ]);
+        return ['' => 'css-gg.json'];
     }
 
-    public function fetchIcons(): void
+    protected function defaultVersion(): string
     {
-        $iconPath = __DIR__ . '/../json/css-gg.json';
+        return '2.1.4';
+    }
 
-        if (file_exists($iconPath)) {
-            $json = Json::decode(file_get_contents($iconPath));
+    protected static function cssFontName(): string
+    {
+        return 'css.gg';
+    }
 
-            foreach ($json as $icon) {
-                $this->icons[] = new Icon([
-                    'type' => Icon::TYPE_CSS,
-                    'iconSetHandle' => $this->handle,
-                    'value' => 'gg-' . $icon['label'],
-                    'label' => $icon['label'],
-                ]);
-            }
-        }
+    protected function cssUrls(): array|string
+    {
+        // css.gg 2.x no longer ships icons/all.css in the npm tarball; jsDelivr still
+        // serves this legacy path for class-based `gg-*` icons used in saved values.
+        return 'https://cdn.jsdelivr.net/npm/css.gg/icons/all.css';
+    }
 
-        $this->fonts[] = [
-            'type' => 'remote',
-            'name' => 'css.gg',
-            'url' => 'https://cdn.jsdelivr.net/npm/css.gg/icons/all.css',
-        ];
+    protected function buildCssValue(string $label, ?string $variant = null): string
+    {
+        return 'gg-' . $label;
     }
 }

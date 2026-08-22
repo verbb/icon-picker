@@ -7,7 +7,8 @@ There are a few different types of Icon Sets you can create:
 - SVG Sprites
 - Web Fonts
 - [Font Awesome 5/6](https://fontawesome.com/)
-- [Feather Icons](https://feathericons.com/)
+- [Feather Icons (Legacy)](https://feathericons.com/) — prefer [Lucide](https://lucide.dev/)
+- [Ionicons (Legacy)](https://ionic.io/ionicons) — legacy web font; use **Ionicons** for current SVG icons
 - [Ionicons](https://ionic.io/ionicons)
 - [CSS.gg](https://css.gg/)
 - [Material Symbols](https://fonts.google.com/icons)
@@ -108,3 +109,15 @@ You should place the `-metadata.json` file alongside your SVG Sprites. This woul
 
 #### Metadata with Web Fonts
 You should place the `-metadata.json` file alongside your Web Font. This would be in the root of your icons folder. You must name the metadata file the same as your web font file. For example, `icomoon.ttf` and `icomoon-metadata.json`.
+
+## Remote icon sets and package versions
+
+Built-in sets that load icons from npm/CDN (Bootstrap Icons, Lucide, Tabler, etc.) pin a **package version** in the plugin. The name catalog JSON is generated for that version. Icon set settings include an optional **Package version** field; leave it blank to use the plugin default.
+
+:::warning
+If you override the package version, CDN URLs may point at a different release than the bundled catalog. Some icon names may be missing or broken in the picker until you align catalog and CDN.
+:::
+
+## Legacy icon sets
+
+**Feather Icons (Legacy)** and **Ionicons (Legacy)** remain for existing content but are unmaintained upstream. Use **Lucide** and **Ionicons** (SVG) for new projects.

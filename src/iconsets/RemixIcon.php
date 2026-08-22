@@ -26,7 +26,7 @@ class RemixIcon extends RemoteCssIconSet
     // Public Methods
     // =========================================================================
 
-    public function getSettingsHtml(): ?string
+    protected function getVariantSettingsHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate('icon-picker/icon-sets/remix-icon', [
             'iconSet' => $this,
@@ -64,7 +64,7 @@ class RemixIcon extends RemoteCssIconSet
 
     protected function defaultVersion(): string
     {
-        return '4.6.0';
+        return '4.9.1';
     }
 
     protected static function cssFontName(): string

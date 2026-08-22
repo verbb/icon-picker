@@ -15,7 +15,7 @@ class Ionicons extends IconSet
 
     public static function displayName(): string
     {
-        return Craft::t('icon-picker', 'Ionicons');
+        return Craft::t('icon-picker', 'Ionicons (Legacy)');
     }
 
 

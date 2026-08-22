@@ -19,7 +19,7 @@ class Heroicons extends RemoteSvgIconSet
     // Public Methods
     // =========================================================================
 
-    public function getSettingsHtml(): ?string
+    protected function getVariantSettingsHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate('icon-picker/icon-sets/heroicons', [
             'iconSet' => $this,

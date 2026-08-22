@@ -26,7 +26,7 @@ class BootstrapIcons extends RemoteCssIconSet
 
     protected function defaultVersion(): string
     {
-        return '1.11.3';
+        return '1.13.1';
     }
 
     protected static function cssFontName(): string
