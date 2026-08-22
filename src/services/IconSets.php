@@ -71,6 +71,7 @@ class IconSets extends Component
             registerediconsets\RemixIcon::class,
             registerediconsets\MaterialDesignIcons::class,
             registerediconsets\Phosphor::class,
+            registerediconsets\Lucide::class,
         ];
 
         $event = new RegisterIconSetsEvent([
