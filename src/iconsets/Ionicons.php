@@ -22,7 +22,8 @@ class Ionicons extends IconSet
     // Properties
     // =========================================================================
 
-    public ?array $variants = null;
+    /** @var string[]|null */
+    public ?array $variants = ['*'];
 
 
     // Public Methods
@@ -41,7 +42,7 @@ class Ionicons extends IconSet
 
         // Because we can pick individual collections of icons, we want to fetch them all first, order them
         // alphabetically, and then create the icons.
-        foreach ($this->variants as $variant) {
+        foreach ($this->variants ?? ['*'] as $variant) {
             $variantName = ($variant === '*') ? 'all' : $variant;
             $iconPath = __DIR__ . "/../json/ionicons-{$variantName}.json";
 
