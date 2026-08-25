@@ -21,9 +21,9 @@
     },
     "dependencies": {
         "@lit-labs/virtualizer": "^2.1.1",
-        "@verbb/plugin-kit-core": "^2.0.12",
-        "@verbb/plugin-kit-icons": "^2.0.12",
-        "@verbb/plugin-kit-web": "^2.0.12",
+        "@verbb/plugin-kit-core": "^2.0.13",
+        "@verbb/plugin-kit-icons": "^2.0.13",
+        "@verbb/plugin-kit-web": "^2.0.13",
         "lit": "^3.3.3",
         "lodash-es": "^4.17.21"
     }
