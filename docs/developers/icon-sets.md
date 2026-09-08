@@ -1,21 +1,23 @@
 # Icon Sets
+
 You can register your own Icon Sets to add support for third-party remote services, or even extend the existing Icon Set functionality.
 
 ```php
 namespace modules\sitemodule;
 
-use modules\sitemodule\IonicIconSet;
+use modules\sitemodule\BrandCssIconSet;
 use verbb\iconpicker\events\RegisterIconSetsEvent;
 use verbb\iconpicker\services\IconSets;
 use yii\base\Event;
 
 Event::on(IconSets::class, IconSets::EVENT_REGISTER_ICON_SETS, function(RegisterIconSetsEvent $event) {
-    $event->iconSets[] = IonicIconSet::class;
+    $event->iconSets[] = BrandCssIconSet::class;
 });
 ```
 
 ### Example
-The below shows an example of using [Ionicons](https://ionicons.com).
+
+Prefer extending or configuring the built-in Ionicons / Lucide / Bootstrap sets when they already cover your library. Register a custom set when you need a private brand kit or a provider Icon Picker does not ship.
 
 ```php
 <?php
@@ -26,36 +28,34 @@ use verbb\iconpicker\models\Icon;
 
 use Craft;
 
-class IonicIconSet extends IconSet
+class BrandCssIconSet extends IconSet
 {
     public static function displayName(): string
     {
-        return Craft::t('icon-picker', 'Ionicons');
+        return Craft::t('site', 'Brand Icons');
     }
 
     public function fetchIcons(): void
     {
-        // Add your icon definitions here...
         $icons = [
-            'add',
-            'add-circle',
-            'add-circle-outline',
+            'logo',
+            'mark',
+            'spark',
             // ...
         ];
 
-        // Add them ad "Icon" models to the icon set
         foreach ($icons as $icon) {
             $this->icons[] = new Icon([
                 'type' => Icon::TYPE_CSS,
-                'value' => 'icon ion-md-' . $icon,
+                'value' => 'brand-icon brand-icon--' . $icon,
             ]);
         }
 
-        // Add the remote CSS to rendering
+        // Optional: tell the CP which remote stylesheet to preview with
         $this->fonts[] = [
             'type' => 'remote',
-            'name' => 'Ionicons',
-            'url' => 'https://unpkg.com/ionicons@4.4.4/dist/css/ionicons.min.css',
+            'name' => 'Brand Icons',
+            'url' => 'https://cdn.example.com/brand-icons.css',
         ];
     }
 }

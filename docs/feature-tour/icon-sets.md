@@ -24,7 +24,9 @@ There are a few different types of Icon Sets you can create:
 ## SVG Folders
 Creating a **SVG Folder** Icon Set allows you to pick from a sub-folder (or the root folder) where a collection of `.svg` files sit. This is relative to your **Icons Path** plugin setting. Icon Picker will scan all `.svg` files in that folder, to be a pickable icon.
 
-Read more about templating with [SVG Icons](docs:template-guides/rendering-icons#svg-folders)
+Enable **Search Subfolders** to include `.svg` files nested under the selected folder (on by default). Turn it off to limit the catalog to files directly in that folder.
+
+Read more about templating with [SVG Icons](docs:template-guides/rendering-icons#svg-icons)
 
 :::tip
 You can also use **SVG Sprites** instead of, or an addition to single SVGs.
@@ -98,19 +100,21 @@ Simply put, metadata is a JSON file that's a key-value of the name of your icon 
 
 Here, you define the keywords (either as a space-delimited string, or an array) with a reference to the individual icon. Icon Picker will pick up this metadata file, and pull in any keywords from it to be used when searching for an icon.
 
-### Metadata Usage
-Depending on what sort of icon set you're using will depend where you place, and what you name your metadata file. In all instances however, you must include the `-metadata.json` suffix.
+## Metadata Usage
+Depending on what sort of icon set you're using will depend where you place, and what you name your metadata file.
 
-#### Metadata with SVG Folders
-You should place the `metadata.json` file alongside your icons. This would either be in the root of your icons folder, or in the folder of your icons. They should be alongside your SVGs.
+### Metadata with SVG Folders
+Place a `metadata.json` file in the same folder as your SVGs (the folder you selected for the Icon Set). Keys are icon filenames without the `.svg` extension.
 
-#### Metadata with SVG Sprites
+### Metadata with SVG Sprites
 You should place the `-metadata.json` file alongside your SVG Sprites. This would be in the root of your icons folder. You must name the metadata file the same as your sprites file. For example, `ui-icons-sprites.svg` and `ui-icons-sprites-metadata.json`.
 
-#### Metadata with Web Fonts
+### Metadata with Web Fonts
 You should place the `-metadata.json` file alongside your Web Font. This would be in the root of your icons folder. You must name the metadata file the same as your web font file. For example, `icomoon.ttf` and `icomoon-metadata.json`.
 
-## Remote icon sets and package versions
+## Variants and package versions
+
+Many remote sets expose **variants** (for example Outline / Solid on Heroicons, or weight styles on Phosphor). Leave **All** selected, or narrow the catalog to the styles editors should pick from.
 
 Built-in sets that load icons from npm/CDN (Bootstrap Icons, Lucide, Tabler, etc.) pin a **package version** in the plugin. The name catalog JSON is generated for that version. Icon set settings include an optional **Package version** field; leave it blank to use the plugin default.
 
@@ -120,4 +124,4 @@ If you override the package version, CDN URLs may point at a different release t
 
 ## Legacy icon sets
 
-**Feather Icons (Legacy)** and **Ionicons (Legacy)** remain for existing content but are unmaintained upstream. Use **Lucide** and **Ionicons** (SVG) for new projects.
+**Feather Icons (Legacy)** and **Ionicons (Legacy)** remain for existing content but are unmaintained upstream. Prefer **Lucide** (instead of Feather) and the current **Ionicons** SVG set for new projects. Existing saved values keep working; migrate content when you are ready rather than deleting legacy sets prematurely.

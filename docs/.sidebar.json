@@ -12,6 +12,7 @@
         "title": "Feature Tour",
         "collapsable": false,
         "children": [
+            "feature-tour/field",
             "feature-tour/icon-sets",
             "feature-tour/redactor",
             "feature-tour/caching"

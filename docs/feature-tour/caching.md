@@ -1,16 +1,30 @@
 # Caching
-Icon Picker features a caching mechanism for all icon sets. This helps with particularly large icon sets, but also ensures that processes aren't blocked when trying to enumerate your icons from the file system.
 
-Whenever you save an Icon Picker field, the cache of all enabled icon sets are built. Subsequent saves to this field rebuilds this cache.
+Icon Picker caches icon set catalogs so large libraries do not block Control Panel requests while scanning the filesystem or remote name lists.
+
+Whenever you save an Icon Picker field, the cache for its enabled icon sets is built. Subsequent saves rebuild those caches.
+
+SVG catalogs use a slim **v2** cache key (`icon-picker:v2:*`). The picker paints SVG cells via `<img src>` (URL) instead of embedding full markup in the catalog JSON — smaller payloads and less CSS/`id` bleed between icons. Existing v1 caches are superseded on the next load or regenerate.
 
 ## Lazy-loading
-In addition, icons are lazy-loaded for additional performance, rather than loading all icons when you load an element page. This provides significant performance improvements. When opening the dropdown to pick an icon, a small loading spinner will appear to the right of the dropdown. Depending on the size of your icon sets, this may take a second or two.
+
+Icons are lazy-loaded when you open the picker, rather than loading every glyph when the element edit screen loads. A small spinner appears while the catalog loads; large sets may take a second or two.
 
 ## Adding new icons
-If you add new icons to your folders, you'll likely notice that they won't show in the Icon Picker field. This is because Icon Picker doesn't know about these new icons, and is instead using the cached icons. You'll either need to:
 
-- Re-save any Icon Picker fields that use this icon set.
-- Go to Utilities > Clear Caches and tick `Icon Picker cache`.
-- Go to Utilities > Icon Picker and hit `Re-generate all icon set caches` button.
+If you add files to an SVG folder (or change a spritesheet / font), they may not appear until the cache is refreshed. You can:
 
-However, Icon Picker is smart enough to know when your `iconSetsPath` folder has changed. Caches will re-generate whenever a folder or file is added/deleted/updated. The caveat here is that only changes to the root of this folder will take place. Changes to nested folders won't be watched, and you'll need to re-generate the cache via one of the above methods.
+- Re-save any Icon Picker field that uses the icon set.
+- Go to **Utilities → Clear Caches** and tick **Icon Picker cache**.
+- Go to **Utilities → Icon Picker** and use **Re-generate all icon set caches**.
+
+Icon Picker also watches the root of your `iconSetsPath` folder. Caches re-generate when a folder or file is added, deleted, or updated at that root. Nested folder changes alone are not watched — use one of the methods above.
+
+## Troubleshooting
+
+| Symptom | What to try |
+|---|---|
+| New SVGs missing after upload | Regenerate Icon Picker caches (Utilities), or re-save the field. |
+| Remote CDN icons look wrong after changing package version | Align **Package version** with the bundled catalog, or leave blank for the plugin default. |
+| Stale labels / keywords | Clear **Icon Picker cache**, then regenerate set caches. |
+| Very large SVG folders feel slow | Prefer sprites or a remote set for huge libraries; keep **Search Subfolders** scoped if you only need one depth. |

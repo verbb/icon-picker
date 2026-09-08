@@ -28,7 +28,7 @@ Rendering an SVG inline, will directly render the contents of the SVG file on th
 ```
 
 ### SVG function
-You can use Craft's own `svg()` Twig function by using the path. [Read more](https://craftcms.com/docs/4.x/functions.html#svg).
+You can use Craft's own `svg()` Twig function by using the path. [Read more](https://craftcms.com/docs/5.x/reference/twig/functions.html#svg).
 
 ```twig
 {{ svg(entry.iconPickerField.path) | attr({ class: 'lemon-icon' }) }}
@@ -108,22 +108,44 @@ It's fairly common for font icon providers to have named classes for each icon, 
 <span class="fa fa-bomb"></span>
 ```
 
-## CSS Icons
-Some icon sets support CSS definitions, in particular the default [Font Awesome](https://fontawesome.com/) icon set. These only store a single bit of information as what the CSS classes should be used to define the icon. Each icon provider will be different in how they require you to render your icons.
+## Remote CDN icons
 
-For example, with Font Awesome:
+Built-in remote sets fall into two rendering styles. Icon Picker does **not** load front-end CSS/JS for these — include the vendor stylesheet (or use SVG URLs) yourself.
+
+### Remote SVG (Lucide, Heroicons, Tabler, Octicons, …)
+
+These store an SVG icon name and resolve a CDN URL. Use them like local SVG icons:
+
+```twig
+{# Prefer URL for <img> — no server-side fetch #}
+<img src="{{ entry.iconPickerField.url }}" width="20" height="20" alt="">
+
+{# Or inline (Icon Picker may fetch the CDN SVG once) #}
+{{ entry.iconPickerField.inline }}
+```
+
+`path` / Craft’s `svg()` helper only apply to **local** SVG folder files, not remote CDN icons.
+
+### Remote CSS (Font Awesome, Bootstrap Icons, css.gg, Remix, Phosphor, …)
+
+These store CSS class names. Output the classes and load the matching stylesheet on the front end.
 
 ```twig
 <span class="{{ entry.iconPickerField }}"></span>
 
-// Or
+{# Or #}
 <span class="{{ entry.iconPickerField.value }}"></span>
-
-// Renders
-<span class="fa fa-air-freshener"></span>
 ```
 
+Examples of stored values:
+
+| Set | Typical value |
+|---|---|
+| Font Awesome | `fa fa-air-freshener` / `fas fa-…` |
+| Bootstrap Icons | `bi bi-alarm` |
+| css.gg | `gg-…` |
+
 :::tip
-Icon Picker won't include any front-end resources for Font Awesome, or any third-party icon set. It will be up to you to include these resources for your front-end.
+Match the stylesheet (and package version) you load on the front end to the Icon Set’s **Package version**, or leave that setting blank and use the plugin’s default version.
 :::
 

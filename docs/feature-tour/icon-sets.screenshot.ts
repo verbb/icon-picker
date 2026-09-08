@@ -2,9 +2,9 @@ import { defineScreenshotScenario } from '@verbb/docs-screenshots/api';
 import { seedIconPickerDocsFixture } from '../.screenshots/icon-picker/fixtures';
 import { createIconPickerCleanupStep } from '../.screenshots/icon-picker/presets';
 
-// Starter scenario — captures the seeded Icon Picker field settings page. Retarget the
-// route/selector at the field input once the Phase 1 picker UI is built out.
-let settingsRoute = '/admin/settings/fields';
+// Image scrapped — awkward Type-dropdown crop. Stub kept for a future clean
+// Icon Set form capture (named set, Type closed). Do not ship icon-sets.png until then.
+let settingsRoute = '/admin/icon-picker/settings/icon-sets';
 
 export default defineScreenshotScenario({
     id: 'feature-tour-icon-sets',
@@ -16,8 +16,7 @@ export default defineScreenshotScenario({
         deviceScaleFactor: 2,
     },
     async setup(context) {
-        const fixture = await seedIconPickerDocsFixture(context);
-        settingsRoute = fixture.settingsRoute;
+        await seedIconPickerDocsFixture(context);
     },
     waitFor: [
         { type: 'selector', selector: '#content', state: 'visible' },
@@ -31,6 +30,6 @@ export default defineScreenshotScenario({
         selector: '#content',
         padding: 20,
     },
-    caption: 'Icon Picker field settings.',
-    intent: 'Show how an Icon Picker field is configured in the field settings screen.',
+    caption: 'Creating an Icon Set in Icon Picker settings.',
+    intent: 'Show the Icon Set edit form (stub — image not published).',
 });

@@ -3,8 +3,8 @@ import { registerPluginBootstrap } from '@verbb/docs-screenshots/api';
 
 export default registerPluginBootstrap({
     id: 'icon-picker',
-    async setup(_context: ScreenshotSetupContext) {
-        // Plugin-wide screenshot setup hooks (license, global settings, etc.).
-        // Per-scenario data is seeded from `.screenshots/icon-picker/fixtures.ts`.
+    async setup(context: ScreenshotSetupContext) {
+        // Ensure Icon Picker migrations/tables exist before fixture seed.
+        await context.runCraft(['migrate/up', '--plugin=icon-picker'], { allowFailure: true });
     },
 });

@@ -18,11 +18,14 @@ use craft\models\FieldLayoutTab;
 use craft\models\Section;
 use craft\models\Section_SiteSettings;
 use craft\models\Site;
+use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\fields\IconPickerField;
+use verbb\iconpicker\iconsets\Lucide;
 
 const DOCS_FIELD_HANDLE = 'docsScreenshotIconPicker';
 const DOCS_SECTION_HANDLE = 'docsScreenshotIconPicker';
 const DOCS_ENTRY_HANDLE = 'docs-screenshot-entry';
+const DOCS_ICON_SET_HANDLE = 'docsScreenshotLucide';
 
 function docsScreenshotSite(): Site
 {
@@ -79,7 +82,40 @@ function docsScreenshotSection(string $handle, string $name): Section
     return $section;
 }
 
-function docsScreenshotIconPickerField(): IconPickerField
+function docsScreenshotLucideIconSet(): string
+{
+    $iconSets = IconPicker::$plugin->getIconSets();
+    $existing = $iconSets->getIconSetByHandle(DOCS_ICON_SET_HANDLE);
+
+    if ($existing) {
+        return (string)$existing->uid;
+    }
+
+    /** @var Lucide $iconSet */
+    $iconSet = $iconSets->createIconSet([
+        'type' => Lucide::class,
+        'name' => 'Lucide',
+        'handle' => DOCS_ICON_SET_HANDLE,
+        'enabled' => true,
+    ]);
+
+    if (!$iconSets->saveIconSet($iconSet)) {
+        throw new RuntimeException('Unable to save Lucide icon set: ' . Json::encode($iconSet->getErrors()));
+    }
+
+    $saved = $iconSets->getIconSetByHandle(DOCS_ICON_SET_HANDLE);
+
+    if (!$saved || !$saved->uid) {
+        throw new RuntimeException('Lucide icon set could not be reloaded.');
+    }
+
+    // Warm the slim v2 catalog cache so the field picker has icons on first open.
+    $saved->populateIcons(false);
+
+    return (string)$saved->uid;
+}
+
+function docsScreenshotIconPickerField(string $iconSetUid): IconPickerField
 {
     $fields = Craft::$app->getFields();
     $existing = $fields->getFieldByHandle(DOCS_FIELD_HANDLE);
@@ -88,8 +124,11 @@ function docsScreenshotIconPickerField(): IconPickerField
         'handle' => DOCS_FIELD_HANDLE,
     ]);
 
-    $field->name = 'Icon';
-    $field->instructions = 'Pick an icon from the available sets.';
+    $field->name = 'Social Icon';
+    $field->instructions = 'Search or browse Lucide icons for use in social links and sharing buttons.';
+    $field->placeholder = 'Search icons…';
+    $field->showLabels = false;
+    $field->iconSets = [$iconSetUid];
 
     if (!$fields->saveField($field)) {
         throw new RuntimeException('Unable to save Icon Picker field: ' . Json::encode($field->getErrors()));
@@ -168,14 +207,19 @@ function docsScreenshotUpsertEntry(Section $section, string $slug, string $title
 
 $adminPath = docsScreenshotAdminPath();
 $section = docsScreenshotSection(DOCS_SECTION_HANDLE, 'Icon Picker Demo');
-$field = docsScreenshotIconPickerField();
+$iconSetUid = docsScreenshotLucideIconSet();
+$field = docsScreenshotIconPickerField($iconSetUid);
 docsScreenshotAttachField($section, $field);
 
 $entry = docsScreenshotUpsertEntry($section, DOCS_ENTRY_HANDLE, 'Demo');
 
 $entryEditUrl = $entry->getCpEditUrl();
-$entryEditPath = parse_url((string)$entryEditUrl, PHP_URL_PATH)
-    ?: "/{$adminPath}/entries/{$section->handle}/{$entry->id}-{$entry->slug}";
+$entryEditPath = parse_url((string)$entryEditUrl, PHP_URL_PATH);
+
+if (!$entryEditPath) {
+    // Craft 5 content URLs — section handle + id-slug.
+    $entryEditPath = "/{$adminPath}/content/entries/{$section->handle}/{$entry->id}-{$entry->slug}";
+}
 
 echo Json::encode([
     'fieldId' => (int)$field->id,

@@ -1,6 +1,3 @@
-<p align="center"><img src="https://assets.verbb.io/plugins/icon-picker/icon-picker-icon.svg" width="100" height="100" alt="Icon Picker icon"></p>
-<h1 align="center">Icon Picker for Craft CMS</h1>
-
 Icon Picker is a Craft CMS plugin to let your content editors select an icon from a selected folder for your project.
 
 ## Features
@@ -14,6 +11,8 @@ Icon Picker is a Craft CMS plugin to let your content editors select an icon fro
 - Events to write your own icon set types, or extend existing ones.
 
 ## Icon Sets
+
+Create and manage Icon Sets under **Icon Picker → Settings → Icon Sets**. Each set is a collection of icons editors can pick from. Fields then choose which sets to show.
 
 - Bootstrap Icons
 - css.gg
@@ -37,16 +36,6 @@ Icon Picker is a Craft CMS plugin to let your content editors select an icon fro
 
 Visit the [Icon Picker Plugin page](https://verbb.io/craft-plugins/icon-picker) for all documentation, guides, pricing and developer resources.
 
-## Credit & Thanks
-
-Based on [SVG Icons](https://github.com/fyrebase/svg-icons) for Craft 2.
-
 ## Support
 
 Get in touch with us via the [Icon Picker Support page](https://verbb.io/craft-plugins/icon-picker/support) or by [creating a Github issue](https://github.com/verbb/icon-picker/issues)
-
-<h2></h2>
-
-<a href="https://verbb.io" target="_blank">
-    <img width="101" height="33" src="https://verbb.io/assets/img/verbb-pill.svg" alt="Verbb">
-</a>
