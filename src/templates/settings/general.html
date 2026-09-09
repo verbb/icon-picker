@@ -3,59 +3,48 @@
 {% import '_includes/forms' as forms %}
 {% import 'verbb-base/_macros' as macros %}
 
-{% block content %}
+{% set fullPageForm = true %}
+{% set selectedTab = 'general' %}
+{% set pageTitle = 'General Settings' | t('icon-picker') %}
+{% set pageAction = 'icon-picker/settings/save-settings' %}
+{% set pageUrl = 'icon-picker/settings/general' %}
 
-<h2>{{ 'General Settings' | t('icon-picker') }}</h2>
+{% block settingsContent %}
+    {{ forms.textField({
+        label: 'Icons URL' | t('icon-picker'),
+        instructions: 'Provide the full, or relative URL to your icon files. Also supports aliases.' | t('icon-picker'),
+        name: 'iconSetsUrl',
+        value: settings.iconSetsUrl,
+        errors: settings.getErrors('iconSetsUrl'),
+        required: true,
+        warning: macros.configWarning('iconSetsUrl', 'icon-picker'),
+    }) }}
 
-<form action="" method="post" accept-charset="UTF-8" data-saveshortcut>
-    <input type="hidden" name="action" value="icon-picker/settings/save-settings">
-    {{ redirectInput('icon-picker/settings/general') }}
-    {{ csrfInput() }}
+    {{ forms.textField({
+        label: 'Icons Path' | t('icon-picker'),
+        instructions: 'Provide the full path to your icon files.' | t('icon-picker'),
+        name: 'iconSetsPath',
+        value: settings.iconSetsPath,
+        errors: settings.getErrors('iconSetsPath'),
+        required: true,
+        warning: macros.configWarning('iconSetsPath', 'icon-picker'),
+    }) }}
 
-    {% namespace 'settings' %}
-        {{ forms.textField({
-            first: true,
-            label: 'Icons URL' | t('icon-picker'),
-            instructions: 'Provide the full, or relative URL to your icon files. Also supports aliases.' | t('icon-picker'),
-            name: 'iconSetsUrl',
-            value: settings.iconSetsUrl,
-            errors: settings.getErrors('iconSetsUrl'),
-            required: true,
-            warning: macros.configWarning('iconSetsUrl', 'icon-picker'),
-        }) }}
+    {% set options = [{ label: 'Select a field' | t('icon-picker'), value: '' }] %}
 
-        {{ forms.textField({
-            label: 'Icons Path' | t('icon-picker'),
-            instructions: 'Provide the full path to your icon files.' | t('icon-picker'),
-            name: 'iconSetsPath',
-            value: settings.iconSetsPath,
-            errors: settings.getErrors('iconSetsPath'),
-            required: true,
-            warning: macros.configWarning('iconSetsPath', 'icon-picker'),
-        }) }}
+    {% for field in craft.app.fields.getAllFields() %}
+        {% if className(field) == 'verbb\\iconpicker\\fields\\IconPickerField' %}
+            {% set options = options | merge([{ label: field.name, value: field.handle }]) %}
+        {% endif %}
+    {% endfor %}
 
-        {% set options = [{ label: 'Select a field' | t('icon-picker'), value: '' }] %}
-
-        {% for field in craft.app.fields.getAllFields() %}
-            {% if className(field) == 'verbb\\iconpicker\\fields\\IconPickerField' %}
-                {% set options = options | merge([{ label: field.name, value: field.handle }]) %}
-            {% endif %}
-        {% endfor %}
-
-        {{ forms.selectField({
-            label: 'Redactor Field' | t('icon-picker'),
-            instructions: 'Select a Icon Picker field to be used for Redactor fields.' | t('icon-picker'),
-            name: 'redactorFieldHandle',
-            value: settings.redactorFieldHandle,
-            errors: settings.getErrors('redactorFieldHandle'),
-            warning: macros.configWarning('redactorFieldHandle', 'icon-picker'),
-            options: options,
-        }) }}
-    {% endnamespace %}
-
-    <hr>
-
-    <input type="submit" class="btn submit" value="{{ 'Save' | t('icon-picker') }}">
-</form>
-
+    {{ forms.selectField({
+        label: 'Redactor Field' | t('icon-picker'),
+        instructions: 'Select a Icon Picker field to be used for Redactor fields.' | t('icon-picker'),
+        name: 'redactorFieldHandle',
+        value: settings.redactorFieldHandle,
+        errors: settings.getErrors('redactorFieldHandle'),
+        warning: macros.configWarning('redactorFieldHandle', 'icon-picker'),
+        options: options,
+    }) }}
 {% endblock %}

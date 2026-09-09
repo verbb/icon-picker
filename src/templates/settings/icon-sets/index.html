@@ -1,10 +1,13 @@
 {% extends 'icon-picker/_layouts/settings' %}
 
+{% set selectedTab = 'icon-sets' %}
+{% set pageTitle = 'Icons Sets' | t('icon-picker') %}
+
 {% block actionButton %}
     <a href="{{ url("icon-picker/settings/icon-sets/new") }}" class="btn submit add icon">{{ 'New Icon Set' | t('icon-picker') }}</a>
 {% endblock %}
 
-{% block content %}
+{% block settingsContent %}
     <div id="icon-sets-vue-admin-table"></div>
 {% endblock %}
 

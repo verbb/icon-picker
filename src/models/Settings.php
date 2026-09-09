@@ -60,4 +60,17 @@ class Settings extends Model
         return App::parseEnv($this->iconSetsUrl);
     }
 
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+
+        $rules[] = [['iconSetsUrl', 'iconSetsPath'], 'trim'];
+        $rules[] = [['iconSetsUrl', 'iconSetsPath'], 'required'];
+
+        return $rules;
+    }
 }
