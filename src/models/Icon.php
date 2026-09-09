@@ -122,7 +122,7 @@ class Icon extends Model implements \JsonSerializable, \Countable
         return $array;
     }
 
-    public function count(): mixed
+    public function count(): int
     {
         return mb_strlen((string)$this, Craft::$app->charset);
     }
@@ -210,16 +210,32 @@ class Icon extends Model implements \JsonSerializable, \Countable
     public function getPath(): string
     {
         if ($this->type === self::TYPE_SVG) {
-            $settings = IconPicker::$plugin->getSettings();
-            $iconSetsPath = $settings->getIconSetsPath();
-
-            $path = FileHelper::normalizePath($iconSetsPath . DIRECTORY_SEPARATOR . $this->value);
-
-            if (!file_exists($path)) {
+            // Remote absolute URLs are resolved via getUrl()/HTTP, not the local root.
+            if ($this->_isAbsoluteUrl($this->value)) {
                 return '';
             }
 
-            return $path;
+            $settings = IconPicker::$plugin->getSettings();
+            $iconSetsPath = $settings->getIconSetsPath();
+            $root = realpath($iconSetsPath);
+
+            if ($root === false || !is_dir($root)) {
+                return '';
+            }
+
+            $candidate = FileHelper::normalizePath($iconSetsPath . DIRECTORY_SEPARATOR . ltrim((string)$this->value, '/\\'));
+            $resolved = realpath($candidate);
+
+            // Containment: resolved path must live under the configured icon root.
+            if ($resolved === false || !str_starts_with($resolved, $root . DIRECTORY_SEPARATOR)) {
+                return '';
+            }
+
+            if (!is_file($resolved) || !preg_match('/\.svg$/i', $resolved)) {
+                return '';
+            }
+
+            return $resolved;
         }
 
         return '';
@@ -228,22 +244,35 @@ class Icon extends Model implements \JsonSerializable, \Countable
     public function getInline(): ?Markup
     {
         if ($this->type === self::TYPE_SVG) {
-            // Saved in the cache as the inline SVG to save disk IO
-            if ($this->_displayValue) {
-                return Template::raw($this->_displayValue);
+            // Only trust displayValue when it was hydrated from a local/catalog path —
+            // never from forged field POST (stripped in normalizeValue).
+            if ($this->_displayValue && !$this->_isAbsoluteUrl((string)$this->value)) {
+                // Prefer re-reading from a contained path when available.
+                if ($path = $this->getPath()) {
+                    return Template::raw(@file_get_contents($path) ?: '');
+                }
             }
 
             if ($path = $this->getPath()) {
-                return Template::raw(@file_get_contents($path));
+                return Template::raw(@file_get_contents($path) ?: '');
             }
 
+            if ($this->value === '' || $this->value === null) {
+                return null;
+            }
+
+            // Remote SVG sets: URL must come from resolveSvgUrl / getUrl, not a bare value.
             $url = $this->getUrl();
 
-            if ($url && $this->_isAbsoluteUrl($url)) {
-                $contents = IconPickerHelper::getFileContents($url);
+            if ($url && $this->_isAbsoluteUrl($url) && $this->iconSetHandle) {
+                $iconSet = IconPicker::$plugin->getIconSets()->getIconSetByHandle($this->iconSetHandle);
 
-                if ($contents) {
-                    return Template::raw($contents);
+                if ($iconSet instanceof \verbb\iconpicker\base\RemoteSvgIconSet) {
+                    $contents = IconPickerHelper::getFileContents($url);
+
+                    if ($contents) {
+                        return Template::raw($contents);
+                    }
                 }
             }
         }

@@ -101,7 +101,40 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
             $value = [];
         }
 
+        // Presentation markup is never authoritative from field POST — hydrate from
+        // catalog/cache after load (SEC-03).
+        unset($value['displayValue']);
+
+        // Reject path traversal / absolute escapes in the stored relative value.
+        if (isset($value['value']) && is_string($value['value']) && !$this->_isSafeIconValue($value['value'], $value['type'] ?? null)) {
+            $value['value'] = '';
+        }
+
         return new Icon($value);
+    }
+
+    /**
+     * Relative SVG paths must stay under the configured icon root; remote absolute
+     * URLs are only accepted for remote SVG sets (resolved via iconSetHandle).
+     */
+    private function _isSafeIconValue(string $raw, mixed $type): bool
+    {
+        $raw = trim($raw);
+
+        if ($raw === '') {
+            return true;
+        }
+
+        if (preg_match('#^(https?:)?//#i', $raw) || str_starts_with($raw, 'data:')) {
+            // Absolute / data URLs are not stored as local file values.
+            return ($type ?? '') !== 'svg' || str_starts_with($raw, 'http://') || str_starts_with($raw, 'https://');
+        }
+
+        if (str_contains($raw, "\0") || str_contains($raw, '..')) {
+            return false;
+        }
+
+        return true;
     }
 
     public function serializeValue(mixed $value, ElementInterface $element = null): mixed
@@ -377,13 +410,14 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
         }
 
         if ($value->type === Icon::TYPE_SPRITE) {
-            $iconHtml = '<svg viewBox="0 0 1000 1000"><use xlink:href="#' . $value->displayValue . '" /></svg>';
+            $spriteId = Html::encode((string)$value->displayValue);
+            $iconHtml = '<svg viewBox="0 0 1000 1000"><use xlink:href="#' . $spriteId . '" href="#' . $spriteId . '" /></svg>';
 
             return Html::tag('div', $iconHtml, ['class' => 'cp-icon']);
         }
 
         if ($value->type === Icon::TYPE_GLYPH) {
-            $iconHtml = '<span class="ipui-font font-face-' . $value->iconSet . '">' . $value->displayValue . '</span>';
+            $iconHtml = '<span class="ipui-font font-face-' . Html::encode((string)$value->iconSet) . '">' . Html::encode((string)$value->displayValue) . '</span>';
 
             return Html::tag('div', $iconHtml, ['class' => 'cp-icon']);
         }
@@ -392,8 +426,8 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
             $display = (string)$value->getDisplayValue();
 
             // Feather (and similar) may cache a full <svg> as displayValue so the CP
-            // does not depend on remote feather.replace().
-            if (str_starts_with(ltrim($display), '<svg')) {
+            // does not depend on remote feather.replace(). Only after catalog hydrate.
+            if (str_starts_with(ltrim($display), '<svg') && $value->iconSetHandle) {
                 $iconHtml = $display;
             } else {
                 $iconHtml = '<span class="' . Html::encode($display) . '"></span>';

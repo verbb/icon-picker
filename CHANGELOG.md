@@ -27,6 +27,10 @@
 - Fix false "leave page" warnings on icon set create/edit screens when no changes were made.
 - Don’t open the icon pane on programmatic focus (Craft slideout `setFocusWithin` / focus restore). Open on click, Enter/Space/ArrowDown, or typing instead. ([#109](https://github.com/verbb/icon-picker/issues/109)).
 - Clarify Web Font support: glyph indexing requires `.ttf` / `.woff` / `.otf` (not `.woff2` alone). Docs and icon-set UI updated; `.woff2` is rejected with a clear error. ([#107](https://github.com/verbb/icon-picker/issues/107)).
+- Enforce admin on Icon Sets and Settings controller actions (matching settings templates).
+- Field values reject path traversal and forged `displayValue` markup; local SVG reads require realpath containment under the icon root.
+- Sprite/glyph CP previews encode untrusted attribute/text values; CSS raw SVG paint requires a hydrated icon set.
+- Fix `Icon::count()` return type for `Countable` (`int`).
 
 ## 3.0.13 - 2026-07-15
 

@@ -48,8 +48,7 @@ export const renderIconInto = (
     const display = item.displayValue ?? '';
 
     if (item.type === 'svg') {
-        // Prefer URL <img> (catalog + chip). Fall back to inline markup only if a
-        // legacy payload still embeds displayValue without url.
+        // Prefer URL <img> (catalog + chip). Never paint forged displayValue markup.
         if (item.url) {
             const img = document.createElement('img');
             img.src = item.url;
@@ -57,13 +56,6 @@ export const renderIconInto = (
             img.decoding = 'async';
             img.loading = 'lazy';
             host.appendChild(img);
-            return;
-        }
-
-        if (display) {
-            const wrap = document.createElement('div');
-            wrap.innerHTML = display;
-            host.appendChild(wrap);
         }
 
         return;
@@ -83,16 +75,19 @@ export const renderIconInto = (
     if (item.type === 'glyph') {
         const span = document.createElement('span');
         span.className = `ipui-font font-face-${item.iconSet ?? ''}`;
-        span.innerHTML = display;
+        // Catalog glyphs are HTML entities (`&#xE90A;`) — allow that shape only.
+        if (/^&#(?:x[0-9a-f]+|\d+);$/i.test(display.trim())) {
+            span.innerHTML = display.trim();
+        } else {
+            span.textContent = display;
+        }
         host.appendChild(span);
         return;
     }
 
     if (item.type === 'css') {
-        // Feather (and any set that caches inline SVG as displayValue): paint
-        // markup directly. Avoids remote feather.replace(), which only runs once
-        // and breaks when the virtualizer recycles cells or the pane reopens.
-        if (display.trimStart().startsWith('<svg')) {
+        // Feather catalog rows may include trusted inline SVG from server cache.
+        if (display.trimStart().startsWith('<svg') && item.iconSetHandle) {
             const wrap = document.createElement('div');
             wrap.innerHTML = display;
             host.appendChild(wrap);

@@ -14,6 +14,18 @@ class SettingsController extends Controller
     // Public Methods
     // =========================================================================
 
+    public function beforeAction($action): bool
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
+        // Settings templates use {% requireAdmin %}; actions must enforce the same.
+        $this->requireAdmin();
+
+        return true;
+    }
+
     public function actionIndex(): Response
     {
         $settings = IconPicker::$plugin->getSettings();

@@ -21,6 +21,17 @@ class IconSetsController extends Controller
     // Public Methods
     // =========================================================================
 
+    public function beforeAction($action): bool
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
+        $this->requireAdmin();
+
+        return true;
+    }
+
     public function actionIndex(): Response
     {
         $iconSets = IconPicker::$plugin->getIconSets()->getAllIconSets();
