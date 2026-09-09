@@ -417,7 +417,14 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
         }
 
         if ($value->type === Icon::TYPE_GLYPH) {
-            $iconHtml = '<span class="ipui-font font-face-' . Html::encode((string)$value->iconSet) . '">' . Html::encode((string)$value->displayValue) . '</span>';
+            // Catalog glyphs are numeric HTML entities (`&#xf16c;`) — encode the class,
+            // but never Html::encode the entity or the browser shows the raw `&#x…` text.
+            $entity = trim((string)$value->getDisplayValue());
+            if (!preg_match('/^&#(?:x[0-9a-f]+|\d+);$/i', $entity)) {
+                $entity = '';
+            }
+
+            $iconHtml = '<span class="ipui-font font-face-' . Html::encode((string)$value->iconSet) . '">' . $entity . '</span>';
 
             return Html::tag('div', $iconHtml, ['class' => 'cp-icon']);
         }

@@ -880,9 +880,15 @@ export class IconPickerInput {
         }
 
         if (item.type === 'glyph') {
+            // Same entity allowlist as renderIconInto — never dump arbitrary markup.
+            const raw = display.trim();
+            const entity = /^&#(?:x[0-9a-f]+|\d+);?$/i.test(raw)
+                ? (raw.endsWith(';') ? raw : `${raw};`)
+                : '';
+
             return html`
                 <span class=${`ipui-font font-face-${item.iconSet ?? ''}`}>
-                    ${unsafeHTML(display)}
+                    ${entity ? unsafeHTML(entity) : nothing}
                 </span>
             `;
         }

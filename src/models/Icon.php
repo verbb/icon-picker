@@ -173,6 +173,12 @@ class Icon extends Model implements \JsonSerializable, \Countable
 
     public function getDisplayValue(): ?string
     {
+        // Glyphs are always numeric HTML entities from the catalog. Prefer regenerating
+        // from `value` so legacy cached entities missing a trailing `;` still paint.
+        if ($this->type === self::TYPE_GLYPH) {
+            return $this->getGlyph();
+        }
+
         // Use the in-memory cache if available
         if ($this->_displayValue) {
             return $this->_displayValue;
@@ -295,10 +301,10 @@ class Icon extends Model implements \JsonSerializable, \Countable
             }
 
             if ($format === 'char') {
-                return '&#' . $glyphId;
+                return '&#' . $glyphId . ';';
             }
 
-            return '&#x' . dechex($glyphId);
+            return '&#x' . dechex((int)$glyphId) . ';';
         }
 
         return null;

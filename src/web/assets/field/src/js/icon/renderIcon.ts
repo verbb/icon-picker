@@ -75,9 +75,11 @@ export const renderIconInto = (
     if (item.type === 'glyph') {
         const span = document.createElement('span');
         span.className = `ipui-font font-face-${item.iconSet ?? ''}`;
-        // Catalog glyphs are HTML entities (`&#xE90A;`) — allow that shape only.
-        if (/^&#(?:x[0-9a-f]+|\d+);$/i.test(display.trim())) {
-            span.innerHTML = display.trim();
+        // Catalog glyphs are HTML entities (`&#xE90A;`). Accept a missing trailing
+        // semicolon from legacy payloads, then normalize before paint.
+        const raw = display.trim();
+        if (/^&#(?:x[0-9a-f]+|\d+);?$/i.test(raw)) {
+            span.innerHTML = raw.endsWith(';') ? raw : `${raw};`;
         } else {
             span.textContent = display;
         }

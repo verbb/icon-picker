@@ -20,6 +20,26 @@ describe('Icon normalize security', function() {
         expect($icon->getDisplayValue())->not->toBe('<svg><title>forged</title></svg>');
     });
 
+    it('emits semicolon-terminated glyph entities without HTML-encoding them in CP preview', function() {
+        $field = (new ReflectionClass(IconPickerField::class))->newInstanceWithoutConstructor();
+        $icon = new Icon([
+            'type' => Icon::TYPE_GLYPH,
+            'iconSet' => 'demo-font',
+            'value' => 'stack-overflow:61804',
+        ]);
+
+        expect($icon->getGlyph())->toBe('&#xf16c;');
+        expect($icon->getDisplayValue())->toBe('&#xf16c;');
+
+        $method = new ReflectionMethod($field, '_renderIcon');
+        $method->setAccessible(true);
+        $rendered = (string)$method->invoke($field, $icon, 'renderedPreviewResources');
+
+        expect($rendered)->toContain('&#xf16c;');
+        expect($rendered)->not->toContain('&amp;#xf16c');
+        expect($rendered)->toContain('font-face-demo-font');
+    });
+
     it('clears path-traversal values for local SVG icons', function() {
         $field = (new ReflectionClass(IconPickerField::class))->newInstanceWithoutConstructor();
         $icon = $field->normalizeValue([
