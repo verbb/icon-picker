@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- Fix the icon sets admin table after settings normalization.
+
 ## 3.0.15 - 2026-09-13
 
 ### Changed

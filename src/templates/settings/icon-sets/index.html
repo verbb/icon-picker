@@ -1,7 +1,7 @@
 {% extends 'icon-picker/_layouts/settings' %}
 
 {% set selectedTab = 'icon-sets' %}
-{% set pageTitle = 'Icons Sets' | t('icon-picker') %}
+{% set title = 'Icons Sets' | t('icon-picker') %}
 
 {% block actionButton %}
     <a href="{{ url("icon-picker/settings/icon-sets/new") }}" class="btn submit add icon">{{ 'New Icon Set' | t('icon-picker') }}</a>
@@ -56,7 +56,7 @@ var columns = [
 
 new Craft.VueAdminTable({
     columns: columns,
-    container: '#icon-sets-vue-admin-table',
+    container: '#{{ 'icon-sets-vue-admin-table' | namespaceInputId('settings') }}',
     emptyMessage: Craft.t('icon-picker', 'No icon sets exist yet.'),
     tableData: {{ tableData | json_encode | raw }},
 
