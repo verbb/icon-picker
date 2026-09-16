@@ -4,12 +4,15 @@ namespace verbb\iconpicker\base;
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\helpers\IconPickerHelper;
 use verbb\iconpicker\models\Icon;
+use verbb\iconpicker\records\IconSet as IconSetRecord;
 
 use Craft;
 use craft\base\SavableComponent;
 use craft\helpers\App;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
+use craft\validators\HandleValidator;
+use craft\validators\UniqueValidator;
 
 abstract class IconSet extends SavableComponent implements IconSetInterface, \JsonSerializable
 {
@@ -234,6 +237,22 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
     public function getDiagnosticsSummary(): array
     {
         return [];
+    }
+
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+        $rules[] = [['name', 'handle'], 'required'];
+        $rules[] = [['name'], 'string', 'max' => 255];
+        $rules[] = [['handle'], 'string', 'max' => 64];
+        $rules[] = [['handle'], HandleValidator::class];
+        $rules[] = [['handle'], UniqueValidator::class, 'targetClass' => IconSetRecord::class];
+
+        return $rules;
     }
 
 
