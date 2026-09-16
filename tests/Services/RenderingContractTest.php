@@ -38,3 +38,38 @@ it('renders static selections without mounting editable controls', function() {
         ->not->toContain('data-icon-picker-auto-mount')->not->toContain('<input');
     expect($field->getStaticHtml(new Icon(), new \craft\elements\Entry()))->toBe('');
 });
+
+it('renders saved remote SVG fields without downloading their markup on the server', function() {
+    $sets = \verbb\iconpicker\IconPicker::$plugin->getIconSets();
+    $set = new \verbb\iconpicker\iconsets\Heroicons(['name' => 'Remote preview', 'handle' => 'remotePreview' . bin2hex(random_bytes(4))]);
+    expect($sets->saveIconSet($set))->toBeTrue();
+    $previousClient = Craft::$container->getDefinitions()[\GuzzleHttp\Client::class] ?? null;
+    $requests = 0;
+    Craft::$container->set(\GuzzleHttp\Client::class, function($container, $params) use (&$requests) {
+        $config = $params[0] ?? [];
+        $config['handler'] = function() use (&$requests) {
+            $requests++;
+            return \GuzzleHttp\Promise\Create::promiseFor(new \GuzzleHttp\Psr7\Response(200, [], '<svg><path d="M0 0"/></svg>'));
+        };
+        return new \GuzzleHttp\Client($config);
+    });
+    try {
+        \Tests\Support\CpRequestContext::activate('globals/remote-preview', 'GET');
+        Craft::$app->set('assetManager', Craft::createObject(\craft\helpers\App::assetManagerConfig()));
+        Craft::$app->getView()->setTemplateMode(\craft\web\View::TEMPLATE_MODE_CP);
+        $field = new IconPickerField(['name' => 'Remote icon', 'handle' => 'remoteIcon']);
+        for ($i = 0; $i < 3; $i++) {
+            $icon = new Icon(['type' => 'svg', 'value' => 'academic-cap', 'iconSet' => 'outline', 'iconSetHandle' => $set->handle]);
+            expect($field->getInputHtml($icon, new \craft\elements\Entry()))->toContain('academic-cap.svg');
+        }
+        expect($requests)->toBe(0);
+        expect((string)$icon->getInline())->toContain('<svg');
+        expect($requests)->toBe(1);
+    } finally {
+        Craft::$container->clear(\GuzzleHttp\Client::class);
+        if ($previousClient !== null) {
+            Craft::$container->set(\GuzzleHttp\Client::class, $previousClient);
+        }
+        $sets->deleteIconSet($set);
+    }
+});

@@ -291,12 +291,10 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
         $this->_hydrateIconDisplay($value);
 
         $loadResources = false;
-        $display = (string)$value->getDisplayValue();
-
         if (
             $value->value
             && $value->type !== Icon::TYPE_SVG
-            && !str_starts_with(ltrim($display), '<svg')
+            && !str_starts_with(ltrim((string)$value->getDisplayValue()), '<svg')
         ) {
             $loadResources = true;
         }

@@ -54,6 +54,7 @@
 - Allow remote icon catalogs when the unused local icon directory is read-only.
 - Preserve saved icon selections when their icon set is renamed, and prevent deleted sets from binding to reused handles.
 - Keep saved SVG icons available after narrowing the variants offered in the picker.
+- Avoid downloading remote SVGs on the server when rendering icon fields.
 - Keep saved icon previews visible when their set, collection or weight is no longer offered.
 - Render read-only fields without editable picker or Clear controls.
 - Render custom fonts whose filenames contain spaces or punctuation.
