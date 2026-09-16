@@ -69,6 +69,12 @@ class Icon extends Model implements \JsonSerializable, \Countable
     {
         parent::init();
 
+        // Keep selections from the css.gg catalog compatible with its legacy stylesheet.
+        if ($this->type === self::TYPE_CSS && $this->value === 'gg-vercel' && $this->iconSetHandle &&
+            IconPicker::$plugin->getIconSets()->getIconSetByHandle($this->iconSetHandle) instanceof \verbb\iconpicker\iconsets\CssGg) {
+            $this->value = 'gg-zeit';
+        }
+
         // Setup defaults
         $this->label = $this->getLabel();
         $this->keywords = $this->getKeywords();

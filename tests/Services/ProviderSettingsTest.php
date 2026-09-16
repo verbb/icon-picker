@@ -70,3 +70,23 @@ it('includes common Material Design Icons from the pinned font catalog', functio
         expect($values)->toContain('mdi mdi-' . $name);
     }
 });
+
+it('uses the legacy css.gg class for the renamed Vercel icon', function() {
+    $set = new \verbb\iconpicker\iconsets\CssGg(['handle' => 'ggCatalog']);
+    $set->populateIcons(false);
+    $icons = array_values(array_filter($set->icons, fn($icon) => $icon->label === 'vercel'));
+    expect($icons)->toHaveCount(1)->and($icons[0]->value)->toBe('gg-zeit');
+});
+
+
+it('normalizes existing css.gg Vercel selections for template output', function() {
+    $service = \verbb\iconpicker\IconPicker::$plugin->getIconSets();
+    $set = new \verbb\iconpicker\iconsets\CssGg(['name' => 'Legacy logo', 'handle' => 'legacyLogo' . bin2hex(random_bytes(4))]);
+    expect($service->saveIconSet($set))->toBeTrue();
+    try {
+        $icon = new \verbb\iconpicker\models\Icon(['type' => 'css', 'value' => 'gg-vercel', 'iconSetHandle' => $set->handle]);
+        expect((string)$icon)->toBe('gg-zeit')->and($icon->getDisplayValue())->toBe('gg-zeit');
+    } finally {
+        $service->deleteIconSet($set);
+    }
+});

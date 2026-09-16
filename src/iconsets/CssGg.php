@@ -43,6 +43,7 @@ class CssGg extends RemoteCssIconSet
 
     protected function buildCssValue(string $label, ?string $variant = null): string
     {
-        return 'gg-' . $label;
+        // The legacy stylesheet still names the Vercel logo after its former brand.
+        return 'gg-' . ($label === 'vercel' ? 'zeit' : $label);
     }
 }
