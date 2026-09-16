@@ -32,6 +32,7 @@
 - Keep element previews usable when a spritesheet cannot be loaded.
 - Strengthen request validation for utility actions.
 - Give the icon search input an accessible field label.
+- Allow the Clear button to be activated with Enter or Space.
 - Load Material Icons web fonts that omit glyph names.
 - Keep icons searchable by name when additional metadata keywords are present.
 - Restore icon selection and insertion in Redactor fields.

@@ -266,7 +266,8 @@ export class IconPickerInput {
         });
 
         this.wrap.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (this.open) {
+            // Let the native button handle Enter/Space instead of opening the picker.
+            if (this.open || (event.target as HTMLElement).closest('.ipui-icon-input-clear')) {
                 return;
             }
 

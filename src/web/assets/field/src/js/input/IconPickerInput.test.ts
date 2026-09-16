@@ -9,8 +9,9 @@ vi.mock('../icon/loadResources.js', () => ({
 import { loadFonts, loadSpriteSheets } from '../icon/loadResources.js';
 import { IconPickerInput } from './IconPickerInput.js';
 
-const mount = () => {
+const mount = (value = {}) => {
     const root = document.createElement('div');
+    root.dataset.value = JSON.stringify(value);
     root.dataset.settings = JSON.stringify({ name: 'icon', fieldId: 1, elementId: 2 });
     document.body.append(root);
     const picker = new IconPickerInput(root);
@@ -82,5 +83,20 @@ it.each([['stylesheet', loadFonts], ['spritesheet', loadSpriteSheets]] as const)
     expect(root.querySelector('.ipui-icons-status button')?.textContent).toBe('Retry');
     await state.fetchIcons();
     expect(root.querySelector('.ipui-icons-status')?.textContent).toBe('No icons match your query.');
+    picker.destroy();
+});
+
+
+it.each(['Enter', ' '])('preserves native Clear activation for %s without opening the picker', (key) => {
+    const { root, picker } = mount({ type: 'css', value: 'bi bi-alarm', label: 'Alarm' });
+    const clear = root.querySelector<HTMLButtonElement>('.ipui-icon-input-clear')!;
+    const keydown = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+    clear.dispatchEvent(keydown);
+    expect(keydown.defaultPrevented).toBe(false);
+    expect(root.querySelector('.ipui-icon-input')?.classList.contains('is-open')).toBe(false);
+    // happy-dom does not synthesize keyboard clicks; the real browser covers activation.
+    clear.click();
+    expect(root.querySelector<HTMLInputElement>('input[data-icon-picker-key="value"]')?.value).toBe('');
+    expect(clear.isConnected).toBe(false);
     picker.destroy();
 });
