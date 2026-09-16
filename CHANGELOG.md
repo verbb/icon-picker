@@ -23,6 +23,7 @@
 - Align documentation filenames with page titles and update internal links.
 
 ### Fixed
+- Wait for shared icon scripts to load before completing overlapping requests.
 - Preserve cleared Font Awesome style selections when saving icon sets.
 - Load Font Awesome kit resources for element previews, including custom uploaded icons.
 - Retry loading remote icon scripts after a failed request.

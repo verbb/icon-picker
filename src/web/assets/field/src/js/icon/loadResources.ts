@@ -21,6 +21,8 @@ type ScriptResource = {
     onload?: string;
 };
 
+const pendingScripts = new Map<string, Promise<void>>();
+
 const ensureCache = (): { stylesheets: string[]; fonts: string[]; scripts: string[] } => {
     Craft.IconPicker = Craft.IconPicker || {};
     Craft.IconPicker.Cache = Craft.IconPicker.Cache || { stylesheets: [], fonts: [], scripts: [] };
@@ -112,6 +114,11 @@ export const loadScripts = (scripts: ScriptResource[] | undefined): Promise<void
 
     return Promise.all(
         scripts.map((script) => {
+            const pending = pendingScripts.get(script.name);
+            if (pending) {
+                return pending;
+            }
+
             if (cache.scripts.includes(script.name) || document.getElementById(script.name)) {
                 if (!cache.scripts.includes(script.name)) {
                     cache.scripts.push(script.name);
@@ -119,7 +126,7 @@ export const loadScripts = (scripts: ScriptResource[] | undefined): Promise<void
                 return Promise.resolve();
             }
 
-            return new Promise<void>((resolve, reject) => {
+            const request = new Promise<void>((resolve, reject) => {
                 const el = document.createElement('script');
                 el.id = script.name;
 
@@ -158,7 +165,10 @@ export const loadScripts = (scripts: ScriptResource[] | undefined): Promise<void
                 }
 
                 resolve();
-            });
+            }).finally(() => { pendingScripts.delete(script.name); });
+
+            pendingScripts.set(script.name, request);
+            return request;
         }),
     ).then(() => undefined);
 };

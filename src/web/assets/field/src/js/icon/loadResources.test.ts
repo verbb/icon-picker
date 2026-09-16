@@ -25,3 +25,28 @@ it('retries a remote script after a failed request instead of treating it as loa
     await retry;
     expect(Craft.IconPicker?.Cache?.scripts).toContain('test-kit');
 });
+
+
+it('shares an in-flight script outcome across callers and allows both to retry', async () => {
+    vi.stubGlobal('Craft', { IconPicker: { Cache: { stylesheets: [], fonts: [], scripts: [] } } });
+    const append = document.body.appendChild.bind(document.body);
+    vi.spyOn(document.body, 'appendChild').mockImplementation((node) => {
+        if (node instanceof HTMLScriptElement) node.type = 'application/x-test';
+        return append(node);
+    });
+    const resource = { name: 'shared-kit', type: 'remote', url: 'https://example.test/shared.js' };
+    const first = loadScripts([resource]);
+    const second = loadScripts([resource]);
+    const outcomes = Promise.allSettled([first, second]);
+    const failedScript = document.getElementById('shared-kit')!;
+    failedScript.dispatchEvent(new Event('error'));
+    expect((await outcomes).map((outcome) => outcome.status)).toEqual(['rejected', 'rejected']);
+    expect(Craft.IconPicker?.Cache?.scripts).not.toContain('shared-kit');
+    const retry = Promise.all([loadScripts([resource]), loadScripts([resource])]);
+    const replacement = document.getElementById('shared-kit')!;
+    expect(replacement).not.toBe(failedScript);
+    expect(document.querySelectorAll('#shared-kit')).toHaveLength(1);
+    replacement.dispatchEvent(new Event('load'));
+    await retry;
+    expect(Craft.IconPicker?.Cache?.scripts).toEqual(['shared-kit']);
+});
