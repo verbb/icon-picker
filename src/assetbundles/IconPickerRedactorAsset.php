@@ -1,6 +1,8 @@
 <?php
 namespace verbb\iconpicker\assetbundles;
 
+use verbb\iconpicker\helpers\Plugin;
+
 use craft\redactor\assets\redactor\RedactorAsset;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
@@ -31,5 +33,7 @@ class IconPickerRedactorAsset extends AssetBundle
         ];
 
         parent::init();
+
+        Plugin::registerFieldAssets();
     }
 }

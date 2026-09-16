@@ -32,6 +32,7 @@
 - Retry loading icon scripts, stylesheets and spritesheets after a failed request.
 - Report when an icon set deletion is prevented by an event handler.
 - Keep element previews usable when a spritesheet cannot be loaded.
+- Preserve public sprite references in Redactor content while keeping editor previews isolated.
 - Render sprite gradients and nested symbol references in field previews.
 - Keep sprite collections distinct when their symbols share the same names.
 - Strengthen request validation for utility actions.

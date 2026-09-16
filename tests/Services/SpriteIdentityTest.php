@@ -38,6 +38,7 @@ it('isolates sprite previews while preserving public and stored symbol names', f
             $namespace = $set->getSpriteSheets()[0]['namespace'];
             $ids[] = $icon->jsonSerialize()['spriteId'];
             expect($icon->jsonSerialize()['spriteId'])->toBe($namespace . '-heart');
+            expect($icon->jsonSerialize()['spriteSheet'])->toBe($name . '-sprites');
             expect((string)$icon)->toBe('heart')->and($icon->serializeValueForDb()['value'])->toBe('heart');
             expect($icon->serializeValueForDb())->not->toHaveKey('spriteId');
             $field = new IconPickerField(['handle' => 'spritePreview']);

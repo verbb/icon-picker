@@ -23,6 +23,7 @@ export interface IconItem {
     cssAttribute?: string | null;
     fontClass?: string | null;
     spriteId?: string | null;
+    spriteSheet?: string | null;
 }
 
 /** Match Vue field: lodash `startCase(toLower(label))` (e.g. `icon-home2` → `Icon Home 2`). */
@@ -69,6 +70,9 @@ export const renderIconInto = (
         const spriteId = item.spriteId ?? display;
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svg.setAttribute('viewBox', '0 0 1000 1000');
+        if (item.spriteSheet) {
+            svg.classList.add(`ip-sprite-sheet-${encodeURIComponent(item.spriteSheet)}`, `ip-sprite-symbol-${encodeURIComponent(display)}`);
+        }
         const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
         use.setAttributeNS('http://www.w3.org/1999/xlink', 'href', `#${spriteId}`);
         use.setAttribute('href', `#${spriteId}`);

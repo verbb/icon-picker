@@ -3,6 +3,7 @@ import '../css/icon-picker.css';
 import { allDefined } from '@verbb/plugin-kit-web/plugin-kit';
 
 import { ICON_PICKER_PK_COMPONENTS } from './iconPickerPkComponents.js';
+import { loadSpriteSheets } from './icon/loadResources.js';
 import { IconPickerInput } from './input/IconPickerInput';
 
 const INPUT_SELECTOR = '[data-icon-picker-auto-mount="input"], .ipui-input-component';
@@ -112,6 +113,14 @@ const hookCraftSlideoutMount = (): void => {
 
 Craft.IconPicker = Craft.IconPicker || {};
 Craft.IconPicker.mountAll = mountAll;
+Craft.IconPicker.loadRedactorSpriteSheets = async (): Promise<Record<string, string>> => {
+    const response = await Craft.sendActionRequest('POST', 'icon-picker/redactor/resources-for-field');
+    const sheets = response.data.spriteSheets ?? [];
+    await loadSpriteSheets(sheets);
+    return Object.fromEntries(sheets.filter((sheet: { namespace?: string }) => sheet.namespace)
+        .map((sheet: { name: string; namespace: string }) => [sheet.name, sheet.namespace]));
+};
+document.dispatchEvent(new CustomEvent('icon-picker-ready'));
 Craft.IconPicker.startAutoMountObserver = (): void => {
     const iconPicker = Craft.IconPicker;
     if (!iconPicker || iconPicker.__autoMountObserverStarted) {
