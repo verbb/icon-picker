@@ -99,6 +99,16 @@ describe('Icon normalize security', function() {
 describe('Remote SVG catalog trust', function() {
     it('derives URLs only for an exact configured catalog entry', function() {
         $iconSet = new class extends RemoteSvgIconSet {
+            public function fetchIcons(): void
+            {
+                $this->icons = [new Icon([
+                    'type' => Icon::TYPE_SVG,
+                    'iconSetHandle' => 'trusted-set',
+                    'iconSet' => 'outline',
+                    'value' => 'known-icon',
+                ])];
+            }
+
             protected function catalogMap(): array
             {
                 return [];
@@ -120,12 +130,6 @@ describe('Remote SVG catalog trust', function() {
             }
         };
         $iconSet->handle = 'trusted-set';
-        $iconSet->icons = [new Icon([
-            'type' => Icon::TYPE_SVG,
-            'iconSetHandle' => 'trusted-set',
-            'iconSet' => 'outline',
-            'value' => 'known-icon',
-        ])];
 
         $known = new Icon(['type' => Icon::TYPE_SVG, 'iconSet' => 'outline', 'value' => 'known-icon']);
         $unknown = new Icon(['type' => Icon::TYPE_SVG, 'iconSet' => 'outline', 'value' => '../private']);

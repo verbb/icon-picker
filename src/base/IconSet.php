@@ -29,6 +29,8 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
     public array $scripts = [];
 
     private bool|string $_enabled = true;
+    private bool $_refreshMetadata = false;
+    private array $_metadata = [];
 
 
     // Public Methods
@@ -96,7 +98,7 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
         $cacheKey = 'icon-picker:v2:' . $this->handle;
 
         // Check to see if loaded in-memory already, rather than loading from the cache
-        if ($preloadedData = IconPicker::$plugin->getIconSets()->getPreloadedIconSet($cacheKey)) {
+        if ($fromCache && ($preloadedData = IconPicker::$plugin->getIconSets()->getPreloadedIconSet($cacheKey))) {
             $this->setAttributes($preloadedData->getAttributes(), false);
 
             return;
@@ -115,6 +117,15 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
                 return;
             }
         }
+
+        // A forced rebuild must replace every derived value, even on a reused
+        // instance in a queue worker or after this request has opened the picker.
+        $this->icons = [];
+        $this->fonts = [];
+        $this->spriteSheets = [];
+        $this->scripts = [];
+        $this->_metadata = [];
+        $this->_refreshMetadata = !$fromCache;
 
         // Populates the icons (and fonts/spritesheets) based on the icon set class.
         $this->fetchIcons();
@@ -183,7 +194,7 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
         $settings = IconPicker::$plugin->getSettings();
         $cacheKey = 'icon-picker:v2:' . $this->handle;
 
-        if ($preloadedData = IconPicker::$plugin->getIconSets()->getPreloadedIconSet($cacheKey)) {
+        if ($fromCache && ($preloadedData = IconPicker::$plugin->getIconSets()->getPreloadedIconSet($cacheKey))) {
             $this->fonts = $preloadedData->fonts;
             $this->spriteSheets = $preloadedData->spriteSheets;
             $this->scripts = $preloadedData->scripts;
@@ -260,9 +271,17 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
 
     private function _fetchMetadata(string $path): ?array
     {
+        if (array_key_exists($path, $this->_metadata)) {
+            return $this->_metadata[$path];
+        }
+
         $cacheKey = 'icon-picker-metadata: ' . md5($path);
 
-        return Craft::$app->getCache()->getOrSet($cacheKey, function() use ($path) {
+        if ($this->_refreshMetadata) {
+            Craft::$app->getCache()->delete($cacheKey);
+        }
+
+        return $this->_metadata[$path] = Craft::$app->getCache()->getOrSet($cacheKey, function() use ($path) {
             $filename = basename($path);
             $folderPath = str_replace($filename, '', $path);
 

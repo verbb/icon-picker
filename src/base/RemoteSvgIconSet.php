@@ -42,6 +42,7 @@ abstract class RemoteSvgIconSet extends IconSet
 
     public function fetchIcons(): void
     {
+        $this->_catalogLookup = null;
         $icons = [];
         $catalogMap = $this->catalogMap();
         $selected = [];
