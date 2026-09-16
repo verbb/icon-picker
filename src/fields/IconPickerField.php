@@ -335,6 +335,11 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
             return true;
         }
 
+        // CSS selections are identifiers; SVG presentation comes from the catalog.
+        if ($type === Icon::TYPE_CSS && (str_contains($raw, '<') || str_contains($raw, '>'))) {
+            return false;
+        }
+
         if ($type !== Icon::TYPE_SVG) {
             return !str_contains($raw, "\0");
         }

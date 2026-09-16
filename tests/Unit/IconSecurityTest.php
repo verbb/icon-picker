@@ -40,6 +40,16 @@ describe('Icon normalize security', function() {
         expect($rendered)->toContain('font-face-demo-font');
     });
 
+    it('keeps CSS selections as identifiers while presentation comes from the catalog', function() {
+        $field = new IconPickerField();
+        $valid = $field->normalizeValue(['type' => Icon::TYPE_CSS, 'value' => 'fas fa-heart']);
+        $invalid = $field->normalizeValue(['type' => Icon::TYPE_CSS, 'value' => '<svg><title>preview</title></svg>']);
+
+        expect($valid->value)->toBe('fas fa-heart')
+            ->and($invalid->isEmpty())->toBeTrue()
+            ->and($invalid->getDisplayValue())->toBe('');
+    });
+
     it('clears path-traversal values for local SVG icons', function() {
         $field = (new ReflectionClass(IconPickerField::class))->newInstanceWithoutConstructor();
         $icon = $field->normalizeValue([
