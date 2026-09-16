@@ -81,7 +81,7 @@
     {% for iconSetType in iconSetTypes %}
         {% set isCurrent = (iconSetType == className(iconSet)) %}
 
-        <div id="{{ iconSetType | id }}" {% if not isCurrent %}class="hidden"{% endif %}>
+        <fieldset id="{{ iconSetType | id }}" data-icon-set-settings {% if not isCurrent %}class="hidden" disabled{% endif %}>
             {% namespace 'types[' ~ iconSetType ~ ']' %}
                 {% if isCurrent %}
                     {{ iconSet.getSettingsHtml() | raw }}
@@ -89,7 +89,7 @@
                     {{ iconSetInstances[iconSetType].getSettingsHtml() | raw }}
                 {% endif %}
             {% endnamespace %}
-        </div>
+        </fieldset>
     {% endfor %}
 </div>
 
@@ -138,10 +138,11 @@
     const $form = $('#main-form');
 
     const syncHiddenTypePanels = () => {
-        $('#settings > div[id]').each(function() {
+        $('#settings > fieldset[data-icon-set-settings]').each(function() {
             const $panel = $(this);
             const hidden = $panel.hasClass('hidden');
-            $panel.find('input, select, textarea').prop('disabled', hidden);
+            // Disable the group without changing nested controls’ own disabled states.
+            $panel.prop('disabled', hidden);
         });
     };
 
