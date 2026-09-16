@@ -19,6 +19,11 @@ it('reorders icon sets through the CP action and persists project configuration'
     expect($service->saveIconSet($first))->toBeTrue();
     expect($service->saveIconSet($second))->toBeTrue();
 
+    // Creation and reordering are separate requests in the CP. Craft deduplicates
+    // nested project-config events within one request, so flush that boundary here.
+    Craft::$app->getProjectConfig()->saveModifiedConfigData();
+    Craft::$app->getProjectConfig()->reset();
+
     try {
         CpRequestContext::activate('actions/icon-picker/icon-sets/reorder', 'POST');
         $request = Craft::$app->getRequest();
