@@ -1,5 +1,5 @@
 # Icon
-An Icon Picker field returns an `Icon` object when it has a selection. The object identifies the selected icon and provides the output helpers used by [Rendering Icons](docs:template-guides/rendering-icons).
+An Icon Picker field returns an `Icon` object, including when no icon is selected. Use `not icon.isEmpty()` in Twig to check for a selection. The object identifies the selected icon and provides the output helpers used by [Rendering Icons](docs:template-guides/rendering-icons).
 
 <span id="attributes"></span>
 
@@ -45,14 +45,6 @@ The keywords used to search for the icon by. Defaults to the `label`.
 What type of icon this is: `svg`, `sprite`, `glyph` or `css`.
 :::
 
-::: reference
-### `length`
-
-**Type:** `int`
-
-The character length of the value returned when the icon is converted to a string.
-:::
-
 
 ### Stored Values
 The `value` property identifies the icon within its set. Its format depends on the Icon Set type.
@@ -65,6 +57,14 @@ Type | Description | Example
 `css` | The name of the icon for the remote icon source. Commonly a CSS class. | `twitter-square`
 
 ## Methods
+
+::: reference
+### `count()`
+
+**Returns:** `int`
+
+The character length of the value returned when the icon is converted to a string. In Twig, use the `icon|length` filter.
+:::
 
 ::: reference
 ### `isEmpty()`

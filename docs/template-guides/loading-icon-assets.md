@@ -17,7 +17,7 @@ Place the spritesheet at the root of `iconSetsPath` and give it a `-sprites.svg`
 The helper returns the spritesheet's inline SVG markup. In an entry template, reference the selected symbol:
 
 ```twig
-{% if entry.featureIcon %}
+{% if not entry.featureIcon.isEmpty() %}
     <svg class="feature-icon" aria-hidden="true">
         <use href="#{{ entry.featureIcon.value }}"></use>
     </svg>
@@ -47,7 +47,7 @@ Use `fontUrl()` in an `@font-face` rule to resolve a font relative to `iconSetsP
 Then render the selected glyph in an element using that font:
 
 ```twig
-{% if entry.featureIcon %}
+{% if not entry.featureIcon.isEmpty() %}
     <span class="project-icon" aria-hidden="true">{{ entry.featureIcon.glyph | raw }}</span>
 {% endif %}
 ```

@@ -5,7 +5,7 @@ An Icon Picker field returns an [Icon object](docs:developers/icon). The markup 
 Always check that the field has a value before rendering it:
 
 ```twig
-{% if entry.featureIcon %}
+{% if not entry.featureIcon.isEmpty() %}
     {# Render the icon using the appropriate example below. #}
 {% endif %}
 ```
@@ -17,7 +17,7 @@ Always check that the field has a value before rendering it:
 Use the icon URL as an image source when you do not need to style paths inside the SVG:
 
 ```twig
-{% if entry.featureIcon %}
+{% if not entry.featureIcon.isEmpty() %}
     <img src="{{ entry.featureIcon.url }}" width="20" height="20" alt="">
 {% endif %}
 ```
@@ -29,19 +29,19 @@ An empty `alt` value marks a decorative icon. If the icon conveys information th
 Use `inline` when your stylesheet needs to target elements inside the SVG:
 
 ```twig
-{% if entry.featureIcon %}
+{% if not entry.featureIcon.isEmpty() %}
     <span class="feature-icon" aria-hidden="true">
         {{ entry.featureIcon.inline }}
     </span>
 {% endif %}
 ```
 
-Only inline SVGs from sources you trust. Inline output places the SVG markup directly in the page, and remote SVG sets may require a server-side request before they are cached.
+Only inline SVGs from sources you trust. Inline output places the SVG markup directly in the page, and remote SVG sets require a server-side request to retrieve the markup. The icon catalogue cache does not store that markup.
 
 For a local SVG Folder set, you can also use Craft's [`svg()` Twig function](https://craftcms.com/docs/5.x/reference/twig/functions.html#svg) with the file path:
 
 ```twig
-{% if entry.featureIcon %}
+{% if not entry.featureIcon.isEmpty() %}
     {{ svg(entry.featureIcon.path) | attr({ class: 'feature-icon', 'aria-hidden': 'true' }) }}
 {% endif %}
 ```
@@ -59,7 +59,7 @@ Load the spritesheet once, ideally immediately after the opening `<body>` tag. T
 Then reference the selected symbol ID wherever the icon should appear:
 
 ```twig
-{% if entry.featureIcon %}
+{% if not entry.featureIcon.isEmpty() %}
     <svg width="20" height="20" aria-hidden="true">
         <use href="#{{ entry.featureIcon.value }}"></use>
     </svg>
@@ -91,7 +91,7 @@ Icon Picker indexes glyphs in a supported font file, but your front-end styleshe
 Render the selected glyph and hide it from assistive technology when it is decorative:
 
 ```twig
-{% if entry.featureIcon %}
+{% if not entry.featureIcon.isEmpty() %}
     <span class="project-icon" aria-hidden="true">{{ entry.featureIcon.glyph | raw }}</span>
 {% endif %}
 ```
@@ -99,7 +99,7 @@ Render the selected glyph and hide it from assistive technology when it is decor
 If the font package supplies a class for each glyph, use `glyphName` instead:
 
 ```twig
-{% if entry.featureIcon %}
+{% if not entry.featureIcon.isEmpty() %}
     <span class="project-icon project-icon--{{ entry.featureIcon.glyphName }}" aria-hidden="true"></span>
 {% endif %}
 ```
@@ -109,7 +109,7 @@ If the font package supplies a class for each glyph, use `glyphName` instead:
 Remote SVG sets such as Lucide, Heroicons, Tabler and Octicons store an icon name and resolve it to a CDN URL. Render the URL as an image, or use `inline` when you trust the provider and need inline markup:
 
 ```twig
-{% if entry.featureIcon %}
+{% if not entry.featureIcon.isEmpty() %}
     <img src="{{ entry.featureIcon.url }}" width="20" height="20" alt="">
 {% endif %}
 ```
@@ -119,7 +119,7 @@ Remote SVG sets such as Lucide, Heroicons, Tabler and Octicons store an icon nam
 Remote CSS sets such as Font Awesome, Bootstrap Icons, css.gg, Remix and Phosphor store CSS class names. Load the provider's matching stylesheet on your front end, then output the stored classes:
 
 ```twig
-{% if entry.featureIcon %}
+{% if not entry.featureIcon.isEmpty() %}
     <span class="{{ entry.featureIcon.value }}" aria-hidden="true"></span>
 {% endif %}
 ```

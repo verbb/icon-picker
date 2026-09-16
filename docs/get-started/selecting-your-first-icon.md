@@ -7,7 +7,7 @@ Create an Icon Picker field called Feature Icon with the handle `featureIcon`. S
 In that entry's Twig template, render this SVG icon as an image:
 
 ```twig
-{% if entry.featureIcon %}
+{% if not entry.featureIcon.isEmpty() %}
     <img src="{{ entry.featureIcon.url }}" width="24" height="24" alt="">
 {% endif %}
 ```
