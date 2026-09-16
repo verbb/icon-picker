@@ -88,7 +88,7 @@ it.each([['stylesheet', loadFonts], ['spritesheet', loadSpriteSheets]] as const)
 
 
 it.each(['Enter', ' '])('preserves native Clear activation for %s without opening the picker', (key) => {
-    const { root, picker } = mount({ type: 'css', value: 'bi bi-alarm', label: 'Alarm' });
+    const { root, picker } = mount({ type: 'css', value: 'bi bi-alarm', displayValue: 'bi bi-alarm', label: 'Alarm' });
     const clear = root.querySelector<HTMLButtonElement>('.ipui-icon-input-clear')!;
     const keydown = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
     clear.dispatchEvent(keydown);
@@ -98,5 +98,14 @@ it.each(['Enter', ' '])('preserves native Clear activation for %s without openin
     clear.click();
     expect(root.querySelector<HTMLInputElement>('input[data-icon-picker-key="value"]')?.value).toBe('');
     expect(clear.isConnected).toBe(false);
+    picker.destroy();
+});
+
+it('removes cleared icon markup consumed by the Redactor insertion dialog', () => {
+    const { root, picker } = mount({ type: 'css', value: 'bi bi-alarm', displayValue: 'bi bi-alarm', label: 'Alarm' });
+    const preview = root.querySelector('.ipui-icon-input-svg')!;
+    expect(preview.innerHTML).toContain('bi-alarm');
+    root.querySelector<HTMLButtonElement>('.ipui-icon-input-clear')!.click();
+    expect(preview.innerHTML).toBe('');
     picker.destroy();
 });

@@ -429,6 +429,8 @@ export class IconPickerInput {
             }
         } else {
             this.clearButton.remove();
+            // Redactor consumes the preview markup when inserting the selected icon.
+            this.chipPreview.replaceChildren();
         }
 
         if (showChip) {

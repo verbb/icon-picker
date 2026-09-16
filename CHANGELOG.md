@@ -36,6 +36,7 @@
 - Load Material Icons web fonts that omit glyph names.
 - Keep icons searchable by name when additional metadata keywords are present.
 - Restore icon selection and insertion in Redactor fields.
+- Prevent cleared selections from being inserted into Redactor fields.
 - Import icons through Feed Me when a field uses all enabled icon sets.
 - Keep loaded icons when resource requests overlap, and show a retry action when icon loading fails.
 - Release field listeners when slideouts close and restore keyboard focus after selecting or clearing an icon.
