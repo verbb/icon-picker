@@ -41,10 +41,10 @@ class IconsController extends Controller
     }
 
 
-    // Private Methods
+    // Protected Methods
     // =========================================================================
 
-    private function _getIconSetData(bool $includeIcons = true): ?Response
+    protected function getField(): IconPickerField
     {
         $fieldId = (int)$this->request->getRequiredParam('fieldId');
         $field = Craft::$app->getFields()->getFieldById($fieldId);
@@ -64,6 +64,17 @@ class IconsController extends Controller
         if (!$this->_elementLayoutContainsField($element, $field)) {
             throw new ForbiddenHttpException(Craft::t('icon-picker', 'This field is not part of the element being edited.'));
         }
+
+        return $field;
+    }
+
+
+    // Private Methods
+    // =========================================================================
+
+    private function _getIconSetData(bool $includeIcons = true): ?Response
+    {
+        $field = $this->getField();
 
         $json = [
             'icons' => [],

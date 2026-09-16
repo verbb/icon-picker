@@ -28,6 +28,7 @@ export interface IconPickerSettings {
         [key: string]: unknown;
     };
     fieldId?: number | null;
+    requestController?: 'icons' | 'redactor';
     elementId?: number | null;
     siteId?: number | null;
     itemSize?: number;
@@ -955,9 +956,8 @@ export class IconPickerInput {
             elementId: this.settings.elementId,
             siteId: this.settings.siteId,
         };
-        const endpoint = preload
-            ? 'icon-picker/icons/resources-for-field'
-            : 'icon-picker/icons/icons-for-field';
+        const controller = this.settings.requestController === 'redactor' ? 'redactor' : 'icons';
+        const endpoint = `icon-picker/${controller}/${preload ? 'resources-for-field' : 'icons-for-field'}`;
 
         try {
             const response = await Craft.sendActionRequest('POST', endpoint, { data });

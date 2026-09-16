@@ -23,6 +23,7 @@
 - Align documentation filenames with page titles and update internal links.
 
 ### Fixed
+- Restore icon selection and insertion in Redactor fields.
 - Import icons through Feed Me when a field uses all enabled icon sets.
 - Keep loaded icons when resource requests overlap, and show a retry action when icon loading fails.
 - Release field listeners when slideouts close and restore keyboard focus after selecting or clearing an icon.

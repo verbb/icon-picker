@@ -141,6 +141,8 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
     public mixed $iconSets = null;
     public ?string $renderId = null;
 
+    private string $_requestController = 'icons';
+
 
     // Public Methods
     // =========================================================================
@@ -171,6 +173,17 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
             'field' => $this,
             'iconSets' => $iconSets,
         ]);
+    }
+
+    public function getRedactorInputHtml(): string
+    {
+        $this->_requestController = 'redactor';
+
+        try {
+            return $this->getInputHtml(new Icon(), null);
+        } finally {
+            $this->_requestController = 'icons';
+        }
     }
 
     public function normalizeValue(mixed $value, ?ElementInterface $element = null): Icon
@@ -282,6 +295,7 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
             'loadResources' => $loadResources,
             'settings' => $this->settings,
             'fieldId' => $this->id,
+            'requestController' => $this->_requestController,
             'elementId' => $element?->id,
             'siteId' => $element?->siteId,
             'itemSize' => $pluginSettings->iconItemSize,

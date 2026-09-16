@@ -42,23 +42,17 @@
                     var $container = $modal.$modalBody.find('.modal-content');
                     var $spinner = $modal.$modalBody.find('.main-spinner');
 
-                    $.ajax({
-                        url: Craft.getActionUrl('icon-picker/redactor'),
-                        type: 'GET',
-                        error: function(response) {
+                    Craft.sendActionRequest('POST', 'icon-picker/redactor')
+                        .then(function(response) {
                             $spinner.addClass('hidden');
-                            
-                            console.error(response.statusText);
-                        },
-
-                        success: function(fieldData) {
+                            $container.html(response.data.inputHtml);
+                            Garnish.$bod.append(response.data.footHtml);
+                        })
+                        .catch(function(error) {
                             $spinner.addClass('hidden');
-
-                            $container.html(fieldData.inputHtml);
-
-                            Garnish.$bod.append(fieldData.footHtml);
-                        },
-                    });
+                            $container.text(error.response?.data?.message || Craft.t('icon-picker', 'Request failed.'));
+                            console.error(error);
+                        });
                 },
 
                 insert: function($modal, $form) {
@@ -70,6 +64,10 @@
                     }
 
                     var iconHtml = $icon.html();
+
+                    if (!iconHtml) {
+                        return;
+                    }
 
                     // Replace any xmlns attributes which don't place nice in Redactor
                     iconHtml = iconHtml.replace(/xmlns=\"(.*?)\"/g, '');
