@@ -75,6 +75,19 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
         return null;
     }
 
+    public function getSettings(): array
+    {
+        $settings = parent::getSettings();
+
+        // Project config removes empty arrays. Preserve an explicit empty selection;
+        // Craft converts the JSON back to the provider's array property on load.
+        if (isset($settings['variants']) && $settings['variants'] === []) {
+            $settings['variants'] = '[]';
+        }
+
+        return $settings;
+    }
+
     public function populateIcons(bool $fromCache = true): void
     {
         $settings = IconPicker::$plugin->getSettings();

@@ -23,6 +23,7 @@
 - Align documentation filenames with page titles and update internal links.
 
 ### Fixed
+- Preserve package versions and selected variants when saving remote icon sets.
 - Fix an error when reordering icon sets.
 - Restrict icon catalog requests to POST requests for a real Icon Picker field on an element the current user can view.
 - Respect the one-hour cache duration for Font Awesome kits and icon catalogs.

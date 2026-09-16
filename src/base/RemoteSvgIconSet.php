@@ -25,6 +25,12 @@ abstract class RemoteSvgIconSet extends IconSet
     // Public Methods
     // =========================================================================
 
+    public function settingsAttributes(): array
+    {
+        // Craft excludes properties declared on abstract base classes by default.
+        return array_values(array_unique(array_merge(parent::settingsAttributes(), ['cdnVersion', 'variants'])));
+    }
+
     public function getSettingsHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate('icon-picker/icon-sets/_remote-package', [
