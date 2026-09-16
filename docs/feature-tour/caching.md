@@ -16,7 +16,7 @@ If you add files to an SVG folder (or change a spritesheet / font), they may not
 - Go to **Utilities → Clear Caches** and tick **Icon Picker cache**.
 - Go to **Utilities → Icon Picker** and use **Re-generate all icon set caches**.
 
-Icon Picker also watches the root of your `iconSetsPath` folder. Caches re-generate when a folder or file is added, deleted, or updated at that root. Nested folder changes alone are not watched — use one of the methods above.
+In Craft’s dev mode, Icon Picker also checks the modification time of the root `iconSetsPath` folder. Adding or removing an item at that root triggers cache regeneration on a subsequent request. Changes to file contents or nested folders require one of the methods above.
 
 ## Troubleshooting
 

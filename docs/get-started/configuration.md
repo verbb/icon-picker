@@ -2,7 +2,7 @@
 
 You can customise Icon Picker’s settings using a PHP configuration file. This is optional: each setting has a default, so you only need to include the values you want to change.
 
-To override a setting, create `icon-picker.php` in your Craft project’s `/config` directory and return an array of setting names and values. For example, the following will set the icon item size to 64 pixels:
+To override a setting, create `icon-picker.php` in your Craft project’s `/config` directory and return an array of setting names and values. For example, the following will set the icon item wrapper size to 64 pixels:
 
 ```php
 <?php
