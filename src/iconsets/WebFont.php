@@ -174,7 +174,6 @@ class WebFont extends IconSet
     private function _fetchFontGlyphs(string $file): array
     {
         $items = [];
-        $exclusions = [];
 
         try {
             $font = Font::load($file);
@@ -183,23 +182,22 @@ class WebFont extends IconSet
             if ($font) {
                 $glyphs = $font->getUnicodeCharMap();
                 $names = $font->getData('post', 'names');
+                $materialNames = null;
 
                 // Support specific icon kits where they don't contain names
                 if (!$names && $font->getFontName() == 'Material Icons') {
-                    // Fetch the glyphId-keyed map
-                    $names = Json::decodeFromFile(dirname(__DIR__) . '/json/material.json');
-
-                    // There's also a bunch of things we want to exclude
-                    $exclusions = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39];
+                    // Unicode assignments remain stable when font releases reorder glyphs.
+                    $materialNames = Json::decodeFromFile(dirname(__DIR__) . '/json/material.json');
                 }
 
                 foreach ($glyphs as $id => $gid) {
-                    if (in_array($gid, $exclusions)) {
+                    // Material's ASCII glyphs are ligature inputs, not selectable icons.
+                    if ($materialNames !== null && (($id >= 48 && $id <= 57) || $id === 95 || ($id >= 97 && $id <= 122))) {
                         continue;
                     }
 
                     $items[] = [
-                        'name' => $names[$gid] ?? sprintf("uni%04x", $id),
+                        'name' => ($materialNames !== null ? ($materialNames[$id] ?? null) : ($names[$gid] ?? null)) ?? sprintf("uni%04x", $id),
                         'glyphIndex' => $gid,
                         'glyphId' => $id,
                     ];

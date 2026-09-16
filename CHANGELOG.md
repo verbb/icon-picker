@@ -35,6 +35,7 @@
 - Give the icon search input an accessible field label.
 - Allow the Clear button to be activated with Enter or Space.
 - Load Material Icons web fonts that omit glyph names.
+- Match Material Icons fallback labels to the correct glyphs across font versions.
 - Keep icons searchable by name when additional metadata keywords are present.
 - Restore icon selection and insertion in Redactor fields.
 - Prevent cleared selections from being inserted into Redactor fields.

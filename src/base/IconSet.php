@@ -26,7 +26,7 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
         // Resolved settings also cover project config, aliases and environment overrides.
         $source = [FileHelper::normalizePath(App::parseEnv($settings->iconSetsPath)), $settings->getIconSetsUrl()];
 
-        return 'icon-picker:v4:' . $handle . ':' . hash('sha256', Json::encode($source));
+        return 'icon-picker:v5:' . $handle . ':' . hash('sha256', Json::encode($source));
     }
 
 

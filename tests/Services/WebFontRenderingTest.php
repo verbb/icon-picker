@@ -43,3 +43,10 @@ it('keeps Material Symbols aligned with the shared glyph font identifier', funct
     $source->populateIcons(false);
     expect($source->icons[0]->jsonSerialize()['fontClass'])->toBe($source->fonts[1]['id']);
 });
+
+it('maps Material Icons fallback names to their Unicode values across font versions', function() {
+    $names = \craft\helpers\Json::decodeFromFile(dirname(__DIR__, 2) . '/src/json/material.json');
+    foreach ([0xe88a => 'home', 0xe817 => 'thumb_up_alt', 0xe5d2 => 'menu', 0xe8b6 => 'search', 0xe8b8 => 'settings', 0xe5d3 => 'more_horiz', 0xe555 => 'local_printshop', 0xe55a => 'person_pin', 0xe04a => 'video_library'] as $codepoint => $name) {
+        expect($names[$codepoint] ?? null)->toBe($name);
+    }
+});

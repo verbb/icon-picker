@@ -1,6 +1,6 @@
 <?php
 /**
- * Regenerate name-only catalogs for remote icon sets (metadata only — no SVG/font files).
+ * Regenerate icon catalogs and font names (metadata only — no SVG/font files).
  *
  * Usage: php scripts/generate-icon-catalogs.php
  *
@@ -49,6 +49,47 @@ function iconRow(string $label, ?string $keywords = null): array
         'keywords' => $keywords,
     ]);
 }
+
+// Material Icons — Unicode assignments from the official font metadata.
+$materialRevision = 'f7bd4f25f3764883717c09a1fd867f560c9a9581';
+$materialCodepoints = file_get_contents("https://raw.githubusercontent.com/google/material-design-icons/{$materialRevision}/font/MaterialIcons-Regular.codepoints");
+
+if ($materialCodepoints === false) {
+    throw new RuntimeException('Failed to read Material Icons codepoints.');
+}
+
+$materialNames = [];
+
+foreach (preg_split('/\R/', trim($materialCodepoints)) as $line) {
+    [$name, $hex] = preg_split('/\s+/', $line);
+    $materialNames[hexdec($hex)] ??= $name;
+}
+
+// Retain the preferred aliases from the original 3.0.1 catalog.
+foreach ([
+    0xe038 => 'play_circle_filled',
+    0xe04a => 'video_library',
+    0xe1bc => 'wallpaper',
+    0xe1bd => 'widgets',
+    0xe249 => 'format_underlined',
+    0xe3cb => 'exposure_neg_1',
+    0xe3cc => 'exposure_neg_2',
+    0xe42a => 'view_comfy',
+    0xe555 => 'local_printshop',
+    0xe55a => 'person_pin',
+    0xe5d3 => 'more_horiz',
+    0xe611 => 'do_not_disturb_alt',
+    0xe638 => 'confirmation_number',
+    0xe836 => 'radio_button_unchecked',
+    0xe8a3 => 'perm_contact_calendar',
+    0xe8a5 => 'perm_device_information',
+    0xe8d6 => 'swap_vertical_circle',
+] as $codepoint => $name) {
+    $materialNames[$codepoint] = $name;
+}
+
+ksort($materialNames);
+writeCatalog($jsonDir . '/material.json', $materialNames);
 
 // Bootstrap Icons — name list from official glyph map.
 $bootstrapVersion = $versions['bootstrap'];
