@@ -48,6 +48,7 @@ class BrandCssIconSet extends IconSet
         foreach ($icons as $icon) {
             $this->icons[] = new Icon([
                 'type' => Icon::TYPE_CSS,
+                'iconSetHandle' => $this->handle,
                 'value' => 'brand-icon brand-icon--' . $icon,
             ]);
         }
@@ -61,5 +62,7 @@ class BrandCssIconSet extends IconSet
     }
 }
 ```
+
+Each icon’s `iconSetHandle` identifies its source set so Icon Picker can load its styles for element previews and render it alongside other sets.
 
 Create an Icon Set of type **Brand Icons** under **Icon Picker → Settings → Icon Sets**, then enable it on a test Icon Picker field. Select each icon and confirm the control-panel preview appears. Save the entry and [render its CSS classes](docs:template-guides/rendering-icons#remote-css-icons) on a page that loads your brand stylesheet.
