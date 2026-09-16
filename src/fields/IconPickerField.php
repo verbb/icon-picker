@@ -400,7 +400,7 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
                             $spriteSheetData = IconPickerHelper::namespaceSpriteSheet($spriteSheetData, $spriteSheet['namespace']);
                         }
 
-                        $spriteSheetHtml = '<div id="icon-picker-spritesheet-' . Html::encode($sheetKey) . '" style="display: none;">' . $spriteSheetData . '</div>';
+                        $spriteSheetHtml = '<div id="icon-picker-spritesheet-' . Html::encode($sheetKey) . '" aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden;">' . $spriteSheetData . '</div>';
 
                         $view->registerHtml($spriteSheetHtml, View::POS_BEGIN);
                     }

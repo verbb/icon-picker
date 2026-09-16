@@ -135,7 +135,9 @@ export const loadSpriteSheets = (spriteSheets: SpriteSheetResource[] | undefined
                     namespaceSpriteSheet(div, sheet.namespace);
                 }
                 div.id = elementId;
-                div.style.display = 'none';
+                // display:none prevents referenced gradients and nested symbols from painting.
+                div.style.cssText = 'position: absolute; width: 0; height: 0; overflow: hidden;';
+                div.setAttribute('aria-hidden', 'true');
                 document.body.insertBefore(div, document.body.firstChild);
                 cache.stylesheets.push(key);
             })

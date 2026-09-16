@@ -57,6 +57,7 @@ it('isolates sprite previews while preserving public and stored symbol names', f
         \craft\helpers\FileHelper::removeDirectory($root);
     }
     $html = implode('', $registered[View::POS_BEGIN] ?? []);
+    expect($html)->not->toContain('display: none')->toContain('width: 0; height: 0; overflow: hidden;')->toContain('aria-hidden="true"');
     foreach ($ids as $id) {
         $namespace = substr($id, 0, -strlen('-heart'));
         expect($html)->toContain('id="' . $id . '"')->toContain('#' . $id . ':hover {')->toContain('stroke:#f00')

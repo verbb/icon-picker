@@ -69,6 +69,11 @@ it.each(['http', 'network'])('retries a spritesheet after a %s failure without c
     await loadSpriteSheets([sheet]);
     expect(request).toHaveBeenCalledTimes(2);
     expect(document.getElementById('retry-symbol')).not.toBeNull();
+    const wrapper = document.getElementById('icon-picker-spritesheet-retry-sprites')!;
+    expect(wrapper.style.display).not.toBe('none');
+    expect(wrapper.style.width).toBe('0px');
+    expect(wrapper.style.height).toBe('0px');
+    expect(wrapper.getAttribute('aria-hidden')).toBe('true');
     expect(Craft.IconPicker?.Cache?.stylesheets).toContain(sheet.name);
 });
 
