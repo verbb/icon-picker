@@ -31,3 +31,16 @@ it('persists inherited remote provider package versions and variants', function(
         }
     }
 });
+
+it('keeps each CSS icon rendering attribute with its owning set', function() {
+    $service = IconPicker::$plugin->getIconSets();
+    $set = new verbb\iconpicker\iconsets\BootstrapIcons(['name' => 'Mixed CSS', 'handle' => 'mixed' . bin2hex(random_bytes(4))]);
+    expect($service->saveIconSet($set))->toBeTrue();
+    try {
+        $set->populateIcons();
+        $payload = $set->icons[0]->jsonSerialize();
+        expect($payload)->toHaveKey('cssAttribute', 'class');
+    } finally {
+        $service->deleteIconSet($set);
+    }
+});

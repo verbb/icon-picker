@@ -905,7 +905,7 @@ export class IconPickerInput {
             return html`
                 <span ${ref((el) => {
                     if (el instanceof HTMLElement) {
-                        el.setAttribute(cssAttribute, display);
+                        el.setAttribute(item.cssAttribute || cssAttribute, display);
                     }
                 })}></span>
             `;

@@ -111,6 +111,11 @@ class Icon extends Model implements \JsonSerializable, \Countable
             $array['displayValue'] = $this->getDisplayValue();
         }
 
+        if ($this->type === self::TYPE_CSS && $this->iconSetHandle) {
+            $iconSet = IconPicker::$plugin->getIconSets()->getIconSetByHandle($this->iconSetHandle);
+            $array['cssAttribute'] = $iconSet?->cssAttribute ?? 'class';
+        }
+
         // Stable id for lit-virtualizer reuse (was a random suffix every response).
         $array['id'] = implode(':', array_filter([
             $this->type,

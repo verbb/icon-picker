@@ -19,6 +19,7 @@ export interface IconItem {
     /** Glyph entity / sprite id / CSS class. Not used for SVG catalog rows. */
     displayValue?: string | null;
     id?: string | null;
+    cssAttribute?: string | null;
 }
 
 /** Match Vue field: lodash `startCase(toLower(label))` (e.g. `icon-home2` → `Icon Home 2`). */
@@ -97,7 +98,7 @@ export const renderIconInto = (
         }
 
         const span = document.createElement('span');
-        span.setAttribute(cssAttribute, display);
+        span.setAttribute(item.cssAttribute || cssAttribute, display);
         host.appendChild(span);
     }
 };
