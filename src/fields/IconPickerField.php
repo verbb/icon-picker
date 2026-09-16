@@ -291,6 +291,7 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
         $componentSettings = [
             'id' => $id,
             'inputId' => $nameSpacedId,
+            'label' => Craft::t('site', $this->name),
             'name' => $this->handle,
             'loadResources' => $loadResources,
             'settings' => $this->settings,

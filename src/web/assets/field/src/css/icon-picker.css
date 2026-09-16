@@ -330,3 +330,12 @@
     font-weight: normal;
     line-height: 1;
 }
+/* Craft supplies the visible field label; keep the shadow input's label accessible. */
+.ipui-icon-input-search::part(label) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}

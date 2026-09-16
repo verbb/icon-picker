@@ -20,6 +20,7 @@ export type IconValue = IconItem;
 export interface IconPickerSettings {
     id: string;
     inputId: string;
+    label?: string;
     name: string;
     loadResources?: boolean;
     settings?: {
@@ -110,7 +111,7 @@ export class IconPickerInput {
             name: root.getAttribute('data-name') || '',
         });
         this.selected = parseJson<IconValue>(root.getAttribute('data-value'), {});
-        this.triggerId = `icon-picker-${Craft.randomString(10)}`;
+        this.triggerId = this.settings.inputId || `icon-picker-${Craft.randomString(10)}`;
     }
 
     init(): void {
@@ -181,6 +182,7 @@ export class IconPickerInput {
         // Nameless on purpose — must not participate in form serialize / FormObserver.
         this.searchInput = document.createElement('pk-input');
         this.searchInput.id = this.triggerId;
+        this.searchInput.setAttribute('label', this.settings.label || Craft.t('icon-picker', 'Icon Picker'));
         this.searchInput.setAttribute('autocomplete', 'off');
         this.searchInput.setAttribute('autocorrect', 'off');
         this.searchInput.setAttribute('autocapitalize', 'off');
