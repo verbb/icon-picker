@@ -23,6 +23,7 @@
 - Align documentation filenames with page titles and update internal links.
 
 ### Fixed
+- Fix an error when reordering icon sets.
 - Restrict icon catalog requests to POST requests for a real Icon Picker field on an element the current user can view.
 - Respect the one-hour cache duration for Font Awesome kits and icon catalogs.
 - Heroicons icon set uses npm `heroicons@2.2.0` (`24/outline` / `24/solid`). Saved v1 names may need re-picking.

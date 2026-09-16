@@ -8,6 +8,7 @@ use verbb\iconpicker\models\MissingIconSet;
 
 use Craft;
 use craft\helpers\ArrayHelper;
+use craft\helpers\Json;
 use craft\helpers\StringHelper;
 use craft\web\Controller;
 
