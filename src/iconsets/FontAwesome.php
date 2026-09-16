@@ -48,6 +48,19 @@ class FontAwesome extends IconSet
     // Public Methods
     // =========================================================================
 
+    public function getSettings(): array
+    {
+        $settings = parent::getSettings();
+
+        // Project config drops empty arrays; an empty string also means no styles
+        // and survives round trips instead of restoring the default "all" selection.
+        if ($this->styles === []) {
+            $settings['styles'] = '';
+        }
+
+        return $settings;
+    }
+
     public function getSettingsHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate('icon-picker/icon-sets/font-awesome', [

@@ -44,3 +44,20 @@ it('keeps each CSS icon rendering attribute with its owning set', function() {
         $service->deleteIconSet($set);
     }
 });
+
+it('preserves an explicitly cleared Font Awesome style selection', function() {
+    $service = IconPicker::$plugin->getIconSets();
+    $set = new verbb\iconpicker\iconsets\FontAwesome([
+        'name' => 'Empty styles', 'handle' => 'emptyStyles' . bin2hex(random_bytes(4)),
+        'type' => 'kit', 'apiKey' => 'test-only', 'styles' => [],
+    ]);
+    expect($service->saveIconSet($set))->toBeTrue();
+    try {
+        $loaded = $service->getIconSetById($set->id);
+        $includesStyle = new ReflectionMethod($loaded, '_shouldIncludeStyle');
+        expect($includesStyle->invoke($loaded, ['family' => 'classic', 'style' => 'solid']))->toBeFalse()
+            ->and($loaded->styles)->toBe('');
+    } finally {
+        $service->deleteIconSet($set);
+    }
+});
