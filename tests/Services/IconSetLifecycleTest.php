@@ -42,3 +42,45 @@ it('reorders icon sets through the CP action and persists project configuration'
         $service->deleteIconSet($second);
     }
 });
+
+it('refreshes warm catalogs after deployed settings, renames and handle reuse', function() {
+    AdminUser::login();
+    $service = IconPicker::$plugin->getIconSets();
+    $config = Craft::$app->getProjectConfig();
+    $handle = 'deployed' . bin2hex(random_bytes(4));
+    $set = new \verbb\iconpicker\iconsets\Heroicons(['name' => 'Deployed', 'handle' => $handle, 'variants' => ['outline']]);
+    expect($service->saveIconSet($set))->toBeTrue();
+    $set->populateIcons();
+    expect(count($set->icons))->toBeGreaterThan(0);
+    $config->saveModifiedConfigData();
+    $config->reset();
+
+    try {
+        $config->set($service::CONFIG_ICON_SETS_KEY . '.' . $set->uid . '.settings.variants', '[]');
+        $changed = $service->getIconSetByUid($set->uid);
+        $changed->populateIcons();
+        expect($changed->variants)->toBe([])->and($changed->icons)->toBe([]);
+
+        $config->saveModifiedConfigData();
+        $config->reset();
+        $changed->handle = $handle . 'Renamed';
+        expect($service->saveIconSet($changed))->toBeTrue();
+        $replacement = new \verbb\iconpicker\iconsets\Heroicons(['name' => 'Replacement', 'handle' => $handle, 'variants' => []]);
+        expect($service->saveIconSet($replacement))->toBeTrue();
+        $replacement->populateIcons();
+        expect($replacement->icons)->toBe([]);
+
+        $config->saveModifiedConfigData();
+        $config->reset();
+        expect($service->deleteIconSet($replacement))->toBeTrue();
+        $replacement = new \verbb\iconpicker\iconsets\Heroicons(['name' => 'Recreated', 'handle' => $handle, 'variants' => ['solid']]);
+        expect($service->saveIconSet($replacement))->toBeTrue();
+        $replacement->populateIcons();
+        expect(count($replacement->icons))->toBeGreaterThan(0);
+    } finally {
+        $config->saveModifiedConfigData();
+        $config->reset();
+        $service->deleteIconSet($service->getIconSetByUid($set->uid));
+        if (isset($replacement)) $service->deleteIconSet($replacement);
+    }
+});

@@ -210,6 +210,7 @@ class IconSets extends Component
         try {
             $iconSetRecord = $this->_getIconSetRecord($iconSetUid, true);
             $isNewIconSet = $iconSetRecord->getIsNewRecord();
+            $previousHandle = $iconSetRecord->handle;
 
             $settings = $data['settings'] ?? [];
 
@@ -234,7 +235,9 @@ class IconSets extends Component
             throw $e;
         }
 
-        // Clear caches
+        // Invalidate catalogs for both handles when project config changes or renames a set.
+        $this->_clearIconSetCache($previousHandle);
+        $this->_clearIconSetCache($iconSetRecord->handle);
         $this->_iconSets = null;
 
         $iconSet = $this->getIconSetById($iconSetRecord->id);
@@ -356,7 +359,8 @@ class IconSets extends Component
             throw $e;
         }
 
-        // Clear caches
+        // A later set may reuse this handle.
+        $this->_clearIconSetCache($iconSetRecord->handle);
         $this->_iconSets = null;
 
         // Fire an 'afterDeleteIconSet' event
@@ -369,6 +373,17 @@ class IconSets extends Component
 
     // Private Methods
     // =========================================================================
+
+    private function _clearIconSetCache(?string $handle): void
+    {
+        if (!$handle) {
+            return;
+        }
+
+        $key = 'icon-picker:v2:' . $handle;
+        unset($this->_preloadedIconSets[$key]);
+        Craft::$app->getCache()->delete($key);
+    }
 
     private function _iconSets(): MemoizableArray
     {

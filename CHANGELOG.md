@@ -42,6 +42,7 @@
 - Render CSS icons correctly when combining icon sets that use different rendering attributes.
 - Handle empty SVG spritesheets without interrupting icon loading.
 - Refresh icons and metadata when regenerating an already loaded icon-set cache.
+- Refresh cached catalogs when icon sets change through project config or reuse a handle.
 - Preserve package versions and selected variants when saving remote icon sets.
 - Fix an error when reordering icon sets.
 - Restrict icon catalog requests to POST requests for a real Icon Picker field on an element the current user can view.
