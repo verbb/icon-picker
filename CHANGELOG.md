@@ -31,6 +31,7 @@
 - Allow immediate retries after Font Awesome API failures and keep saved Kit previews available during discovery outages.
 - Retry loading icon scripts, stylesheets and spritesheets after a failed request.
 - Keep element previews usable when a spritesheet cannot be loaded.
+- Keep sprite collections distinct when their symbols share the same names.
 - Strengthen request validation for utility actions.
 - Allow admins to regenerate caches and run diagnostics when admin changes are disabled.
 - Give the icon search input an accessible field label.

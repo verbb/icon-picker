@@ -1,6 +1,8 @@
 // Font / spritesheet / script loaders for Icon Picker.
 // Dedupes via Craft.IconPicker.Cache (always registered on the CP by IconPickerCacheAsset).
 
+import { namespaceSpriteSheet } from './namespaceSpriteSheet.js';
+
 type FontResource = {
     name: string;
     id?: string;
@@ -11,6 +13,7 @@ type FontResource = {
 type SpriteSheetResource = {
     name: string;
     url: string;
+    namespace?: string;
 };
 
 type ScriptResource = {
@@ -108,11 +111,13 @@ export const loadSpriteSheets = (spriteSheets: SpriteSheetResource[] | undefined
     const cache = ensureCache();
 
     return Promise.all(spriteSheets.map((sheet) => {
-        const pending = pendingSpriteSheets.get(sheet.name);
+        const key = sheet.namespace ?? sheet.name;
+        const elementId = `icon-picker-spritesheet-${key}`;
+        const pending = pendingSpriteSheets.get(key);
         if (pending) {
             return pending;
         }
-        if (cache.stylesheets.includes(sheet.name)) {
+        if (cache.stylesheets.includes(key) || (sheet.namespace && document.getElementById(elementId))) {
             return Promise.resolve();
         }
 
@@ -126,14 +131,17 @@ export const loadSpriteSheets = (spriteSheets: SpriteSheetResource[] | undefined
             .then((text) => {
                 const div = document.createElement('div');
                 div.innerHTML = text;
-                div.id = `icon-picker-spritesheet-${sheet.name}`;
+                if (sheet.namespace) {
+                    namespaceSpriteSheet(div, sheet.namespace);
+                }
+                div.id = elementId;
                 div.style.display = 'none';
                 document.body.insertBefore(div, document.body.firstChild);
-                cache.stylesheets.push(sheet.name);
+                cache.stylesheets.push(key);
             })
-            .finally(() => { pendingSpriteSheets.delete(sheet.name); });
+            .finally(() => { pendingSpriteSheets.delete(key); });
 
-        pendingSpriteSheets.set(sheet.name, request);
+        pendingSpriteSheets.set(key, request);
         return request;
     })).then(() => undefined);
 };

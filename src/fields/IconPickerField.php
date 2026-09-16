@@ -394,7 +394,13 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
                             continue;
                         }
 
-                        $spriteSheetHtml = '<div id="icon-picker-spritesheet-' . $spriteSheet['name'] . '" style="display: none;">' . $spriteSheetData . '</div>';
+                        $sheetKey = $spriteSheet['namespace'] ?? $spriteSheet['name'];
+
+                        if (isset($spriteSheet['namespace'])) {
+                            $spriteSheetData = IconPickerHelper::namespaceSpriteSheet($spriteSheetData, $spriteSheet['namespace']);
+                        }
+
+                        $spriteSheetHtml = '<div id="icon-picker-spritesheet-' . Html::encode($sheetKey) . '" style="display: none;">' . $spriteSheetData . '</div>';
 
                         $view->registerHtml($spriteSheetHtml, View::POS_BEGIN);
                     }
@@ -460,7 +466,7 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
         }
 
         if ($value->type === Icon::TYPE_SPRITE) {
-            $spriteId = Html::encode((string)$value->displayValue);
+            $spriteId = Html::encode($value->getCpSpriteId());
             $iconHtml = '<svg viewBox="0 0 1000 1000"><use xlink:href="#' . $spriteId . '" href="#' . $spriteId . '" /></svg>';
 
             return Html::tag('div', $iconHtml, ['class' => 'cp-icon']);

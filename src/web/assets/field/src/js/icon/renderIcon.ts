@@ -22,6 +22,7 @@ export interface IconItem {
     id?: string | null;
     cssAttribute?: string | null;
     fontClass?: string | null;
+    spriteId?: string | null;
 }
 
 /** Match Vue field: lodash `startCase(toLower(label))` (e.g. `icon-home2` → `Icon Home 2`). */
@@ -65,11 +66,12 @@ export const renderIconInto = (
     }
 
     if (item.type === 'sprite') {
+        const spriteId = item.spriteId ?? display;
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svg.setAttribute('viewBox', '0 0 1000 1000');
         const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-        use.setAttributeNS('http://www.w3.org/1999/xlink', 'href', `#${display}`);
-        use.setAttribute('href', `#${display}`);
+        use.setAttributeNS('http://www.w3.org/1999/xlink', 'href', `#${spriteId}`);
+        use.setAttribute('href', `#${spriteId}`);
         svg.appendChild(use);
         host.appendChild(svg);
         return;

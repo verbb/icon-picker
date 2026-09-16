@@ -4,6 +4,7 @@ namespace verbb\iconpicker\models;
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\base\IconSetInterface;
 use verbb\iconpicker\helpers\IconPickerHelper;
+use verbb\iconpicker\iconsets\SvgSprite;
 
 use Craft;
 use craft\base\Model;
@@ -120,6 +121,10 @@ class Icon extends Model implements \JsonSerializable, \Countable
             $array['fontClass'] = IconPickerHelper::getFontClass((string)$this->iconSet);
         }
 
+        if ($this->type === self::TYPE_SPRITE) {
+            $array['spriteId'] = $this->getCpSpriteId();
+        }
+
         if ($this->type === self::TYPE_SVG) {
             // Catalog + chip paint from URL (isolated <img>), not inlined markup.
             $array['url'] = $this->getUrl();
@@ -227,6 +232,18 @@ class Icon extends Model implements \JsonSerializable, \Countable
         }
 
         return $source;
+    }
+
+    public function getCpSpriteId(): string
+    {
+        $source = $this->getSourceIconSet();
+
+        // Isolate CP presentation without changing stored IDs or public template output.
+        if ($source instanceof SvgSprite) {
+            return $source->getSpriteNamespace() . '-' . $this->value;
+        }
+
+        return (string)$this->getDisplayValue();
     }
 
     public function getUrl(): ?string

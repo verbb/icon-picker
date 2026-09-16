@@ -1,6 +1,8 @@
 // @vitest-environment happy-dom
 import { afterEach, expect, it, vi } from 'vitest';
 import { loadScripts, loadSpriteSheets, loadFonts } from './loadResources.js';
+import { renderIconInto } from './renderIcon.js';
+import { namespaceSpriteSheet } from './namespaceSpriteSheet.js';
 
 afterEach(() => { document.body.replaceChildren(); vi.unstubAllGlobals(); vi.restoreAllMocks(); });
 
@@ -113,4 +115,40 @@ it('loads distinct stylesheets with the same font name while sharing identical r
     await loadFonts([solid, brands]);
     expect(document.head.querySelectorAll('link[href^="https://example.test/"]')).toHaveLength(2);
     links.forEach((link) => link.remove());
+});
+
+it('keeps overlapping sprite symbols and their internal references with their source sheet', async () => {
+    vi.stubGlobal('Craft', { IconPicker: { Cache: { stylesheets: [], fonts: [], scripts: [] } } });
+    const request = vi.fn(async (url: string) => new Response(`<svg><defs><linearGradient id="paint"/></defs><symbol id="heart" data-source="${url}"><title id="label">Heart</title><path id="detail" fill="url(#paint)" aria-labelledby="label"/><use href="#detail"/></symbol></svg>`));
+    vi.stubGlobal('fetch', request);
+    const sheets = [
+        { name: 'shared-sprites', url: '/outline.svg', namespace: 'outline-sheet' },
+        { name: 'shared-sprites', url: '/solid.svg', namespace: 'solid-sheet' },
+    ];
+    await Promise.all([loadSpriteSheets(sheets), loadSpriteSheets(sheets)]);
+    for (const sheet of sheets) {
+        const host = document.createElement('div');
+        renderIconInto(host, { type: 'sprite', value: 'heart', displayValue: 'heart', spriteId: `${sheet.namespace}-heart` });
+        const target = host.querySelector('use')!.getAttribute('href')!.slice(1);
+        const symbol = document.getElementById(target)!;
+        expect(symbol?.getAttribute('data-source')).toBe(sheet.url);
+        expect(symbol.querySelector('path')!.getAttribute('fill')).toBe(`url(#${sheet.namespace}-paint)`);
+        expect(symbol.querySelector('path')!.getAttribute('aria-labelledby')).toBe(`${sheet.namespace}-label`);
+        expect(symbol.querySelector('use')!.getAttribute('href')).toBe(`#${sheet.namespace}-detail`);
+    }
+    expect(document.getElementById('heart')).toBeNull();
+    expect(request).toHaveBeenCalledTimes(2);
+    await loadSpriteSheets(sheets);
+    expect(request).toHaveBeenCalledTimes(2);
+});
+
+it('keeps sprite CSS references aligned without changing colour values', () => {
+    const root = document.createElement('div');
+    root.innerHTML = '<svg><defs><linearGradient id="paint"/></defs><symbol id="heart"/><symbol id="f00"/></svg>';
+    // happy-dom discards SVG style text during HTML parsing; construct the browser DOM directly.
+    const style = document.createElement('style');
+    style.textContent = "#heart:hover { fill: url('#paint'); stroke: #f00; }";
+    root.prepend(style);
+    namespaceSpriteSheet(root, 'scoped');
+    expect(style.textContent).toBe('#scoped-heart:hover { fill: url(#scoped-paint); stroke: #f00; }');
 });

@@ -24,8 +24,8 @@ it('keeps element previews usable when a spritesheet URL is unavailable', functi
         $set->populateIcons(false);
         $icon = $set->icons[0];
         $field = new IconPickerField(['handle' => 'previewIcon']);
-        expect($field->getThumbHtml($icon, new Entry(), 40))->toContain('href="#preview-square"');
-        expect($field->getPreviewHtml($icon, new Entry()))->toContain('href="#preview-square"');
+        expect($field->getThumbHtml($icon, new Entry(), 40))->toContain('href="#' . $icon->getCpSpriteId() . '"');
+        expect($field->getPreviewHtml($icon, new Entry()))->toContain('href="#' . $icon->getCpSpriteId() . '"');
     } finally {
         if ($set->id) {
             $sets->deleteIconSet($set);

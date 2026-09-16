@@ -5,6 +5,7 @@ use verbb\iconpicker\IconPicker;
 
 use Craft;
 use craft\helpers\FileHelper;
+use craft\helpers\Html;
 use craft\helpers\UrlHelper;
 
 use URL\Normalizer;
@@ -19,6 +20,25 @@ class IconPickerHelper
     {
         // Filename punctuation and whitespace must not become CSS syntax or class separators.
         return 'font-face-' . bin2hex($name);
+    }
+
+    public static function namespaceSpriteSheet(string $svg, string $namespace): string
+    {
+        // Craft's reference rewriter expects unquoted local url() references.
+        $svg = preg_replace('/url\(\s*([\'"])#([^\'"\s)]+)\1\s*\)/', 'url(#$2)', $svg);
+
+        // Include selectors with pseudo-classes, which Craft's HTML rewriter leaves unchanged.
+        preg_match_all('/\sid=([\'"])([^\'"\s]+)\1/', $svg, $matches);
+        $ids = array_fill_keys($matches[2], true);
+        $svg = preg_replace_callback('/(<style\b[^>]*>)(.*?)(<\/style>)/is', function($style) use ($namespace, $ids) {
+            $css = preg_replace_callback('/([^{}]+)\{/', function($rule) use ($namespace, $ids) {
+                return preg_replace_callback('/#([\w-]+)/', fn($id) => isset($ids[$id[1]]) ? '#' . $namespace . '-' . $id[1] : $id[0], $rule[1]) . '{';
+            }, $style[2]);
+
+            return $style[1] . $css . $style[3];
+        }, $svg);
+
+        return Html::namespaceAttributes($svg, $namespace);
     }
 
     public static function getFiles($path, $options): array

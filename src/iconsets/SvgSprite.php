@@ -112,6 +112,22 @@ class SvgSprite extends IconSet
         ];
     }
 
+    public function getSpriteNamespace(): string
+    {
+        return 'icon-picker-sprite-' . hash('sha256', IconPickerHelper::getIconUrl((string)$this->spriteFile));
+    }
+
+    public function getSpriteSheets(bool $includeSprites = false): array
+    {
+        $sheets = parent::getSpriteSheets($includeSprites);
+
+        foreach ($sheets as &$sheet) {
+            $sheet['namespace'] = $this->getSpriteNamespace();
+        }
+
+        return $sheets;
+    }
+
 
     // Protected Methods
     // =========================================================================
