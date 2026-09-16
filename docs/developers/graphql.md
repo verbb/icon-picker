@@ -1,7 +1,7 @@
 # GraphQL
-You can fetch field content via GraphQL for Icon Picker fields. The resulting values will be identical to an [icon](docs:developers/icon) object.
+You can fetch Icon Picker field content through Craft's GraphQL API. Add the entry section and Icon Picker field to the schema used by your access token before running the query. Replace `blog_blog_Entry` and `iconPickerField` below with the generated entry type and field handle from your project.
 
-```json
+```graphql
 {
     entries(id: 1234) {
         ... on blog_blog_Entry {
@@ -21,7 +21,11 @@ You can fetch field content via GraphQL for Icon Picker fields. The resulting va
         }
     }
 }
+```
 
+A selected local SVG returns data in this shape. The example uses `null` for the font-only properties. Unavailable values depend on the property: for example, `path` is an empty string when there is no local SVG file.
+
+```json
 {
     "data": {
         "entries": [
@@ -55,7 +59,7 @@ This is the interface implemented by every Icon Picker field’s GraphQL object 
 | `label` | `String` | The named representation of the icon.
 | `keywords` | `String` | The keywords used to search for the icon by. Defaults to the `label`.
 | `type` | `String` | What type of icon this is: `svg`, `sprite`, `glyph`, or `css`.
-| `isEmpty` | `Boolean` | Whether there is an icon selected for this field.
+| `isEmpty` | `Boolean` | Whether the icon value is empty (`true` means no selection).
 | `url` | `String` | The full URL to the icon.
 | `path` | `String` | The full path to the icon.
 | `inline` | `String` | The raw contents of the icon (for example inline SVG).

@@ -1,16 +1,14 @@
 # Caching
 
-Icon Picker caches icon set catalogs so large libraries do not block Control Panel requests while scanning the filesystem or remote name lists.
+Icon Picker keeps a cached list of the icons in each set so editors can open the picker without scanning the collection on every request. Refresh that list after adding or changing icon files.
 
-Whenever you save an Icon Picker field, the cache for its enabled icon sets is built. Subsequent saves rebuild those caches.
+Saving an Icon Picker field rebuilds the cached lists for its enabled Icon Sets. SVG previews load as individual images, keeping large collections smaller to load and preventing styles within one SVG from affecting another icon.
 
-SVG catalogs use a slim **v2** cache key (`icon-picker:v2:*`). The picker paints SVG cells via `<img src>` (URL) instead of embedding full markup in the catalog JSON — smaller payloads and less CSS/`id` bleed between icons. Existing v1 caches are superseded on the next load or regenerate.
+## Lazy-Loading
 
-## Lazy-loading
+Icons are lazy-loaded when you open the picker, rather than loading every glyph when the element edit screen loads. A small spinner appears while the catalogue loads; large sets may take a second or two.
 
-Icons are lazy-loaded when you open the picker, rather than loading every glyph when the element edit screen loads. A small spinner appears while the catalog loads; large sets may take a second or two.
-
-## Adding new icons
+## Adding New Icons
 
 If you add files to an SVG folder (or change a spritesheet / font), they may not appear until the cache is refreshed. You can:
 
@@ -25,6 +23,6 @@ Icon Picker also watches the root of your `iconSetsPath` folder. Caches re-gener
 | Symptom | What to try |
 |---|---|
 | New SVGs missing after upload | Regenerate Icon Picker caches (Utilities), or re-save the field. |
-| Remote CDN icons look wrong after changing package version | Align **Package version** with the bundled catalog, or leave blank for the plugin default. |
+| Remote CDN icons look wrong after changing package version | Align **Package version** with the bundled catalogue, or leave blank for the plugin default. |
 | Stale labels / keywords | Clear **Icon Picker cache**, then regenerate set caches. |
 | Very large SVG folders feel slow | Prefer sprites or a remote set for huge libraries; keep **Search Subfolders** scoped if you only need one depth. |

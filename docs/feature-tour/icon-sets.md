@@ -1,5 +1,6 @@
 # Icon Sets
-An Icon Set is the concept of a collection of icons. You can create and manage these in **Icon Picker** > **Settings** > **Icon Sets**, and are stored in project config. These are selected in your Icon Picker field for which collection of icons to actually show in the field, for users to pick from.
+
+An Icon Set tells Icon Picker where a collection of icons comes from and how those icons should be displayed. Create and manage sets under **Icon Picker → Settings → Icon Sets**, then choose which sets editors can use in each Icon Picker field. Icon Set settings are stored in project config so they can be deployed with the rest of your Craft configuration.
 
 There are a few different types of Icon Sets you can create:
 
@@ -7,8 +8,8 @@ There are a few different types of Icon Sets you can create:
 - SVG Sprites
 - Web Fonts
 - [Font Awesome 5/6](https://fontawesome.com/)
-- [Feather Icons (Legacy)](https://feathericons.com/) — prefer [Lucide](https://lucide.dev/)
-- [Ionicons (Legacy)](https://ionic.io/ionicons) — legacy web font; use **Ionicons** for current SVG icons
+- [Feather Icons (Legacy)](https://feathericons.com/)
+- [Ionicons (Legacy)](https://ionic.io/ionicons)
 - [Ionicons](https://ionic.io/ionicons)
 - [CSS.gg](https://css.gg/)
 - [Material Symbols](https://fonts.google.com/icons)
@@ -22,54 +23,54 @@ There are a few different types of Icon Sets you can create:
 - [Octicons](https://primer.style/octicons/)
 
 ## SVG Folders
-Creating a **SVG Folder** Icon Set allows you to pick from a sub-folder (or the root folder) where a collection of `.svg` files sit. This is relative to your **Icons Path** plugin setting. Icon Picker will scan all `.svg` files in that folder, to be a pickable icon.
+Use an **SVG Folder** set when your project keeps individual `.svg` files in one directory. Choose the root or a subfolder relative to the **Icons Path** plugin setting. Icon Picker scans that location and makes each SVG available in the field.
 
-Enable **Search Subfolders** to include `.svg` files nested under the selected folder (on by default). Turn it off to limit the catalog to files directly in that folder.
+Enable **Search Subfolders** to include `.svg` files nested under the selected folder (on by default). Turn it off to limit the catalogue to files directly in that folder.
 
-Read more about templating with [SVG Icons](docs:template-guides/rendering-icons#svg-icons)
+When you are ready to display a selection, follow [Rendering SVG Icons](docs:template-guides/rendering-icons#svg-icons).
 
 :::tip
-You can also use **SVG Sprites** instead of, or an addition to single SVGs.
+You can use **SVG Sprites** instead of, or alongside, individual SVG files.
 :::
 
 ## SVG Sprites
-Creating an **SVG Sprites** Icon Set allows you to pick a sprite file with definitions of SVG sprites. This is relative to your **Icons Path** plugin setting. These will need to be at the root level of your **Icons Path**, and named with the suffix `-sprites.svg` (for example `ui-icons-sprites.svg`). This will be so we can differentiate it between single SVG icons.
+Use an **SVG Sprites** set when one SVG file contains several named symbols. Put the file at the root of **Icons Path** and give it a `-sprites.svg` suffix, such as `ui-icons-sprites.svg`. The suffix distinguishes a spritesheet from an individual icon.
 
-SVG Sprites are a slightly more advanced method of combining your icons into a single SVG file - but there are a number of benefits to this method. To read more about SVG Sprite, see [https://css-tricks.com/svg-sprites-use-better-icon-fonts](https://css-tricks.com/svg-sprites-use-better-icon-fonts).
+Sprites let a page load the shared SVG definitions once and refer to them by ID wherever an icon appears. [This introduction to SVG sprites](https://css-tricks.com/svg-sprites-use-better-icon-fonts) explains the underlying technique.
 
-Read more about templating with [SVG Sprites](docs:template-guides/rendering-icons#svg-sprites)
+Before rendering a sprite selection, [load the spritesheet and reference its icon ID](docs:template-guides/rendering-icons#svg-sprites).
 
 ## Web Fonts
-Creating a **Web Fonts** Icon Set allows you to pick a font file with definitions of font glyphs that represent icons. This is relative to your **Icons Path** plugin setting. These will need to be at the root level of your **Icons Path**.
+Use a **Web Fonts** set for a font whose glyphs represent icons. Put the font file at the root of **Icons Path** so Icon Picker can index it.
 
 Icon Picker can index glyphs from `*.ttf`, `*.woff`, and `*.otf` files. **`.woff2` is not supported for indexing** (the glyph parser cannot read WOFF2). Prefer a `.ttf` or `.woff` sibling from your kit; you can still load `.woff2` yourself on the front end if needed.
 
-Read more about templating with [Icon Fonts](docs:template-guides/rendering-icons#icon-fonts)
+To display a selected glyph, follow [Rendering Icon Fonts](docs:template-guides/rendering-icons#icon-fonts).
 
 ## Font Awesome
-Creating a **Font Awesome** Icon Set allows you to use the [Font Awesome](https://fontawesome.com/account) API or CDN as icons to pick. These don't require you to maintain the icon kits as part of your project. There are two options for how to use Font Awesome icons, and they will depend on your license
+A **Font Awesome** set loads icons through a [Font Awesome](https://fontawesome.com/account) kit or its CDN, so you do not need to keep the icon files in your project. Choose the method that matches your Font Awesome licence.
 
-Read more about templating with [Font Awesome](docs:template-guides/rendering-icons#css-icons)
+After configuring the set, [load the matching stylesheet and render its CSS classes](docs:template-guides/rendering-icons#remote-css-icons).
 
 ### Kits
-With [kits](https://fontawesome.com/kits) you can create collections of icons (and even upload your own) and provide an easy means to use them across multiple sites. This will require a paid subscription to Font Awesome.
+[Font Awesome kits](https://fontawesome.com/kits) can contain standard and custom icons for use across multiple sites. Kits require an appropriate paid Font Awesome plan.
 
-Adding the provided API key to the settings, you'll be able to select which kits to include in your Icon Set, to in turn be able to be picked from in the field. 
+Enter the API token in the Icon Set settings, then choose which kit the field should use.
 
 :::warning
 Set your Font Awesome Kit **Technology** to **Web Fonts with CSS**, not **SVG + JS**.
 
 **SVG + JS** kits load a script that runs across the **entire Control Panel page**, not only the Icon Picker field. Font Awesome will replace many CSS-based icons (for example `<i class="fa fa-bold">`–style markup) with inline SVG. Other plugins that rely on those elements—such as markdown editors whose toolbar uses Font Awesome classes—can end up with broken layout or **non-clickable** toolbar buttons after the kit loads.
 
-**Web Fonts** keeps icons as normal CSS glyphs, so Icon Picker and other CP fields can coexist without that document-wide replacement behavior.
+**Web Fonts** keeps icons as normal CSS glyphs, so Icon Picker and other Control Panel fields can coexist without that document-wide replacement behaviour.
 :::
 
 This is also the only method to use **Font Awesome 6 Pro**.
 
 ### CDN
-Using the Font Awesome CDN is another way to use these icons, particularly if you don't have a subscription to Font Awesome. Both the **Font Awesome 5 Free** and **Font Awesome 6 Free** versions are supported.
+The CDN option supports the free Font Awesome 5 and Font Awesome 6 collections without requiring a kit.
 
-You can pick the version (5 or 6) you wish to use, along with the license (Free or Pro). You can also enable specific collections to be added, from the following:
+You can pick the version (5 or 6) you wish to use, along with the licence (Free or Pro). You can also enable specific collections to be added, from the following:
 
 - Solid
 - Regular
@@ -77,51 +78,39 @@ You can pick the version (5 or 6) you wish to use, along with the license (Free 
 - Duotone
 - Brands
 
-So, for example, you may only wish for your users to be able to pick from **Solid** or **Regular** icons, but none of the others.
+For example, choose only **Solid** and **Regular** when editors should not use the other styles.
 
-Using **Font Awesome 5 Pro** is supported, but will require a Font Awesome subscription, and your domain name added to the allowed domains in your Font Awesome account. **Font Awesome 6 Pro** is not supported on the CDN by any method.
+Using **Font Awesome 5 Pro** requires a Font Awesome subscription and your domain in the account's allowed domains. **Font Awesome 6 Pro** is not supported through the CDN option.
 
 ## Metadata
-Sometimes, your icon pack of choice - be it collection of SVGs or a Web Font - might come with additional metadata used for descriptions of the icons. For example, a `heart` icon could likely fit under multiple keywords like `love`, `blood`, `medical`, etc. Unfortunately, it's difficult to embed this extra information in the filename of a SVG, SVG Spritesheet, or Web Font - which is where metadata comes in. Depending on your icons of choice, some might be available already, or you can create your own.
-
-Simply put, metadata is a JSON file that's a key-value of the name of your icon and keyword.
+Metadata adds search terms that are not present in an icon's filename or glyph name. For example, an icon named `heart` might also need to match searches for `love`, `blood`, or `medical`. Add those terms in a JSON file beside the icon assets.
 
 ```json
 {
     "heart": ["love", "blood", "medical"]
 }
-
-// or
-
-{
-    "heart": "love blood medical"
-}
 ```
 
-Here, you define the keywords (either as a space-delimited string, or an array) with a reference to the individual icon. Icon Picker will pick up this metadata file, and pull in any keywords from it to be used when searching for an icon.
+Each key identifies an icon and its value supplies either an array of keywords, as above, or a space-delimited string. Icon Picker includes those keywords when editors search the field.
 
 ## Metadata Usage
-Depending on what sort of icon set you're using will depend where you place, and what you name your metadata file.
+The required filename and location depend on the type of Icon Set.
 
 ### Metadata with SVG Folders
 Place a `metadata.json` file in the same folder as your SVGs (the folder you selected for the Icon Set). Keys are icon filenames without the `.svg` extension.
 
 ### Metadata with SVG Sprites
-You should place the `-metadata.json` file alongside your SVG Sprites. This would be in the root of your icons folder. You must name the metadata file the same as your sprites file. For example, `ui-icons-sprites.svg` and `ui-icons-sprites-metadata.json`.
+Place the `-metadata.json` file beside the spritesheet at the root of your icons folder. Match the spritesheet name, such as `ui-icons-sprites.svg` and `ui-icons-sprites-metadata.json`.
 
 ### Metadata with Web Fonts
-You should place the `-metadata.json` file alongside your Web Font. This would be in the root of your icons folder. You must name the metadata file the same as your web font file. For example, `icomoon.ttf` and `icomoon-metadata.json`.
+Place the `-metadata.json` file beside the Web Font at the root of your icons folder. Match the font name, such as `icomoon.ttf` and `icomoon-metadata.json`.
 
-## Variants and package versions
+## Variants and Package Versions
 
-Many remote sets expose **variants** (for example Outline / Solid on Heroicons, or weight styles on Phosphor). Leave **All** selected, or narrow the catalog to the styles editors should pick from.
+Many remote sets expose **variants** (for example Outline and Solid on Heroicons, or weight styles on Phosphor). Leave **All** selected, or narrow the catalogue to the styles editors should pick from.
 
-Built-in sets that load icons from npm/CDN (Bootstrap Icons, Lucide, Tabler, etc.) pin a **package version** in the plugin. The name catalog JSON is generated for that version. Icon set settings include an optional **Package version** field; leave it blank to use the plugin default.
+Built-in sets that load icons from npm or a CDN pin a **Package version** in the plugin. The icon-name catalogue is generated for that package release. Leave the Icon Set's **Package version** blank to use the compatible plugin default.
 
 :::warning
-If you override the package version, CDN URLs may point at a different release than the bundled catalog. Some icon names may be missing or broken in the picker until you align catalog and CDN.
+If you override the package version, CDN URLs may point at a different release than the bundled catalogue. Some icon names may be missing or broken until the configured package and catalogue match.
 :::
-
-## Legacy icon sets
-
-**Feather Icons (Legacy)** and **Ionicons (Legacy)** remain for existing content but are unmaintained upstream. Prefer **Lucide** (instead of Feather) and the current **Ionicons** SVG set for new projects. Existing saved values keep working; migrate content when you are ready rather than deleting legacy sets prematurely.

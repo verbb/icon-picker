@@ -1,17 +1,17 @@
 <p align="center"><img src="https://assets.verbb.io/plugins/icon-picker/icon-picker-icon.svg" width="100" height="100" alt="Icon Picker icon"></p>
 <h1 align="center">Icon Picker for Craft CMS</h1>
 
-Icon Picker is a Craft CMS plugin to let your content editors select an icon from a selected folder for your project.
+Icon Picker is a Craft CMS field for selecting icons from project files or supported remote icon libraries.
 
 ## Features
 
 - Provides a searchable, accessible UI for selecting icons.
 - Supports single SVGs, SVG sprites, and icon fonts.
-- Support for multiple Icon Sets to keep your icons organised.
+- Supports multiple Icon Sets to keep icons organised by source or purpose.
 - Restrict which icon sets are available for each field.
 - GraphQL support.
 - Redactor integration.
-- Events to write your own icon set types, or extend existing ones.
+- Events for adding or extending icon set types.
 
 ## Icon Sets
 

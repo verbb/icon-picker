@@ -1,19 +1,27 @@
 # Field
 
-Icon Picker provides a searchable field for selecting icons from one or more Icon Sets.
+Use an Icon Picker field when editors need to choose an icon from a collection you provide. For example, a product feature can pair an icon with its title, while a social link can use a collection limited to brand icons.
 
 ![Icon Picker field with search and icon grid](/_screenshots/feature-tour/field.png)
 
-Editors can search by name or keyword, browse the grid, and navigate with the keyboard (arrow keys, Enter to select, Escape to close). Restrict which Icon Sets are available per field in the field settings, and optionally set placeholder text when nothing is selected.
+## Field Settings
 
-## Field settings
+Create an [Icon Set](docs:feature-tour/icon-sets) before configuring the field. For a product feature, prepare a small collection of suitable symbols, then create a field under **Settings → Fields** called Feature Icon, with the handle `featureIcon`. The handle is the name you use to access the field in a template.
 
-- **Available Icon Sets** — choose which sets appear in this field (or **All**). Manage sets under **Icon Picker → Settings → Icon Sets**.
-- **Show Labels** — show each icon’s label under the glyph in the picker. Uses the larger icon size settings from plugin config when enabled.
-- **Placeholder** — optional empty-state text when no icon is selected.
+Choose that collection under **Available Icon Sets**. Limiting the field to relevant icons helps editors make a consistent choice; choose **All** when every enabled collection is appropriate. Manage the collections under **Icon Picker → Settings → Icon Sets**.
 
-Once an icon is selected, [render it in your templates](docs:template-guides/rendering-icons).
+Enable **Show Labels** when names would help editors distinguish similar icons. Labels use the larger icon sizes from [Configuration](docs:get-started/configuration#iconitemwrappersizelarge). Use **Placeholder** for a prompt such as “Choose a product feature icon” when the field is empty.
+
+Save the field and add it to the entry type's field layout.
+
+## Select an Icon
+
+Open an entry containing the field and open the picker. Search by icon name or keyword, or browse the grid. Use the arrow keys to move through the results, Enter to select an icon and Escape to close the picker.
+
+Select an icon, save the entry and reopen it to confirm the selection is retained. Follow [Rendering Icons](docs:template-guides/rendering-icons) to display it beside the product feature on your site; the required markup depends on the Icon Set's format.
 
 ## Feed Me
 
-Icon Picker fields are available in [Feed Me](https://plugins.craftcms.com/feed-me) imports. Map the feed value to the same stored icon value the field expects (typically the icon name / CSS class / path string for that set).
+Icon Picker fields are available in [Feed Me](https://plugins.craftcms.com/feed-me) imports. Select the individual Icon Sets in the field's **Available Icon Sets** setting for the import to search. Map a feed value to the exact stored value of an icon in one of those sets, such as its path or CSS classes.
+
+Test one feed item before importing the full feed. Open the resulting entry and check both its selection and rendered output. A value that does not match an icon in the selected sets produces an empty field.

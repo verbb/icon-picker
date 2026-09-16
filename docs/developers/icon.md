@@ -1,19 +1,61 @@
 # Icon
-Whenever you're dealing with an icon in your template, you're actually working with a `Icon` object.
+An Icon Picker field returns an `Icon` object when it has a selection. The object identifies the selected icon and provides the output helpers used by [Rendering Icons](docs:template-guides/rendering-icons).
 
-## Attributes
+<span id="attributes"></span>
 
-Attribute | Description
---- | ---
-`value` | The value of the icon. This will vary depending on the type of icon.
-`iconSet` | The icon set this icon belongs to.
-`label` | The named representation of the icon.
-`keywords` | The keywords used to search for the icon by. Defaults to the `label`.
-`type` | What type of icon this is: `svg`, `sprite`, `glyph` or `css`.
-`length` | Return the string length of the icon for the field.
+## Properties
 
-### Value
-To normalise the behaviour of an `Icon` object, we use a `value` attribute as the main value to identify the icon within the icon set. This will vary depending on the type of icon this is.
+::: reference
+### `value`
+
+**Type:** `string|null`
+
+The value of the icon. This will vary depending on the type of icon.
+:::
+
+::: reference
+### `iconSet`
+
+**Type:** `string|null`
+
+The icon set this icon belongs to.
+:::
+
+::: reference
+### `label`
+
+**Type:** `string|null`
+
+The named representation of the icon.
+:::
+
+::: reference
+### `keywords`
+
+**Type:** `string|null`
+
+The keywords used to search for the icon by. Defaults to the `label`.
+:::
+
+::: reference
+### `type`
+
+**Type:** `string|null`
+
+What type of icon this is: `svg`, `sprite`, `glyph` or `css`.
+:::
+
+::: reference
+### `length`
+
+**Type:** `int`
+
+The character length of the value returned when the icon is converted to a string.
+:::
+
+
+### Stored Values
+The `value` property identifies the icon within its set. Its format depends on the Icon Set type.
 
 Type | Description | Example
 --- | --- | ---
@@ -24,21 +66,60 @@ Type | Description | Example
 
 ## Methods
 
-Method | Description
---- | ---
-`isEmpty()` | Returns whether or not there's an icon selected for this field.
-`getUrl()` | Return the full URL to the icon. [SVG Icons](docs:feature-tour/icon-sets#svg-folders) only.
-`getPath()` | Return the full path to the icon. [SVG Icons](docs:feature-tour/icon-sets#svg-folders) only.
-`getInline()` | Returns the raw contents of the icon. [SVG Icons](docs:feature-tour/icon-sets#svg-folders) only.
-`getGlyph(format)` | Returns the character representation of a font glyph. [Icon Font](docs:feature-tour/icon-sets#web-fonts) only.
-`getGlyphName()` | Returns the named representation of a font glyph. [Icon Font](docs:feature-tour/icon-sets#web-fonts) only.
+::: reference
+### `isEmpty()`
 
-### Glyph formats
+**Returns:** `bool`
+
+Returns `true` when no icon is selected and `false` when the object has an icon value.
+:::
+
+::: reference
+### `getUrl()`
+
+**Returns:** `string|null`
+
+Returns the image URL for a local SVG Folder or remote SVG set. Returns `null` for sprites and font or CSS icons. Use this URL as an image source, as shown in [Rendering Icons](docs:template-guides/rendering-icons#render-an-image).
+:::
+
+::: reference
+### `getPath()`
+
+**Returns:** `string`
+
+Return the full path to the icon. [SVG Icons](docs:feature-tour/icon-sets#svg-folders) only.
+:::
+
+::: reference
+### `getInline()`
+
+**Returns:** `Twig\Markup|null`
+
+Returns SVG markup for a local SVG Folder or remote SVG set, or `null` when no SVG can be resolved. A remote SVG may require a server request. Use inline output only with trusted icon sources; [Rendering Inline SVG](docs:template-guides/rendering-icons#render-inline-svg) shows where to place it.
+:::
+
+::: reference
+### `getGlyph(format = 'charHex')`
+
+**Returns:** `string|null`
+
+Returns an icon-font glyph in `decimal`, `hex`, `char`, or `charHex` format. The default is `charHex`. This applies only to [Web Fonts](docs:feature-tour/icon-sets#web-fonts).
+:::
+
+::: reference
+### `getGlyphName()`
+
+**Returns:** `string|null`
+
+Returns the named representation of a font glyph. [Icon Font](docs:feature-tour/icon-sets#web-fonts) only.
+:::
+
+
+### Glyph Formats
 
 Format | Example
 --- | ---
 `getGlyph('decimal')` | Get the icon unicode (decimal).
 `getGlyph('hex')` | Get the icon unicode (hexadecimal).
-`getGlyph('char')` | Display the icon as html character - `&#00000`.
-`getGlyph('charHex')` | Display the icon as html character hex - `&#xf100`. Default
-
+`getGlyph('char')` | Return a decimal HTML character reference such as `&#61569;`.
+`getGlyph('charHex')` | Return a hexadecimal HTML character reference such as `&#xf081;`. This is the default.

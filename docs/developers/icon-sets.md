@@ -1,10 +1,12 @@
 # Icon Sets
 
-You can register your own Icon Sets to add support for third-party remote services, or even extend the existing Icon Set functionality.
+Register an Icon Set when your project needs a collection that the built-in sets cannot provide. This example adds three brand icons supplied by your own stylesheet.
+
+Start with a bootstrapped [Craft module](https://craftcms.com/docs/5.x/extend/module-guide.html) whose namespace is `modules\sitemodule`. Create `BrandCssIconSet.php` beside its `Module.php` file. Put the class from the example below in that file, then add the following imports at the top of `Module.php` and register the listener inside `Module::init()`, after `parent::init()`:
+
+The registration snippet is partial module code:
 
 ```php
-namespace modules\sitemodule;
-
 use modules\sitemodule\BrandCssIconSet;
 use verbb\iconpicker\events\RegisterIconSetsEvent;
 use verbb\iconpicker\services\IconSets;
@@ -15,9 +17,9 @@ Event::on(IconSets::class, IconSets::EVENT_REGISTER_ICON_SETS, function(Register
 });
 ```
 
-### Example
+## Example
 
-Prefer extending or configuring the built-in Ionicons / Lucide / Bootstrap sets when they already cover your library. Register a custom set when you need a private brand kit or a provider Icon Picker does not ship.
+The following class supplies the selectable values. Replace the example stylesheet URL with a stylesheet you host that defines `brand-icon` and the three `brand-icon--…` classes. The same stylesheet must be loaded by your site to render these icons publicly.
 
 ```php
 <?php
@@ -41,7 +43,6 @@ class BrandCssIconSet extends IconSet
             'logo',
             'mark',
             'spark',
-            // ...
         ];
 
         foreach ($icons as $icon) {
@@ -60,3 +61,5 @@ class BrandCssIconSet extends IconSet
     }
 }
 ```
+
+Create an Icon Set of type **Brand Icons** under **Icon Picker → Settings → Icon Sets**, then enable it on a test Icon Picker field. Select each icon and confirm the control-panel preview appears. Save the entry and [render its CSS classes](docs:template-guides/rendering-icons#remote-css-icons) on a page that loads your brand stylesheet.

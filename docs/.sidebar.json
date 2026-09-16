@@ -4,6 +4,7 @@
         "collapsable": false,
         "children": [
             "get-started/installation-setup",
+            "get-started/selecting-your-first-icon",
             "get-started/requirements",
             "get-started/configuration"
         ]
@@ -22,7 +23,7 @@
         "title": "Template Guides",
         "collapsable": false,
         "children": [
-            "template-guides/available-variables",
+            "template-guides/loading-icon-assets",
             "template-guides/rendering-icons"
         ]
     },
