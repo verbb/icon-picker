@@ -3,6 +3,7 @@ namespace verbb\iconpicker\controllers;
 
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\fields\IconPickerField;
+use verbb\iconpicker\models\Icon;
 
 use Craft;
 use craft\base\ElementInterface;
@@ -15,6 +16,12 @@ use yii\web\Response;
 
 class IconsController extends Controller
 {
+    // Properties
+    // =========================================================================
+
+    private ?ElementInterface $_element = null;
+
+
     // Public Methods
     // =========================================================================
 
@@ -65,6 +72,8 @@ class IconsController extends Controller
             throw new ForbiddenHttpException(Craft::t('icon-picker', 'This field is not part of the element being edited.'));
         }
 
+        $this->_element = $element;
+
         return $field;
     }
 
@@ -98,6 +107,22 @@ class IconsController extends Controller
             $json['spriteSheets'] = array_merge($json['spriteSheets'], $iconSet->getSpriteSheets());
             $json['scripts'] = array_merge($json['scripts'], $iconSet->scripts);
             $json['cssAttribute'] = $iconSet->cssAttribute;
+        }
+
+        // Saved choices still need their resources after available sets/styles are narrowed.
+        // Read them from the authorized element, including aliased field-layout instances.
+        foreach ($this->_element?->getFieldLayout()?->getCustomFields() ?? [] as $layoutField) {
+            if ((int)$layoutField->id !== (int)$field->id) {
+                continue;
+            }
+
+            $value = $this->_element->getFieldValue($layoutField->handle);
+
+            if ($value instanceof Icon && $value->value && ($source = $value->getSourceIconSet())) {
+                foreach ($source->getResourcesForIcon($value) as $key => $resources) {
+                    $json[$key] = array_merge($json[$key], $resources);
+                }
+            }
         }
 
         return $this->asJson($json);

@@ -367,14 +367,15 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
         // Check if any of the icons have additional resources to include
         // Adding the `iconSetHandle` was a recent addition, so best to check
         if ($value->iconSetHandle) {
-            // Have we already rendered this spritesheet?
-            if (!in_array($value->iconSetHandle, IconPicker::$plugin->getService()->$cacheCategory)) {
-                if ($iconSet = $value->getSourceIconSet()) {
-                    // Ensure the icons are loaded (from the cache)
-                    $iconSet->populateIcons();
+            if ($iconSet = $value->getSourceIconSet()) {
+                $resources = $iconSet->getResourcesForIcon($value);
+                $resourceKey = hash('sha256', Json::encode($resources));
+
+                if (!in_array($resourceKey, IconPicker::$plugin->getService()->$cacheCategory, true)) {
+                    IconPicker::$plugin->getService()->$cacheCategory[] = $resourceKey;
 
                     // Add all spritesheets to the DOM
-                    foreach ($iconSet->getSpriteSheets() as $spriteSheet) {
+                    foreach ($resources['spriteSheets'] as $spriteSheet) {
                         // Use the shared loader so unavailable resources cannot abort an element index.
                         $spriteSheetData = IconPickerHelper::getFileContents($spriteSheet['url']);
 
@@ -387,7 +388,7 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
                         $view->registerHtml($spriteSheetHtml, View::POS_BEGIN);
                     }
 
-                    foreach ($iconSet->scripts as $script) {
+                    foreach ($resources['scripts'] as $script) {
                         if ($script['type'] === 'remote' && !empty($script['url'])) {
                             $view->registerJsFile($script['url'], [
                                 'id' => $script['name'],
@@ -398,7 +399,7 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
                         }
                     }
 
-                    foreach ($iconSet->fonts as $font) {
+                    foreach ($resources['fonts'] as $font) {
                         if ($font['type'] === 'local') {
                             $view->registerCss(<<<CSS
                                 @font-face {
@@ -431,9 +432,6 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
                     }
                 }
             }
-
-            // Store the spritesheet in a flag plugin-wide to prevent multiple rendering
-            IconPicker::$plugin->getService()->$cacheCategory[] = $value->iconSetHandle;
         }
 
         if ($value->type === Icon::TYPE_SVG) {

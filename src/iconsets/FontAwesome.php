@@ -172,6 +172,29 @@ class FontAwesome extends IconSet
         }
     }
 
+    public function getResourcesForIcon(Icon $icon): array
+    {
+        $resources = parent::getResourcesForIcon($icon);
+
+        if ($this->type === self::TYPE_CDN) {
+            $styles = ['fas' => 'solid', 'far' => 'regular', 'fab' => 'brands', 'fal' => 'light', 'fad' => 'duotone'];
+
+            foreach (preg_split('/\s+/', trim((string)$icon->value)) as $class) {
+                if (isset($styles[$class])) {
+                    $domain = $this->cdnLicense === 'free' ? 'https://use.fontawesome.com' : 'https://pro.fontawesome.com';
+                    $resources['fonts'][] = [
+                        'type' => 'remote',
+                        'name' => 'Font Awesome',
+                        'url' => ["{$domain}/releases/v{$this->cdnVersion}/css/fontawesome.css", "{$domain}/releases/v{$this->cdnVersion}/css/{$styles[$class]}.css"],
+                    ];
+                    break;
+                }
+            }
+        }
+
+        return $resources;
+    }
+
     public function getKitOptions(): array
     {
         $options = [];

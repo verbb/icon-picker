@@ -2,6 +2,7 @@
 namespace verbb\iconpicker\iconsets;
 
 use verbb\iconpicker\base\RemoteCssIconSet;
+use verbb\iconpicker\models\Icon;
 
 use Craft;
 
@@ -25,6 +26,22 @@ class Phosphor extends RemoteCssIconSet
 
     // Public Methods
     // =========================================================================
+
+    public function getResourcesForIcon(Icon $icon): array
+    {
+        $resources = parent::getResourcesForIcon($icon);
+        $weight = $icon->iconSet ?: 'regular';
+
+        if (in_array($weight, ['thin', 'light', 'regular', 'bold', 'fill', 'duotone'], true)) {
+            $resources['fonts'][] = [
+                'type' => 'remote',
+                'name' => static::cssFontName(),
+                'url' => "https://cdn.jsdelivr.net/npm/@phosphor-icons/web@{$this->version()}/src/{$weight}/style.css",
+            ];
+        }
+
+        return $resources;
+    }
 
     protected function getVariantSettingsHtml(): ?string
     {
