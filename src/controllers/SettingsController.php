@@ -20,8 +20,8 @@ class SettingsController extends Controller
             return false;
         }
 
-        // Settings templates use {% requireAdmin %}; actions must enforce the same.
-        $this->requireAdmin();
+        // Utilities rebuild runtime caches or inspect them; they do not change project config.
+        $this->requireAdmin(!in_array($action->id, ['clear-cache', 'troubleshoot'], true));
 
         return true;
     }

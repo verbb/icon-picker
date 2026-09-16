@@ -31,6 +31,7 @@
 - Retry loading icon scripts, stylesheets and spritesheets after a failed request.
 - Keep element previews usable when a spritesheet cannot be loaded.
 - Strengthen request validation for utility actions.
+- Allow admins to regenerate caches and run diagnostics when admin changes are disabled.
 - Give the icon search input an accessible field label.
 - Allow the Clear button to be activated with Enter or Space.
 - Load Material Icons web fonts that omit glyph names.

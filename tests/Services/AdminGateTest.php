@@ -61,3 +61,27 @@ it('requires POST for cache regeneration', function() {
     $controller->enableCsrfValidation = false;
     expect(fn() => $controller->runAction('clear-cache'))->toThrow(\yii\web\MethodNotAllowedHttpException::class);
 });
+
+it('allows admin utilities when configuration changes are disabled', function() {
+    AdminUser::login();
+    CpRequestContext::activate('actions/icon-picker/settings/clear-cache', 'POST');
+    $general = Craft::$app->getConfig()->getGeneral();
+    $previous = $general->allowAdminChanges;
+    $general->allowAdminChanges = false;
+    try {
+        $controller = new SettingsController('settings', IconPicker::$plugin);
+        $controller->enableCsrfValidation = false;
+        foreach (['clear-cache', 'troubleshoot'] as $id) {
+            expect($controller->beforeAction($controller->createAction($id)))->toBeTrue();
+        }
+        expect(fn() => $controller->beforeAction($controller->createAction('save-settings')))
+            ->toThrow(ForbiddenHttpException::class);
+        NonAdminUser::login();
+        foreach (['clear-cache', 'troubleshoot'] as $id) {
+            expect(fn() => $controller->beforeAction($controller->createAction($id)))
+                ->toThrow(ForbiddenHttpException::class);
+        }
+    } finally {
+        $general->allowAdminChanges = $previous;
+    }
+});
