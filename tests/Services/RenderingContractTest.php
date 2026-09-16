@@ -26,3 +26,15 @@ it('resolves icon fields and shared fragments through GraphQL', function() {
     expect($result)->not->toHaveKey('errors')
         ->and($result['data']['icon'])->toBe(['value'=>'bi bi-alarm','type'=>'css','isEmpty'=>false,'glyph'=>null,'url'=>null,'inline'=>null]);
 });
+
+it('renders static selections without mounting editable controls', function() {
+    \Tests\Support\CpRequestContext::activate('globals/static-audit', 'GET');
+    Craft::$app->set('assetManager', Craft::createObject(\craft\helpers\App::assetManagerConfig()));
+    Craft::$app->getView()->setTemplateMode(\craft\web\View::TEMPLATE_MODE_CP);
+    $field = new IconPickerField(['name' => 'Read only icon', 'handle' => 'staticIcon']);
+    $value = new Icon(['type' => 'css', 'value' => 'bi bi-alarm', 'label' => 'Alarm']);
+    $html = $field->getStaticHtml($value, new \craft\elements\Entry());
+    expect($html)->toContain('bi bi-alarm')->toContain('Alarm')
+        ->not->toContain('data-icon-picker-auto-mount')->not->toContain('<input');
+    expect($field->getStaticHtml(new Icon(), new \craft\elements\Entry()))->toBe('');
+});

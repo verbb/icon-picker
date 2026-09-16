@@ -166,6 +166,18 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
         return $value ? $this->_renderIcon($value, 'renderedThumbResources') : '';
     }
 
+    public function getStaticHtml(mixed $value, ElementInterface $element): string
+    {
+        $value = $this->normalizeValue($value, $element);
+
+        if ($value->isEmpty()) {
+            return '';
+        }
+
+        return Html::tag('div', $this->_renderIcon($value, 'renderedPreviewResources') .
+            Html::tag('span', Html::encode((string)$value->getLabel())), ['class' => 'flex']);
+    }
+
     public function getSettingsHtml(): ?string
     {
         $iconSets = IconPicker::$plugin->getIconSets()->getAllEnabledIconSets();
