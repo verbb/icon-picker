@@ -16,6 +16,19 @@ use craft\validators\UniqueValidator;
 
 abstract class IconSet extends SavableComponent implements IconSetInterface, \JsonSerializable
 {
+    // Static Methods
+    // =========================================================================
+
+    public static function getCacheKey(string $handle): string
+    {
+        $settings = IconPicker::$plugin->getSettings();
+        // Resolved settings also cover project config, aliases and environment overrides.
+        $source = [$settings->getIconSetsPath(), $settings->getIconSetsUrl()];
+
+        return 'icon-picker:v3:' . $handle . ':' . hash('sha256', Json::encode($source));
+    }
+
+
     // Properties
     // =========================================================================
 
@@ -96,9 +109,7 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
     public function populateIcons(bool $fromCache = true): void
     {
         $settings = IconPicker::$plugin->getSettings();
-        // v2: SVG catalog no longer embeds full markup in the cache blob. Bump the
-        // key so fat v1 entries are ignored until natural eviction / Clear Caches.
-        $cacheKey = 'icon-picker:v2:' . $this->handle;
+        $cacheKey = self::getCacheKey((string)$this->handle);
 
         // Check to see if loaded in-memory already, rather than loading from the cache
         if ($fromCache && ($preloadedData = IconPicker::$plugin->getIconSets()->getPreloadedIconSet($cacheKey))) {
@@ -195,7 +206,7 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
     public function populateResources(bool $fromCache = true): void
     {
         $settings = IconPicker::$plugin->getSettings();
-        $cacheKey = 'icon-picker:v2:' . $this->handle;
+        $cacheKey = self::getCacheKey((string)$this->handle);
 
         if ($fromCache && ($preloadedData = IconPicker::$plugin->getIconSets()->getPreloadedIconSet($cacheKey))) {
             $this->fonts = $preloadedData->fonts;

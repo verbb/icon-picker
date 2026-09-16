@@ -386,7 +386,7 @@ class IconSets extends Component
             return;
         }
 
-        $key = 'icon-picker:v2:' . $handle;
+        $key = IconSet::getCacheKey($handle);
         unset($this->_preloadedIconSets[$key]);
         Craft::$app->getCache()->delete($key);
     }

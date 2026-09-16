@@ -49,6 +49,7 @@
 - Handle empty SVG spritesheets without interrupting icon loading.
 - Refresh icons and metadata when regenerating an already loaded icon-set cache.
 - Refresh cached catalogs when icon sets change through project config or reuse a handle.
+- Refresh catalogs and resources when the configured Icons Path or Icons URL changes.
 - Preserve saved icon selections when their icon set is renamed, and prevent deleted sets from binding to reused handles.
 - Keep saved SVG icons available after narrowing the variants offered in the picker.
 - Preserve package versions and selected variants when saving remote icon sets.
