@@ -37,7 +37,7 @@ describe('Icon normalize security', function() {
 
         expect($rendered)->toContain('&#xf16c;');
         expect($rendered)->not->toContain('&amp;#xf16c');
-        expect($rendered)->toContain('font-face-demo-font');
+        expect($rendered)->toContain('class="ipui-font ' . $icon->jsonSerialize()['fontClass'] . '"');
     });
 
     it('keeps CSS selections as identifiers while presentation comes from the catalog', function() {
