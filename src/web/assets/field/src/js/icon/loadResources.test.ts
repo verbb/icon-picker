@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { afterEach, expect, it, vi } from 'vitest';
-import { loadScripts } from './loadResources.js';
+import { loadScripts, loadSpriteSheets, loadFonts } from './loadResources.js';
 
 afterEach(() => { document.body.replaceChildren(); vi.unstubAllGlobals(); vi.restoreAllMocks(); });
 
@@ -49,4 +49,48 @@ it('shares an in-flight script outcome across callers and allows both to retry',
     replacement.dispatchEvent(new Event('load'));
     await retry;
     expect(Craft.IconPicker?.Cache?.scripts).toEqual(['shared-kit']);
+});
+
+it.each(['http', 'network'])('retries a spritesheet after a %s failure without caching unavailable symbols', async (failure) => {
+    vi.stubGlobal('Craft', { IconPicker: { Cache: { stylesheets: [], fonts: [], scripts: [] } } });
+    const request = vi.fn();
+    if (failure === 'http') request.mockResolvedValueOnce(new Response('Unavailable', { status: 503 }));
+    else request.mockRejectedValueOnce(new Error('Offline'));
+    request.mockResolvedValueOnce(new Response('<svg><symbol id="retry-symbol"/></svg>'));
+    vi.stubGlobal('fetch', request);
+    const sheet = { name: 'retry-sprites', url: '/retry-sprites.svg' };
+    const outcomes = await Promise.allSettled([loadSpriteSheets([sheet]), loadSpriteSheets([sheet])]);
+    expect(outcomes.map((outcome) => outcome.status)).toEqual(['rejected', 'rejected']);
+    expect(request).toHaveBeenCalledTimes(1);
+    expect(Craft.IconPicker?.Cache?.stylesheets).not.toContain(sheet.name);
+    expect(document.getElementById('icon-picker-spritesheet-retry-sprites')).toBeNull();
+    await loadSpriteSheets([sheet]);
+    expect(request).toHaveBeenCalledTimes(2);
+    expect(document.getElementById('retry-symbol')).not.toBeNull();
+    expect(Craft.IconPicker?.Cache?.stylesheets).toContain(sheet.name);
+});
+
+it('retries a failed remote stylesheet and shares its outcome across fields', async () => {
+    vi.stubGlobal('Craft', { IconPicker: { Cache: { stylesheets: [], fonts: [], scripts: [] } } });
+    const append = document.head.appendChild.bind(document.head);
+    vi.spyOn(document.head, 'appendChild').mockImplementation((node) => {
+        if (node instanceof HTMLLinkElement) node.rel = 'audit-test';
+        return append(node);
+    });
+    const font = { name: 'retry-font', type: 'remote', url: 'https://example.test/retry.css' };
+    const first = loadFonts([font]);
+    const second = loadFonts([font]);
+    const outcomes = Promise.allSettled([first, second]);
+    const failed = document.head.querySelector<HTMLLinkElement>('link[href="https://example.test/retry.css"]')!;
+    failed.dispatchEvent(new Event('error'));
+    expect((await outcomes).map((outcome) => outcome.status)).toEqual(['rejected', 'rejected']);
+    expect(Craft.IconPicker?.Cache?.fonts).not.toContain(font.name);
+    expect(failed.isConnected).toBe(false);
+    const retry = loadFonts([font]);
+    const replacement = document.head.querySelector<HTMLLinkElement>('link[href="https://example.test/retry.css"]')!;
+    expect(replacement).not.toBe(failed);
+    replacement.dispatchEvent(new Event('load'));
+    await retry;
+    expect(Craft.IconPicker?.Cache?.fonts).toEqual([font.name]);
+    replacement.remove();
 });

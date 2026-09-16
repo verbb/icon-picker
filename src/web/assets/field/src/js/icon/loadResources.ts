@@ -21,6 +21,8 @@ type ScriptResource = {
     onload?: string;
 };
 
+const pendingFonts = new Map<string, Promise<void>>();
+const pendingSpriteSheets = new Map<string, Promise<void>>();
 const pendingScripts = new Map<string, Promise<void>>();
 
 const ensureCache = (): { stylesheets: string[]; fonts: string[]; scripts: string[] } => {
@@ -35,74 +37,102 @@ const ensureCache = (): { stylesheets: string[]; fonts: string[]; scripts: strin
     };
 };
 
-export const loadFonts = (fonts: FontResource[] | undefined): void => {
+export const loadFonts = (fonts: FontResource[] | undefined): Promise<void> => {
     if (!fonts?.length) {
-        return;
+        return Promise.resolve();
     }
 
     const cache = ensureCache();
 
-    for (const font of fonts) {
+    return Promise.all(fonts.map((font) => {
+        const pending = pendingFonts.get(font.name);
+        if (pending) {
+            return pending;
+        }
         if (cache.fonts.includes(font.name)) {
-            continue;
+            return Promise.resolve();
         }
 
-        cache.fonts.push(font.name);
-
-        if (font.type === 'local' && font.url) {
-            const url = Array.isArray(font.url) ? font.url[0] : font.url;
-            const style = document.createElement('style');
-            style.textContent = [
-                `@font-face { font-family: "${font.name}"; src: url("${url}"); font-weight: normal; font-style: normal; }`,
-                `.${font.name} { font-family: "${font.name}" !important; }`,
-            ].join('\n');
-            document.head.appendChild(style);
-        } else if (font.type === 'proxy' && font.id) {
-            const style = document.createElement('style');
-            // Escape dots in generated class selectors (e.g. FontAwesome ids).
-            style.textContent = `.${font.id.replace('.', '\\.')} { font-family: "${font.name}" !important; }`;
-            document.head.appendChild(style);
-        } else if (font.type === 'remote' && font.url) {
-            const urls = Array.isArray(font.url) ? font.url : [font.url];
-
-            for (const href of urls) {
-                const link = document.createElement('link');
-                link.href = href;
-                link.rel = 'stylesheet';
-                link.type = 'text/css';
-                document.head.appendChild(link);
+        const nodes: HTMLElement[] = [];
+        const request = (async () => {
+            if (font.type === 'local' && font.url) {
+                const url = Array.isArray(font.url) ? font.url[0] : font.url;
+                const style = document.createElement('style');
+                style.textContent = [
+                    `@font-face { font-family: "${font.name}"; src: url("${url}"); font-weight: normal; font-style: normal; }`,
+                    `.${font.name} { font-family: "${font.name}" !important; }`,
+                ].join('\n');
+                nodes.push(style);
+                document.head.appendChild(style);
+            } else if (font.type === 'proxy' && font.id) {
+                const style = document.createElement('style');
+                // Escape dots in generated class selectors (e.g. FontAwesome ids).
+                style.textContent = `.${font.id.replace('.', '\\.')} { font-family: "${font.name}" !important; }`;
+                nodes.push(style);
+                document.head.appendChild(style);
+            } else if (font.type === 'remote' && font.url) {
+                const urls = Array.isArray(font.url) ? font.url : [font.url];
+                await Promise.all(urls.map((href) => new Promise<void>((resolve, reject) => {
+                    const link = document.createElement('link');
+                    link.href = href;
+                    link.rel = 'stylesheet';
+                    link.type = 'text/css';
+                    link.onload = () => resolve();
+                    link.onerror = () => reject(new Error(`Failed to load stylesheet ${font.name}`));
+                    nodes.push(link);
+                    document.head.appendChild(link);
+                })));
             }
-        }
-    }
+
+            cache.fonts.push(font.name);
+        })().catch((error) => {
+            // A multi-file font is ready only when every stylesheet loads. Remove
+            // partial resources so Retry starts a coherent request for this font.
+            nodes.forEach((node) => node.remove());
+            throw error;
+        }).finally(() => { pendingFonts.delete(font.name); });
+
+        pendingFonts.set(font.name, request);
+        return request;
+    })).then(() => undefined);
 };
 
-export const loadSpriteSheets = (spriteSheets: SpriteSheetResource[] | undefined): void => {
+export const loadSpriteSheets = (spriteSheets: SpriteSheetResource[] | undefined): Promise<void> => {
     if (!spriteSheets?.length) {
-        return;
+        return Promise.resolve();
     }
 
     const cache = ensureCache();
 
-    for (const sheet of spriteSheets) {
+    return Promise.all(spriteSheets.map((sheet) => {
+        const pending = pendingSpriteSheets.get(sheet.name);
+        if (pending) {
+            return pending;
+        }
         if (cache.stylesheets.includes(sheet.name)) {
-            continue;
+            return Promise.resolve();
         }
 
-        cache.stylesheets.push(sheet.name);
-
-        fetch(sheet.url)
-            .then((response) => response.text())
+        const request = fetch(sheet.url)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Failed to load spritesheet ${sheet.name} (${response.status})`);
+                }
+                return response.text();
+            })
             .then((text) => {
                 const div = document.createElement('div');
                 div.innerHTML = text;
                 div.id = `icon-picker-spritesheet-${sheet.name}`;
                 div.style.display = 'none';
                 document.body.insertBefore(div, document.body.firstChild);
+                cache.stylesheets.push(sheet.name);
             })
-            .catch((error) => {
-                console.error('[icon-picker] Failed to load spritesheet', sheet.name, error);
-            });
-    }
+            .finally(() => { pendingSpriteSheets.delete(sheet.name); });
+
+        pendingSpriteSheets.set(sheet.name, request);
+        return request;
+    })).then(() => undefined);
 };
 
 export const loadScripts = (scripts: ScriptResource[] | undefined): Promise<void> => {

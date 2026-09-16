@@ -976,9 +976,11 @@ export class IconPickerInput {
                 this.icons = payload.icons as IconItem[];
             }
 
-            loadSpriteSheets(payload.spriteSheets);
-            loadFonts(payload.fonts);
-            await loadScripts(payload.scripts);
+            await Promise.all([
+                loadSpriteSheets(payload.spriteSheets),
+                loadFonts(payload.fonts),
+                loadScripts(payload.scripts),
+            ]);
         } catch (error) {
             console.error('[icon-picker] Failed to fetch icons', error);
             if (!preload) {

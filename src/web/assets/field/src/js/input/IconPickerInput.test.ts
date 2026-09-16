@@ -6,6 +6,7 @@ vi.mock('../icon/loadResources.js', () => ({
     loadFonts: vi.fn(), loadSpriteSheets: vi.fn(), loadScripts: vi.fn().mockResolvedValue(undefined),
 }));
 
+import { loadFonts, loadSpriteSheets } from '../icon/loadResources.js';
 import { IconPickerInput } from './IconPickerInput.js';
 
 const mount = () => {
@@ -67,5 +68,19 @@ it('searches an icon name as well as its additional metadata keywords', () => {
     expect(state.iconsFiltered).toEqual([icon]);
     state.search = 'wake';
     expect(state.iconsFiltered).toEqual([icon]);
+    picker.destroy();
+});
+
+it.each([['stylesheet', loadFonts], ['spritesheet', loadSpriteSheets]] as const)('shows Retry when a %s resource fails and recovers on the next request', async (_name, loader) => {
+    const { root, picker } = mount();
+    vi.mocked(Craft.sendActionRequest).mockResolvedValue({ data: { icons: [] } });
+    vi.mocked(loader).mockRejectedValueOnce(new Error('Resource unavailable'));
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    const state = picker as unknown as { fetchIcons(): Promise<void> };
+    await state.fetchIcons();
+    expect(root.querySelector('.ipui-icons-status')?.textContent).toContain('Request failed.');
+    expect(root.querySelector('.ipui-icons-status button')?.textContent).toBe('Retry');
+    await state.fetchIcons();
+    expect(root.querySelector('.ipui-icons-status')?.textContent).toBe('No icons match your query.');
     picker.destroy();
 });
