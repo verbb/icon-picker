@@ -90,6 +90,7 @@ class FontAwesome extends IconSet
                 foreach ($customIcons as $customIcon) {
                     $this->icons[] = new Icon([
                         'type' => Icon::TYPE_CSS,
+                        'iconSetHandle' => $this->handle,
                         'value' => $customIcon['iconDefinition']['prefix'] . ' fa-' . $customIcon['iconDefinition']['iconName'],
                         'label' => $customIcon['name'],
                         'keywords' => $customIcon['name'],

@@ -375,6 +375,17 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
                         $view->registerHtml($spriteSheetHtml, View::POS_BEGIN);
                     }
 
+                    foreach ($iconSet->scripts as $script) {
+                        if ($script['type'] === 'remote' && !empty($script['url'])) {
+                            $view->registerJsFile($script['url'], [
+                                'id' => $script['name'],
+                                'onload' => $script['onload'] ?? null,
+                            ], $script['name']);
+                        } elseif ($script['type'] === 'local' && !empty($script['content'])) {
+                            $view->registerJs($script['content'], View::POS_END, $script['name']);
+                        }
+                    }
+
                     foreach ($iconSet->fonts as $font) {
                         if ($font['type'] === 'local') {
                             $view->registerCss(<<<CSS

@@ -23,6 +23,7 @@
 - Align documentation filenames with page titles and update internal links.
 
 ### Fixed
+- Load Font Awesome kit resources for element previews, including custom uploaded icons.
 - Retry loading remote icon scripts after a failed request.
 - Strengthen request validation for utility actions.
 - Give the icon search input an accessible field label.
