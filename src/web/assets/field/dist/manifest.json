@@ -1,6 +1,6 @@
 {
   "../../../node_modules/@lit-labs/virtualizer/layouts/flow.js": {
-    "file": "assets/flow-DacSw0Md.js",
+    "file": "assets/flow-C3iAZXeK.js",
     "name": "flow",
     "src": "../../../node_modules/@lit-labs/virtualizer/layouts/flow.js",
     "isDynamicEntry": true,
@@ -12,17 +12,17 @@
     "file": "assets/BaseLayout-BEpgs3hT.js",
     "name": "BaseLayout"
   },
-  "_iconPickerPkComponents-B6ZyqdCy.js": {
-    "file": "assets/iconPickerPkComponents-B6ZyqdCy.js",
+  "_iconPickerPkComponents-DCcvcxy5.js": {
+    "file": "assets/iconPickerPkComponents-DCcvcxy5.js",
     "name": "iconPickerPkComponents"
   },
   "field/src/js/icon-picker.ts": {
-    "file": "assets/icon-picker-BGbAhCf7.js",
+    "file": "assets/icon-picker-Cy8Jb8-X.js",
     "name": "icon-picker",
     "src": "field/src/js/icon-picker.ts",
     "isEntry": true,
     "imports": [
-      "_iconPickerPkComponents-B6ZyqdCy.js",
+      "_iconPickerPkComponents-DCcvcxy5.js",
       "_BaseLayout-BEpgs3hT.js"
     ],
     "dynamicImports": [
@@ -33,15 +33,15 @@
     ]
   },
   "field/src/js/plugin-kit-register.ts": {
-    "file": "assets/pluginKit-NOmoNi9i.js",
+    "file": "assets/pluginKit-B6axSu88.js",
     "name": "pluginKit",
     "src": "field/src/js/plugin-kit-register.ts",
     "isEntry": true,
     "imports": [
-      "_iconPickerPkComponents-B6ZyqdCy.js"
+      "_iconPickerPkComponents-DCcvcxy5.js"
     ],
     "css": [
-      "assets/pluginKit-CMhC2VHa.css"
+      "assets/pluginKit-BVOgxY4N.css"
     ]
   }
 }

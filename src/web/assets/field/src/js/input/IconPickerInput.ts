@@ -28,6 +28,8 @@ export interface IconPickerSettings {
         [key: string]: unknown;
     };
     fieldId?: number | null;
+    elementId?: number | null;
+    siteId?: number | null;
     itemSize?: number;
     itemSizeLarge?: number;
     itemWrapperSize?: number;
@@ -920,7 +922,11 @@ export class IconPickerInput {
         this.isFetching = !preload;
         this.refreshPane();
 
-        const data = { fieldId: this.settings.fieldId };
+        const data = {
+            fieldId: this.settings.fieldId,
+            elementId: this.settings.elementId,
+            siteId: this.settings.siteId,
+        };
         const endpoint = preload
             ? 'icon-picker/icons/resources-for-field'
             : 'icon-picker/icons/icons-for-field';

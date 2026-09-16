@@ -194,12 +194,8 @@ class Icon extends Model implements \JsonSerializable, \Countable
 
     public function getUrl(): ?string
     {
-        if ($this->type !== self::TYPE_SVG) {
+        if ($this->type !== self::TYPE_SVG || $this->value === null || $this->value === '') {
             return null;
-        }
-
-        if ($this->_isAbsoluteUrl($this->value)) {
-            return $this->value;
         }
 
         if ($this->iconSetHandle) {
@@ -318,6 +314,10 @@ class Icon extends Model implements \JsonSerializable, \Countable
 
         return null;
     }
+
+
+    // Private Methods
+    // =========================================================================
 
     private function _isAbsoluteUrl(?string $value): bool
     {

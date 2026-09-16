@@ -236,7 +236,7 @@ class FontAwesome extends IconSet
 
                 IconPicker::error($this->_apiError);
             }
-        }) ?? [];
+        }, $cacheDuration) ?? [];
     }
 
     public function getKit(string $kitId, string $license): array
@@ -319,7 +319,7 @@ class FontAwesome extends IconSet
 
                 IconPicker::error($this->_apiError);
             }
-        }) ?? [];
+        }, $cacheDuration) ?? [];
     }
 
     public function getApiError(): ?string

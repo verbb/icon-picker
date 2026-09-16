@@ -10,6 +10,7 @@
 - Optional **Package version** field on remote CSS/SVG icon sets (`cdnVersion`).
 
 ### Changed
+- Update Plugin Kit and lodash dependencies to their patched releases.
 - Field input rebuilt on [Plugin Kit](https://docs.verbb.io/plugin-kit/web/) (web components).
 - SVG icon catalogs no longer embed full markup in the set cache or CP picker JSON. The field paints SVG cells/chips via `<img src>` (URL), which shrinks large-folder payloads and avoids CSS/`id` bleed between icons (e.g. Carbon). Existing caches are superseded by a `icon-picker:v2:*` key on next load. ([#101](https://github.com/verbb/icon-picker/issues/101), [#103](https://github.com/verbb/icon-picker/issues/103)).
 - `resources-for-field` loads fonts/sprites/scripts without hydrating the full icon catalog.
@@ -18,8 +19,12 @@
 - Feather Icons renamed to **Feather Icons (Legacy)** with CP notice to prefer Lucide.
 - css.gg catalog pinned to package **2.1.4** (`icons.json`); CSS still loads from jsDelivr `icons/all.css` (legacy path for `gg-*` classes).
 - Bumped default package versions: Bootstrap Icons **1.13.1**, Remix **4.9.1**, Tabler **3.46.0** (catalogs regenerated via `scripts/generate-icon-catalogs.php`).
+- Clarify field setup, remote SVG output, custom Icon Sets and configuration overrides in the documentation.
+- Align documentation filenames with page titles and update internal links.
 
 ### Fixed
+- Restrict icon catalog requests to POST requests for a real Icon Picker field on an element the current user can view.
+- Respect the one-hour cache duration for Font Awesome kits and icon catalogs.
 - Heroicons icon set uses npm `heroicons@2.2.0` (`24/outline` / `24/solid`). Saved v1 names may need re-picking.
 - Lucide pins `lucide-static@1.33.0`; catalog generated from the same package.
 - Fix css.gg icon sizing in the field grid and selected-icon preview (scale via `--ggs`, center in cell).
@@ -28,7 +33,7 @@
 - Don’t open the icon pane on programmatic focus (Craft slideout `setFocusWithin` / focus restore). Open on click, Enter/Space/ArrowDown, or typing instead. ([#109](https://github.com/verbb/icon-picker/issues/109)).
 - Clarify Web Font support: glyph indexing requires `.ttf` / `.woff` / `.otf` (not `.woff2` alone). Docs and icon-set UI updated; `.woff2` is rejected with a clear error. ([#107](https://github.com/verbb/icon-picker/issues/107)).
 - Enforce admin on Icon Sets and Settings controller actions (matching settings templates).
-- Field values reject path traversal and forged `displayValue` markup; local SVG reads require realpath containment under the icon root.
+- SVG field values must resolve to contained local files or exact configured remote-catalog entries; forged `displayValue` markup is discarded.
 - Sprite/glyph CP previews encode untrusted attribute/text values; CSS raw SVG paint requires a hydrated icon set.
 - Fix `Icon::count()` return type for `Countable` (`int`).
 

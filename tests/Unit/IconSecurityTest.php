@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-use ReflectionClass;
-use ReflectionMethod;
 use verbb\iconpicker\IconPicker;
+use verbb\iconpicker\base\RemoteSvgIconSet;
 use verbb\iconpicker\fields\IconPickerField;
 use verbb\iconpicker\models\Icon;
 
@@ -22,12 +21,13 @@ describe('Icon normalize security', function() {
 
     it('emits semicolon-terminated glyph entities without HTML-encoding them in CP preview', function() {
         $field = (new ReflectionClass(IconPickerField::class))->newInstanceWithoutConstructor();
-        $icon = new Icon([
+        $icon = $field->normalizeValue([
             'type' => Icon::TYPE_GLYPH,
             'iconSet' => 'demo-font',
             'value' => 'stack-overflow:61804',
         ]);
 
+        expect($icon->value)->toBe('stack-overflow:61804');
         expect($icon->getGlyph())->toBe('&#xf16c;');
         expect($icon->getDisplayValue())->toBe('&#xf16c;');
 
@@ -60,6 +60,24 @@ describe('Icon normalize security', function() {
         expect($icon->value)->toBeEmpty();
     });
 
+    it('rejects submitted absolute and scheme-relative SVG URLs', function(string $value) {
+        $field = (new ReflectionClass(IconPickerField::class))->newInstanceWithoutConstructor();
+        $icon = $field->normalizeValue([
+            'type' => Icon::TYPE_SVG,
+            'iconSetHandle' => 'trusted-set',
+            'value' => $value,
+        ]);
+
+        expect($icon->value)->toBeEmpty()
+            ->and($icon->getUrl())->toBeNull();
+    })->with([
+        'private HTTP URL' => 'http://127.0.0.1/internal.svg',
+        'HTTPS URL' => 'https://example.com/icon.svg',
+        'scheme-relative URL' => '//example.com/icon.svg',
+        'data URL' => 'data:image/svg+xml,<svg/>',
+        'file URL' => 'file:///etc/passwd',
+    ]);
+
     it('does not render forged displayValue markup for CSS icons', function() {
         $field = (new ReflectionClass(IconPickerField::class))->newInstanceWithoutConstructor();
         $icon = $field->normalizeValue([
@@ -78,6 +96,47 @@ describe('Icon normalize security', function() {
     });
 });
 
+describe('Remote SVG catalog trust', function() {
+    it('derives URLs only for an exact configured catalog entry', function() {
+        $iconSet = new class extends RemoteSvgIconSet {
+            protected function catalogMap(): array
+            {
+                return [];
+            }
+
+            protected function defaultVariant(): string
+            {
+                return 'outline';
+            }
+
+            protected function defaultVersion(): string
+            {
+                return '1.0.0';
+            }
+
+            protected function buildSvgUrl(string $iconName, string $variant): string
+            {
+                return "https://cdn.example.test/{$variant}/{$iconName}.svg";
+            }
+        };
+        $iconSet->handle = 'trusted-set';
+        $iconSet->icons = [new Icon([
+            'type' => Icon::TYPE_SVG,
+            'iconSetHandle' => 'trusted-set',
+            'iconSet' => 'outline',
+            'value' => 'known-icon',
+        ])];
+
+        $known = new Icon(['type' => Icon::TYPE_SVG, 'iconSet' => 'outline', 'value' => 'known-icon']);
+        $unknown = new Icon(['type' => Icon::TYPE_SVG, 'iconSet' => 'outline', 'value' => '../private']);
+        $wrongVariant = new Icon(['type' => Icon::TYPE_SVG, 'iconSet' => 'solid', 'value' => 'known-icon']);
+
+        expect($iconSet->resolveSvgUrl($known))->toBe('https://cdn.example.test/outline/known-icon.svg')
+            ->and($iconSet->resolveSvgUrl($unknown))->toBeNull()
+            ->and($iconSet->resolveSvgUrl($wrongVariant))->toBeNull();
+    });
+});
+
 describe('Icon path containment', function() {
     it('refuses to read files outside the configured icon sets path', function() {
         expect(IconPicker::$plugin)->not->toBeNull();
@@ -86,7 +145,9 @@ describe('Icon path containment', function() {
         mkdir($tmp);
         mkdir($tmp . '/icons');
         file_put_contents($tmp . '/synthetic.txt', 'SYNTHETIC_MARKER');
+        file_put_contents($tmp . '/synthetic.svg', '<svg><title>OUTSIDE_MARKER</title></svg>');
         file_put_contents($tmp . '/icons/ok.svg', '<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+        symlink($tmp . '/synthetic.svg', $tmp . '/icons/linked.svg');
 
         $settings = IconPicker::$plugin->getSettings();
         $previous = $settings->iconSetsPath;
@@ -100,9 +161,15 @@ describe('Icon path containment', function() {
             $ok = new Icon(['type' => 'svg', 'value' => 'ok.svg']);
             expect($ok->getPath())->toContain('ok.svg');
             expect((string)$ok->getInline())->toContain('<svg');
+
+            $linked = new Icon(['type' => 'svg', 'value' => 'linked.svg']);
+            expect($linked->getPath())->toBe('')
+                ->and((string)($linked->getInline() ?? ''))->not->toContain('OUTSIDE_MARKER');
         } finally {
             $settings->iconSetsPath = $previous;
             @unlink($tmp . '/synthetic.txt');
+            @unlink($tmp . '/synthetic.svg');
+            @unlink($tmp . '/icons/linked.svg');
             @unlink($tmp . '/icons/ok.svg');
             @rmdir($tmp . '/icons');
             @rmdir($tmp);

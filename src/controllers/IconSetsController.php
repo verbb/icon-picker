@@ -4,7 +4,6 @@ namespace verbb\iconpicker\controllers;
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\base\IconSet;
 use verbb\iconpicker\base\IconSetInterface;
-// use verbb\iconpicker\helpers\Plugin;
 use verbb\iconpicker\models\MissingIconSet;
 
 use Craft;

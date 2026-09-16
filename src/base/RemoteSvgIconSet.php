@@ -19,6 +19,8 @@ abstract class RemoteSvgIconSet extends IconSet
     /** @var string[]|null */
     public ?array $variants = ['*'];
 
+    private ?array $_catalogLookup = null;
+
 
     // Public Methods
     // =========================================================================
@@ -86,9 +88,16 @@ abstract class RemoteSvgIconSet extends IconSet
         }
     }
 
-    public function resolveSvgUrl(Icon $icon): string
+    public function resolveSvgUrl(Icon $icon): ?string
     {
+        $this->populateIcons();
+
         $variant = $icon->iconSet ?: $this->defaultVariant();
+        $key = $variant . "\0" . ($icon->value ?? '');
+
+        if (!isset($this->_getCatalogLookup()[$key])) {
+            return null;
+        }
 
         return $this->buildSvgUrl($icon->value ?? '', $variant);
     }
@@ -116,6 +125,34 @@ abstract class RemoteSvgIconSet extends IconSet
     protected function getVariantSettingsHtml(): ?string
     {
         return null;
+    }
+
+
+    // Private Methods
+    // =========================================================================
+
+    /**
+     * Remote values are posted by the browser, so only catalog entries may be
+     * converted into fetchable URLs. Cache the index to keep grid rendering O(n).
+     */
+    private function _getCatalogLookup(): array
+    {
+        if ($this->_catalogLookup !== null) {
+            return $this->_catalogLookup;
+        }
+
+        $this->_catalogLookup = [];
+
+        foreach ($this->icons as $icon) {
+            if (!$icon instanceof Icon || $icon->value === null) {
+                continue;
+            }
+
+            $variant = $icon->iconSet ?: $this->defaultVariant();
+            $this->_catalogLookup[$variant . "\0" . $icon->value] = true;
+        }
+
+        return $this->_catalogLookup;
     }
 
 }
