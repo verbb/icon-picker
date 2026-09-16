@@ -23,6 +23,7 @@
 - Align documentation filenames with page titles and update internal links.
 
 ### Fixed
+- Load Material Icons web fonts that omit glyph names.
 - Keep icons searchable by name when additional metadata keywords are present.
 - Restore icon selection and insertion in Redactor fields.
 - Import icons through Feed Me when a field uses all enabled icon sets.

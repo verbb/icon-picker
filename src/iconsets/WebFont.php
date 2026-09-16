@@ -8,6 +8,7 @@ use verbb\iconpicker\models\Icon;
 
 use Craft;
 use craft\helpers\FileHelper;
+use craft\helpers\Json;
 
 use Throwable;
 
@@ -186,7 +187,7 @@ class WebFont extends IconSet
                 // Support specific icon kits where they don't contain names
                 if (!$names && $font->getFontName() == 'Material Icons') {
                     // Fetch the glyphId-keyed map
-                    $names = IconPicker::$plugin->getIconSources()->getJsonData('material.json');
+                    $names = Json::decodeFromFile(dirname(__DIR__) . '/json/material.json');
 
                     // There's also a bunch of things we want to exclude
                     $exclusions = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39];
