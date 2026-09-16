@@ -23,6 +23,7 @@
 - Align documentation filenames with page titles and update internal links.
 
 ### Fixed
+- Retry loading remote icon scripts after a failed request.
 - Strengthen request validation for utility actions.
 - Give the icon search input an accessible field label.
 - Load Material Icons web fonts that omit glyph names.

@@ -141,6 +141,8 @@ export const loadScripts = (scripts: ScriptResource[] | undefined): Promise<void
                         resolve();
                     };
                     el.onerror = () => {
+                        // A failed element must not make a subsequent Retry look loaded.
+                        el.remove();
                         reject(new Error(`Failed to load script ${script.name}`));
                     };
                     document.body.appendChild(el);
