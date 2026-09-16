@@ -61,3 +61,12 @@ it('preserves an explicitly cleared Font Awesome style selection', function() {
         $service->deleteIconSet($set);
     }
 });
+
+it('includes common Material Design Icons from the pinned font catalog', function() {
+    $set = new \verbb\iconpicker\iconsets\MaterialDesignIcons(['handle' => 'mdiCatalog']);
+    $set->populateIcons(false);
+    $values = array_column($set->icons, 'value');
+    foreach (['home', 'account', 'heart', 'star', 'check', 'magnify'] as $name) {
+        expect($values)->toContain('mdi mdi-' . $name);
+    }
+});

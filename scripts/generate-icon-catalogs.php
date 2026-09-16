@@ -15,6 +15,7 @@ $jsonDir = dirname(__DIR__) . '/src/json';
 $versions = [
     'bootstrap' => '1.13.1',
     'remix' => '4.9.1',
+    'mdi' => '7.4.47',
     'tabler' => '3.46.0',
     'cssGg' => '2.1.4',
     'ionicons' => '8.1.0',
@@ -79,10 +80,17 @@ usort($remixFill, fn($a, $b) => strcmp($a['label'], $b['label']));
 writeCatalog($jsonDir . '/remix-line.json', $remixLine);
 writeCatalog($jsonDir . '/remix-fill.json', $remixFill);
 
-// Material Design Icons — Iconify mdi collection (avoids utility classes in CSS).
-$mdi = fetchJson('https://api.iconify.design/collection?prefix=mdi');
-$mdiIcons = array_map(fn(string $name) => iconRow($name), $mdi['uncategorized'] ?? []);
-sort($mdiIcons);
+// Material Design Icons — glyph selectors from the exact font version, excluding utility classes.
+$mdiVersion = $versions['mdi'];
+$mdiCss = file_get_contents("https://cdn.jsdelivr.net/npm/@mdi/font@{$mdiVersion}/css/materialdesignicons.min.css");
+
+if ($mdiCss === false || !preg_match_all('/\.mdi-([a-z0-9-]+)::before\{content:/', $mdiCss, $mdiMatches)) {
+    throw new RuntimeException('Failed to read Material Design Icons glyphs.');
+}
+
+$mdiNames = array_unique($mdiMatches[1]);
+sort($mdiNames);
+$mdiIcons = array_map(fn(string $name) => iconRow($name), $mdiNames);
 writeCatalog($jsonDir . '/mdi.json', $mdiIcons);
 
 // css.gg — icon names from package icons.json (catalog pin; CSS URL remains legacy all.css).

@@ -44,6 +44,7 @@
 - Validate icon-set names and unique handles before saving.
 - Render CSS icons correctly when combining icon sets that use different rendering attributes.
 - Load each selected font collection when multiple icon sets share a font name.
+- Include the complete Material Design Icons catalog for the bundled font version.
 - Handle empty SVG spritesheets without interrupting icon loading.
 - Refresh icons and metadata when regenerating an already loaded icon-set cache.
 - Refresh cached catalogs when icon sets change through project config or reuse a handle.
