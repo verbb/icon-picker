@@ -40,6 +40,7 @@
 - Release field listeners when slideouts close and restore keyboard focus after selecting or clearing an icon.
 - Validate icon-set names and unique handles before saving.
 - Render CSS icons correctly when combining icon sets that use different rendering attributes.
+- Load each selected font collection when multiple icon sets share a font name.
 - Handle empty SVG spritesheets without interrupting icon loading.
 - Refresh icons and metadata when regenerating an already loaded icon-set cache.
 - Refresh cached catalogs when icon sets change through project config or reuse a handle.

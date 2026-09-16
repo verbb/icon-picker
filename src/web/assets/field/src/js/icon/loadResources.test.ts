@@ -84,13 +84,33 @@ it('retries a failed remote stylesheet and shares its outcome across fields', as
     const failed = document.head.querySelector<HTMLLinkElement>('link[href="https://example.test/retry.css"]')!;
     failed.dispatchEvent(new Event('error'));
     expect((await outcomes).map((outcome) => outcome.status)).toEqual(['rejected', 'rejected']);
-    expect(Craft.IconPicker?.Cache?.fonts).not.toContain(font.name);
+    expect(Craft.IconPicker?.Cache?.fonts).toHaveLength(0);
     expect(failed.isConnected).toBe(false);
     const retry = loadFonts([font]);
     const replacement = document.head.querySelector<HTMLLinkElement>('link[href="https://example.test/retry.css"]')!;
     expect(replacement).not.toBe(failed);
     replacement.dispatchEvent(new Event('load'));
     await retry;
-    expect(Craft.IconPicker?.Cache?.fonts).toEqual([font.name]);
+    expect(Craft.IconPicker?.Cache?.fonts).toHaveLength(1);
     replacement.remove();
+});
+
+it('loads distinct stylesheets with the same font name while sharing identical requests', async () => {
+    vi.stubGlobal('Craft', { IconPicker: { Cache: { stylesheets: [], fonts: [], scripts: [] } } });
+    const append = document.head.appendChild.bind(document.head);
+    vi.spyOn(document.head, 'appendChild').mockImplementation((node) => {
+        if (node instanceof HTMLLinkElement) node.rel = 'audit-test';
+        return append(node);
+    });
+    const solid = { name: 'Font Awesome', type: 'remote', url: 'https://example.test/solid.css' };
+    const brands = { ...solid, url: 'https://example.test/brands.css' };
+    const requests = Promise.all([loadFonts([solid]), loadFonts([brands]), loadFonts([solid])]);
+    const links = Array.from(document.head.querySelectorAll<HTMLLinkElement>('link[href^="https://example.test/"]'));
+    // Resolve inserted resources before asserting so a failed regression leaves no pending request.
+    links.forEach((link) => link.dispatchEvent(new Event('load')));
+    await requests;
+    expect(links.map((link) => link.href).sort()).toEqual([brands.url, solid.url]);
+    await loadFonts([solid, brands]);
+    expect(document.head.querySelectorAll('link[href^="https://example.test/"]')).toHaveLength(2);
+    links.forEach((link) => link.remove());
 });

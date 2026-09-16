@@ -45,11 +45,14 @@ export const loadFonts = (fonts: FontResource[] | undefined): Promise<void> => {
     const cache = ensureCache();
 
     return Promise.all(fonts.map((font) => {
-        const pending = pendingFonts.get(font.name);
+        // Providers can share a family name while loading different collections or versions.
+        const urls = font.url ? (Array.isArray(font.url) ? font.url : [font.url]) : [];
+        const key = JSON.stringify([font.type, font.name, font.id, urls]);
+        const pending = pendingFonts.get(key);
         if (pending) {
             return pending;
         }
-        if (cache.fonts.includes(font.name)) {
+        if (cache.fonts.includes(key)) {
             return Promise.resolve();
         }
 
@@ -84,15 +87,15 @@ export const loadFonts = (fonts: FontResource[] | undefined): Promise<void> => {
                 })));
             }
 
-            cache.fonts.push(font.name);
+            cache.fonts.push(key);
         })().catch((error) => {
             // A multi-file font is ready only when every stylesheet loads. Remove
             // partial resources so Retry starts a coherent request for this font.
             nodes.forEach((node) => node.remove());
             throw error;
-        }).finally(() => { pendingFonts.delete(font.name); });
+        }).finally(() => { pendingFonts.delete(key); });
 
-        pendingFonts.set(font.name, request);
+        pendingFonts.set(key, request);
         return request;
     })).then(() => undefined);
 };
