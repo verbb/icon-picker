@@ -27,6 +27,7 @@
 - Preserve cleared Font Awesome style selections when saving icon sets.
 - Load Font Awesome kit resources for element previews, including custom uploaded icons.
 - Retry loading icon scripts, stylesheets and spritesheets after a failed request.
+- Keep element previews usable when a spritesheet cannot be loaded.
 - Strengthen request validation for utility actions.
 - Give the icon search input an accessible field label.
 - Load Material Icons web fonts that omit glyph names.

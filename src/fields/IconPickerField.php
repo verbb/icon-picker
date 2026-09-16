@@ -2,6 +2,7 @@
 namespace verbb\iconpicker\fields;
 
 use verbb\iconpicker\IconPicker;
+use verbb\iconpicker\helpers\IconPickerHelper;
 use verbb\iconpicker\helpers\Plugin;
 use verbb\iconpicker\models\Icon;
 
@@ -369,7 +370,13 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
 
                     // Add all spritesheets to the DOM
                     foreach ($iconSet->getSpriteSheets() as $spriteSheet) {
-                        $spriteSheetData = file_get_contents($spriteSheet['url']);
+                        // Use the shared loader so unavailable resources cannot abort an element index.
+                        $spriteSheetData = IconPickerHelper::getFileContents($spriteSheet['url']);
+
+                        if ($spriteSheetData === '') {
+                            continue;
+                        }
+
                         $spriteSheetHtml = '<div id="icon-picker-spritesheet-' . $spriteSheet['name'] . '" style="display: none;">' . $spriteSheetData . '</div>';
 
                         $view->registerHtml($spriteSheetHtml, View::POS_BEGIN);
