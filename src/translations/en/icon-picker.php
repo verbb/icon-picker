@@ -1,6 +1,7 @@
 <?php
 
 return [
+  'Couldn’t delete icon set.' => 'Couldn’t delete icon set.',
   'Configure an Icon Picker field for Redactor in the plugin settings.' => 'Configure an Icon Picker field for Redactor in the plugin settings.',
   '/' => '/',
   '5.15.4' => '5.15.4',

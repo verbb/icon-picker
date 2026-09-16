@@ -180,13 +180,15 @@ class IconSetsController extends Controller
         return $this->asJson(['success' => true]);
     }
 
-    public function actionDelete(): Response
+    public function actionDelete(): ?Response
     {
         $this->requirePostRequest();
 
         $iconSetsId = $this->request->getRequiredParam('id');
 
-        IconPicker::$plugin->getIconSets()->deleteIconSetById($iconSetsId);
+        if (!IconPicker::$plugin->getIconSets()->deleteIconSetById($iconSetsId)) {
+            return $this->asFailure(Craft::t('icon-picker', 'Couldn’t delete icon set.'), ['success' => false]);
+        }
 
         if ($this->request->getAcceptsJson()) {
             return $this->asJson([

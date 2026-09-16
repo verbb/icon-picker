@@ -84,3 +84,32 @@ it('refreshes warm catalogs after deployed settings, renames and handle reuse', 
         if (isset($replacement)) $service->deleteIconSet($replacement);
     }
 });
+
+it('reports a vetoed icon set deletion as a failure', function(bool $json) {
+    AdminUser::login();
+    $service = IconPicker::$plugin->getIconSets();
+    $set = $service->getAllIconSets()[0];
+    $veto = static function($event) { $event->isValid = false; };
+    $set->on(\craft\base\SavableComponent::EVENT_BEFORE_DELETE, $veto);
+    CpRequestContext::activate('actions/icon-picker/icon-sets/delete', 'POST');
+    Craft::$app->getRequest()->getHeaders()->set('Accept', $json ? 'application/json' : 'text/html');
+    Craft::$app->getRequest()->setBodyParams(['id' => $set->id]);
+    // Capture the host flash boundary because the suite runs in a console app.
+    $controller = new class('icon-sets', IconPicker::$plugin) extends IconSetsController {
+        public ?string $failureMessage = null;
+        public function setFailFlash(?string $default = null, array $settings = []): void { $this->failureMessage = $default; }
+    };
+    $controller->enableCsrfValidation = false;
+    try {
+        $response = $controller->runAction('delete');
+        expect((new \craft\db\Query())->from('{{%iconpicker_iconsets}}')->where(['id' => $set->id])->exists())->toBeTrue();
+        if ($json) {
+            expect($response->statusCode)->toBe(400)->and($response->data['success'])->toBeFalse();
+        } else {
+            expect($response)->toBeNull()->and($controller->failureMessage)->toBe('Couldn’t delete icon set.');
+        }
+    } finally {
+        $set->off(\craft\base\SavableComponent::EVENT_BEFORE_DELETE, $veto);
+        Craft::$app->getResponse()->setStatusCode(200);
+    }
+})->with([true, false]);

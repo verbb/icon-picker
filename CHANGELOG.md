@@ -30,6 +30,7 @@
 - Load Font Awesome kit resources for element previews, including custom uploaded icons.
 - Allow immediate retries after Font Awesome API failures and keep saved Kit previews available during discovery outages.
 - Retry loading icon scripts, stylesheets and spritesheets after a failed request.
+- Report when an icon set deletion is prevented by an event handler.
 - Keep element previews usable when a spritesheet cannot be loaded.
 - Render sprite gradients and nested symbol references in field previews.
 - Keep sprite collections distinct when their symbols share the same names.
