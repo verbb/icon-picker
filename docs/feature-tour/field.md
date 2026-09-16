@@ -22,6 +22,6 @@ Select an icon, save the entry and reopen it to confirm the selection is retaine
 
 ## Feed Me
 
-Icon Picker fields are available in [Feed Me](https://plugins.craftcms.com/feed-me) imports. Select the individual Icon Sets in the field's **Available Icon Sets** setting for the import to search. Map a feed value to the exact stored value of an icon in one of those sets, such as its path or CSS classes.
+Icon Picker fields are available in [Feed Me](https://plugins.craftcms.com/feed-me) imports. Choose the collections in the field's **Available Icon Sets** setting for the import to search, or choose **All** to search every enabled set. Map a feed value to the exact stored value of an icon in one of those sets, such as its path or CSS classes.
 
 Test one feed item before importing the full feed. Open the resulting entry and check both its selection and rendered output. A value that does not match an icon in the selected sets produces an empty field.
