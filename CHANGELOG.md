@@ -54,6 +54,7 @@
 - Keep saved SVG icons available after narrowing the variants offered in the picker.
 - Keep saved icon previews visible when their set, collection or weight is no longer offered.
 - Render read-only fields without editable picker or Clear controls.
+- Render custom fonts whose filenames contain spaces or punctuation.
 - Preserve the disabled state when saving an Icon Set.
 - Preserve package versions and selected variants when saving remote icon sets.
 - Fix an error when reordering icon sets.

@@ -116,6 +116,10 @@ class Icon extends Model implements \JsonSerializable, \Countable
         $array['label'] = $this->getLabel();
         $array['keywords'] = $this->getKeywords();
 
+        if ($this->type === self::TYPE_GLYPH) {
+            $array['fontClass'] = IconPickerHelper::getFontClass((string)$this->iconSet);
+        }
+
         if ($this->type === self::TYPE_SVG) {
             // Catalog + chip paint from URL (isolated <img>), not inlined markup.
             $array['url'] = $this->getUrl();

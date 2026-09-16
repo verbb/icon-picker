@@ -3,6 +3,7 @@ namespace verbb\iconpicker\iconsets;
 
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\base\IconSet;
+use verbb\iconpicker\helpers\IconPickerHelper;
 use verbb\iconpicker\models\Icon;
 
 use Craft;
@@ -54,7 +55,7 @@ class MaterialSymbols extends IconSet
 
         $this->fonts[] = [
             'type' => 'proxy',
-            'id' => 'font-face-material-symbols-outlined',
+            'id' => IconPickerHelper::getFontClass('material-symbols-outlined'),
             'name' => 'Material Symbols Outlined',
         ];
     }

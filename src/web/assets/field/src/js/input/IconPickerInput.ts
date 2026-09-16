@@ -921,7 +921,7 @@ export class IconPickerInput {
                 : '';
 
             return html`
-                <span class=${`ipui-font font-face-${item.iconSet ?? ''}`}>
+                <span class=${`ipui-font ${item.fontClass || `font-face-${item.iconSet ?? ''}`}`}>
                     ${entity ? unsafeHTML(entity) : nothing}
                 </span>
             `;

@@ -475,7 +475,7 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
                 $entity = '';
             }
 
-            $iconHtml = '<span class="ipui-font font-face-' . Html::encode((string)$value->iconSet) . '">' . $entity . '</span>';
+            $iconHtml = '<span class="ipui-font ' . IconPickerHelper::getFontClass((string)$value->iconSet) . '">' . $entity . '</span>';
 
             return Html::tag('div', $iconHtml, ['class' => 'cp-icon']);
         }

@@ -21,6 +21,7 @@ export interface IconItem {
     displayValue?: string | null;
     id?: string | null;
     cssAttribute?: string | null;
+    fontClass?: string | null;
 }
 
 /** Match Vue field: lodash `startCase(toLower(label))` (e.g. `icon-home2` → `Icon Home 2`). */
@@ -76,7 +77,7 @@ export const renderIconInto = (
 
     if (item.type === 'glyph') {
         const span = document.createElement('span');
-        span.className = `ipui-font font-face-${item.iconSet ?? ''}`;
+        span.className = `ipui-font ${item.fontClass || `font-face-${item.iconSet ?? ''}`}`;
         // Catalog glyphs are HTML entities (`&#xE90A;`). Accept a missing trailing
         // semicolon from legacy payloads, then normalize before paint.
         const raw = display.trim();

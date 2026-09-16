@@ -107,7 +107,7 @@ class WebFont extends IconSet
 
             $this->fonts[] = [
                 'type' => 'local',
-                'name' => 'font-face-' . $fontFilename,
+                'name' => IconPickerHelper::getFontClass($fontFilename),
                 'url' => IconPickerHelper::getUrlForPath($file),
             ];
         }

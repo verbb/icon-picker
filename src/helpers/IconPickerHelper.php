@@ -12,8 +12,14 @@ use Throwable;
 
 class IconPickerHelper
 {
-    // Public Methods
+    // Static Methods
     // =========================================================================
+
+    public static function getFontClass(string $name): string
+    {
+        // Filename punctuation and whitespace must not become CSS syntax or class separators.
+        return 'font-face-' . bin2hex($name);
+    }
 
     public static function getFiles($path, $options): array
     {
