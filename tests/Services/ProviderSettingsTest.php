@@ -90,3 +90,13 @@ it('normalizes existing css.gg Vercel selections for template output', function(
         $service->deleteIconSet($set);
     }
 });
+
+it('keeps existing SVG selections renderable after narrowing the available variants', function() {
+    $set = new \verbb\iconpicker\iconsets\Heroicons(['handle' => 'narrowVariants' . bin2hex(random_bytes(4)), 'variants' => ['solid']]);
+    $set->populateIcons(false);
+    $selected = new \verbb\iconpicker\models\Icon(['type' => 'svg', 'value' => 'academic-cap', 'iconSet' => 'outline']);
+    expect(array_unique(array_column($set->icons, 'iconSet')))->toBe(['solid'])
+        ->and($set->resolveSvgUrl($selected))->toBe('https://cdn.jsdelivr.net/npm/heroicons@2.2.0/24/outline/academic-cap.svg');
+    $selected->value = 'not-a-catalog-icon';
+    expect($set->resolveSvgUrl($selected))->toBeNull();
+});

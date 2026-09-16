@@ -150,6 +150,21 @@ abstract class RemoteSvgIconSet extends IconSet
 
         $this->_catalogLookup = [];
 
+        // Variant settings limit new choices, not the validity of saved selections.
+        foreach ($this->catalogMap() as $variant => $filename) {
+            $path = __DIR__ . '/../json/' . $filename;
+
+            if (!is_file($path)) {
+                continue;
+            }
+
+            foreach (Json::decode(file_get_contents($path)) as $row) {
+                if (!empty($row['label'])) {
+                    $this->_catalogLookup[$variant . "\0" . $row['label']] = true;
+                }
+            }
+        }
+
         foreach ($this->icons as $icon) {
             if (!$icon instanceof Icon || $icon->value === null) {
                 continue;

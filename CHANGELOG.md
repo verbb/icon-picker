@@ -50,6 +50,7 @@
 - Refresh icons and metadata when regenerating an already loaded icon-set cache.
 - Refresh cached catalogs when icon sets change through project config or reuse a handle.
 - Preserve saved icon selections when their icon set is renamed, and prevent deleted sets from binding to reused handles.
+- Keep saved SVG icons available after narrowing the variants offered in the picker.
 - Preserve package versions and selected variants when saving remote icon sets.
 - Fix an error when reordering icon sets.
 - Restrict icon catalog requests to POST requests for a real Icon Picker field on an element the current user can view.
