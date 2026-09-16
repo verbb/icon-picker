@@ -52,6 +52,7 @@
 - Refresh catalogs and resources when the configured Icons Path or Icons URL changes.
 - Preserve saved icon selections when their icon set is renamed, and prevent deleted sets from binding to reused handles.
 - Keep saved SVG icons available after narrowing the variants offered in the picker.
+- Preserve the disabled state when saving an Icon Set.
 - Preserve package versions and selected variants when saving remote icon sets.
 - Fix an error when reordering icon sets.
 - Restrict icon catalog requests to POST requests for a real Icon Picker field on an element the current user can view.

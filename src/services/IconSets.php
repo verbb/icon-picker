@@ -222,7 +222,8 @@ class IconSets extends Component
             $iconSetRecord->name = $data['name'];
             $iconSetRecord->handle = $data['handle'];
             $iconSetRecord->type = $data['type'];
-            $iconSetRecord->enabled = $data['enabled'];
+            // The column also accepts environment references; preserve literal false as "0".
+            $iconSetRecord->enabled = is_bool($data['enabled']) ? (int)$data['enabled'] : $data['enabled'];
             $iconSetRecord->sortOrder = $data['sortOrder'];
             $iconSetRecord->settings = ProjectConfigHelper::unpackAssociativeArrays($settings);
             $iconSetRecord->uid = $iconSetUid;
