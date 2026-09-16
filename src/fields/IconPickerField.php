@@ -4,6 +4,7 @@ namespace verbb\iconpicker\fields;
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\helpers\IconPickerHelper;
 use verbb\iconpicker\helpers\Plugin;
+use verbb\iconpicker\iconsets\FontAwesome;
 use verbb\iconpicker\models\Icon;
 
 use Craft;
@@ -514,7 +515,8 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
 
         $iconSet = $value->getSourceIconSet();
 
-        if (!$iconSet) {
+        // Font Awesome values are complete CSS classes; its script handles Kit artwork.
+        if (!$iconSet || $iconSet instanceof FontAwesome) {
             return;
         }
 

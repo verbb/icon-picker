@@ -9,9 +9,10 @@ use Craft;
 use craft\helpers\App;
 use craft\helpers\Json;
 
-use GuzzleHttp\Exception\RequestException;
-
+use RuntimeException;
 use Throwable;
+
+use GuzzleHttp\Exception\RequestException;
 
 class FontAwesome extends IconSet
 {
@@ -75,6 +76,11 @@ class FontAwesome extends IconSet
                 [$kitToken, $version, $license] = explode(':', $kit);
 
                 $data = $this->getKit($kitToken, $license);
+
+                if ($this->_apiError !== null) {
+                    throw new RuntimeException(Craft::t('icon-picker', 'Unable to load Font Awesome icons. Please try again.'));
+                }
+
                 $customIcons = $data['iconUploads'] ?? [];
                 $icons = $data['release']['icons'] ?? [];
 
@@ -110,11 +116,7 @@ class FontAwesome extends IconSet
                     ]);
                 }
 
-                $this->scripts[] = [
-                    'type' => 'remote',
-                    'name' => 'icon-picker-fa-kit-' . $kitToken,
-                    'url' => "https://kit.fontawesome.com/{$kitToken}.js",
-                ];
+                $this->scripts[] = $this->_getKitScript($kitToken);
             }
         }
 
@@ -172,6 +174,23 @@ class FontAwesome extends IconSet
         }
     }
 
+    public function populateResources(bool $fromCache = true): void
+    {
+        if ($this->type !== self::TYPE_KIT) {
+            parent::populateResources($fromCache);
+            return;
+        }
+
+        // A saved Kit icon needs its script even when catalogue discovery is unavailable.
+        $this->fonts = [];
+        $this->spriteSheets = [];
+        $this->scripts = [];
+
+        foreach ($this->kits as $kit) {
+            $this->scripts[] = $this->_getKitScript(explode(':', $kit)[0]);
+        }
+    }
+
     public function getResourcesForIcon(Icon $icon): array
     {
         $resources = parent::getResourcesForIcon($icon);
@@ -213,8 +232,9 @@ class FontAwesome extends IconSet
 
     public function getKits(): array
     {
+        $this->_apiError = null;
         $apiKey = App::parseEnv($this->apiKey);
-        $cacheKey = 'icon-picker:fa-kits-cache:' . $apiKey;
+        $cacheKey = 'icon-picker:fa-kits:v2:' . $apiKey;
         $cacheDuration = 60 * 60; // 1 hour
 
         return Craft::$app->getCache()->getOrSet($cacheKey, function() use ($apiKey) {
@@ -228,6 +248,10 @@ class FontAwesome extends IconSet
                     ]);
 
                     $accessToken = $response['access_token'] ?? '';
+
+                    if (!$accessToken) {
+                        throw new RuntimeException('Font Awesome returned no access token.');
+                    }
 
                     $response = $this->request('POST', '/', [
                         'headers' => [
@@ -254,7 +278,11 @@ class FontAwesome extends IconSet
                         ],
                     ]);
 
-                    return $response['data']['me']['kits'] ?? [];
+                    if (!is_array($response['data']['me']['kits'] ?? null)) {
+                        throw new RuntimeException('Font Awesome returned no Kit list.');
+                    }
+
+                    return $response['data']['me']['kits'];
                 }
             } catch (Throwable $e) {
                 $messageText = $e->getMessage();
@@ -272,14 +300,18 @@ class FontAwesome extends IconSet
                 ]);
 
                 IconPicker::error($this->_apiError);
+
+                // Yii does not cache false, allowing the next request to retry.
+                return false;
             }
-        }, $cacheDuration) ?? [];
+        }, $cacheDuration) ?: [];
     }
 
     public function getKit(string $kitId, string $license): array
     {
+        $this->_apiError = null;
         $styles = is_array($this->styles) ? implode('-', $this->styles) : $this->styles;
-        $cacheKey = 'icon-picker:fa-icons-' . $kitId . '-' . $styles . '-cache';
+        $cacheKey = 'icon-picker:fa-icons:v2:' . $kitId . ':' . $license . ':' . $styles;
         $cacheDuration = 60 * 60; // 1 hour
 
         return Craft::$app->getCache()->getOrSet($cacheKey, function() use ($kitId, $license) {
@@ -293,6 +325,10 @@ class FontAwesome extends IconSet
                     ]);
 
                     $accessToken = $response['access_token'] ?? '';
+
+                    if (!$accessToken) {
+                        throw new RuntimeException('Font Awesome returned no access token.');
+                    }
 
                     // Only fetch free icons if restricted. Fetch both Pro and Free for pro.
                     $iconsParam = $license === 'free' ? 'icons(license: "free")' : 'icons';
@@ -337,8 +373,14 @@ class FontAwesome extends IconSet
                         ],
                     ]);
 
-                    return $response['data']['me']['kit'] ?? [];
+                    if (!is_array($response['data']['me']['kit'] ?? null)) {
+                        throw new RuntimeException('Font Awesome returned no Kit data.');
+                    }
+
+                    return $response['data']['me']['kit'];
                 }
+
+                throw new RuntimeException('A Font Awesome API key is required.');
             } catch (Throwable $e) {
                 $messageText = $e->getMessage();
 
@@ -355,8 +397,10 @@ class FontAwesome extends IconSet
                 ]);
 
                 IconPicker::error($this->_apiError);
+
+                return false;
             }
-        }, $cacheDuration) ?? [];
+        }, $cacheDuration) ?: [];
     }
 
     public function getApiError(): ?string
@@ -381,6 +425,15 @@ class FontAwesome extends IconSet
     // Private Methods
     // =========================================================================
 
+    private function _getKitScript(string $token): array
+    {
+        return [
+            'type' => 'remote',
+            'name' => 'icon-picker-fa-kit-' . $token,
+            'url' => "https://kit.fontawesome.com/{$token}.js",
+        ];
+    }
+
     private function getClient()
     {
         return Craft::createGuzzleClient([
@@ -392,7 +445,13 @@ class FontAwesome extends IconSet
     {
         $response = $this->getClient()->request($method, ltrim($uri, '/'), $options);
 
-        return Json::decode((string)$response->getBody());
+        $data = Json::decode((string)$response->getBody());
+
+        if (!is_array($data) || !empty($data['errors'])) {
+            throw new RuntimeException('Font Awesome returned an unsuccessful API response.');
+        }
+
+        return $data;
     }
 
     private function _getAbbreviationForFamilyStyle($familyStyle): string

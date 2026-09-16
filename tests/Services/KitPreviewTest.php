@@ -19,6 +19,14 @@ class PreviewKitFixture extends FontAwesome
     }
 }
 
+class UnavailablePreviewKitFixture extends FontAwesome
+{
+    public function getKit(string $kitId, string $license): array
+    {
+        throw new RuntimeException('Catalogue discovery is unavailable.');
+    }
+}
+
 it('retains a custom kit icon source and registers its script for element previews', function() {
     $set = new PreviewKitFixture([
         'name' => 'Preview kit', 'handle' => 'previewKit' . bin2hex(random_bytes(4)),
@@ -34,6 +42,23 @@ it('retains a custom kit icon source and registers its script for element previe
         expect($field->getThumbHtml($icon, new Entry(), 40))->toContain('fak fa-custom-icon');
         $scripts = Craft::$app->getView()->jsFiles[View::POS_END] ?? [];
         expect(implode('', $scripts))->toContain('https://kit.fontawesome.com/fixture.js');
+    } finally {
+        $sets->deleteIconSet($set);
+    }
+});
+
+it('renders a saved Kit preview without querying the catalogue API', function() {
+    $set = new UnavailablePreviewKitFixture([
+        'name' => 'Unavailable kit', 'handle' => 'unavailableKit' . bin2hex(random_bytes(4)),
+        'type' => 'kit', 'apiKey' => 'test-only', 'kits' => ['unavailable:6.0.0:free'],
+    ]);
+    $sets = IconPicker::$plugin->getIconSets();
+    expect($sets->saveIconSet($set))->toBeTrue();
+    try {
+        $icon = new \verbb\iconpicker\models\Icon(['type' => 'css', 'value' => 'fak fa-custom-icon', 'iconSetHandle' => $set->handle]);
+        $field = new IconPickerField(['handle' => 'savedKitIcon']);
+        expect($field->getThumbHtml($icon, new Entry(), 40))->toContain('fak fa-custom-icon');
+        expect(implode('', Craft::$app->getView()->jsFiles[View::POS_END] ?? []))->toContain('https://kit.fontawesome.com/unavailable.js');
     } finally {
         $sets->deleteIconSet($set);
     }

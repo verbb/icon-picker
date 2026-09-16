@@ -28,6 +28,7 @@
 - Preserve cleared Font Awesome style selections when saving icon sets.
 - Preserve Font Awesome collection selections when switching icon set types or licences.
 - Load Font Awesome kit resources for element previews, including custom uploaded icons.
+- Allow immediate retries after Font Awesome API failures and keep saved Kit previews available during discovery outages.
 - Retry loading icon scripts, stylesheets and spritesheets after a failed request.
 - Keep element previews usable when a spritesheet cannot be loaded.
 - Strengthen request validation for utility actions.
