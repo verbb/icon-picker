@@ -72,6 +72,8 @@ class SettingsController extends Controller
 
     public function actionClearCache(): Response
     {
+        $this->requirePostRequest();
+
         IconPicker::$plugin->getService()->clearAndRegenerateCache();
 
         Craft::$app->getSession()->setNotice(Craft::t('icon-picker', 'Icon set cache re-generation started.'));
@@ -81,6 +83,8 @@ class SettingsController extends Controller
 
     public function actionTroubleshoot(): ?Response
     {
+        $this->requirePostRequest();
+
         $selectedHandles = Craft::$app->getRequest()->getBodyParam('iconSets', []);
         $allIconSets = IconPicker::$plugin->getIconSets()->getAllIconSets();
 

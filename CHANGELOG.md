@@ -23,6 +23,7 @@
 - Align documentation filenames with page titles and update internal links.
 
 ### Fixed
+- Strengthen request validation for utility actions.
 - Give the icon search input an accessible field label.
 - Load Material Icons web fonts that omit glyph names.
 - Keep icons searchable by name when additional metadata keywords are present.

@@ -53,3 +53,11 @@ describe('Settings and icon-sets admin gate', function() {
         expect($controller->beforeAction($action))->toBeTrue();
     });
 });
+
+it('requires POST for cache regeneration', function() {
+    AdminUser::login();
+    CpRequestContext::activate('actions/icon-picker/settings/clear-cache', 'GET');
+    $controller = new SettingsController('settings', IconPicker::$plugin);
+    $controller->enableCsrfValidation = false;
+    expect(fn() => $controller->runAction('clear-cache'))->toThrow(\yii\web\MethodNotAllowedHttpException::class);
+});
