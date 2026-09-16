@@ -132,13 +132,11 @@ class SvgSprite extends IconSet
     private function _fetchSvgsFromSprites(string $file): array
     {
         $items = [];
+        $previousLibxmlErrors = libxml_use_internal_errors(true);
 
         try {
             $data = @file_get_contents($file);
             $error = error_get_last();
-
-            // Allow parsing errors to be caught
-            libxml_use_internal_errors(true);
 
             $xml = XmlParser::toArray(XmlParser::build($data));
 
@@ -155,13 +153,20 @@ class SvgSprite extends IconSet
             // Get a more useful error from parsing - if available
             $parseErrors = libxml_get_errors();
             IconPicker::error('Error processing SVG spritesheet ' . $file . ': ' . Json::encode($parseErrors) . ': ' . $e->getMessage());
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($previousLibxmlErrors);
         }
 
-        // Normalise the sprites - there might only be a single sprite.
-        if (Hash::dimensions($items) === 1) {
+        if (!is_array($items)) {
+            return [];
+        }
+
+        // A single symbol is associative regardless of how deeply its paths nest.
+        if (isset($items['@id'])) {
             $items = [$items];
         }
 
-        return $items;
+        return array_values(array_filter($items, fn($item) => is_array($item) && isset($item['@id'])));
     }
 }

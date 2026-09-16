@@ -23,6 +23,7 @@
 - Align documentation filenames with page titles and update internal links.
 
 ### Fixed
+- Handle empty SVG spritesheets without interrupting icon loading.
 - Refresh icons and metadata when regenerating an already loaded icon-set cache.
 - Preserve package versions and selected variants when saving remote icon sets.
 - Fix an error when reordering icon sets.
