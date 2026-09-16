@@ -504,7 +504,7 @@ export class IconPickerInput {
             return this.icons;
         }
 
-        return this.icons.filter((icon) => (icon.keywords || '').toLowerCase().includes(query));
+        return this.icons.filter((icon) => `${icon.label || ''} ${icon.keywords || ''}`.toLowerCase().includes(query));
     }
 
     // -------------------------------------------------------------------------

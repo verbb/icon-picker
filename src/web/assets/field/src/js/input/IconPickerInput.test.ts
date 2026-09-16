@@ -57,3 +57,15 @@ it('keeps catalog results when an earlier resource preload finishes afterwards',
     expect(state.icons).toEqual([{ type: 'css', value: 'known' }]);
     picker.destroy();
 });
+
+it('searches an icon name as well as its additional metadata keywords', () => {
+    const { picker } = mount();
+    const state = picker as unknown as { icons: unknown[]; search: string; readonly iconsFiltered: unknown[] };
+    const icon = { type: 'css', value: 'bi bi-alarm', label: 'Alarm', keywords: 'time wake' };
+    state.icons = [icon];
+    state.search = 'ALARM';
+    expect(state.iconsFiltered).toEqual([icon]);
+    state.search = 'wake';
+    expect(state.iconsFiltered).toEqual([icon]);
+    picker.destroy();
+});
