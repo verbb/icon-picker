@@ -9,6 +9,7 @@ use verbb\iconpicker\records\IconSet as IconSetRecord;
 use Craft;
 use craft\base\SavableComponent;
 use craft\helpers\App;
+use craft\helpers\FileHelper;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\validators\HandleValidator;
@@ -23,7 +24,7 @@ abstract class IconSet extends SavableComponent implements IconSetInterface, \Js
     {
         $settings = IconPicker::$plugin->getSettings();
         // Resolved settings also cover project config, aliases and environment overrides.
-        $source = [$settings->getIconSetsPath(), $settings->getIconSetsUrl()];
+        $source = [FileHelper::normalizePath(App::parseEnv($settings->iconSetsPath)), $settings->getIconSetsUrl()];
 
         return 'icon-picker:v4:' . $handle . ':' . hash('sha256', Json::encode($source));
     }

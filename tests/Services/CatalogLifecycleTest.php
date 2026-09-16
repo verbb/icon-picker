@@ -70,3 +70,20 @@ it('uses effective root settings for cached catalogs and resources', function() 
         \craft\helpers\FileHelper::removeDirectory($root);
     }
 });
+
+it('does not create local directories when reading a remote-only catalog', function() {
+    $root = sys_get_temp_dir() . '/remote-only-' . bin2hex(random_bytes(4));
+    mkdir($root, 0500);
+    $settings = IconPicker::$plugin->getSettings();
+    $previousPath = $settings->iconSetsPath;
+    $settings->iconSetsPath = $root . '/unused';
+    try {
+        $set = new \verbb\iconpicker\iconsets\Heroicons(['handle' => basename($root), 'variants' => ['outline']]);
+        $set->populateIcons();
+        expect($set->icons)->not->toBeEmpty()->and(is_dir($settings->iconSetsPath))->toBeFalse();
+    } finally {
+        $settings->iconSetsPath = $previousPath;
+        chmod($root, 0700);
+        \craft\helpers\FileHelper::removeDirectory($root);
+    }
+});
