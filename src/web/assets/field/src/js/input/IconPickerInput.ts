@@ -42,6 +42,7 @@ const HIDDEN_KEYS: (keyof IconValue)[] = [
     'value',
     'iconSet',
     'iconSetHandle',
+    'iconSetUid',
     'type',
     'label',
     'keywords',

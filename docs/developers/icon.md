@@ -18,7 +18,23 @@ The value of the icon. This will vary depending on the type of icon.
 
 **Type:** `string|null`
 
-The icon set this icon belongs to.
+The folder, collection or variant within the source Icon Set.
+:::
+
+::: reference
+### `iconSetHandle`
+
+**Type:** `string|null`
+
+The current handle of the source Icon Set.
+:::
+
+::: reference
+### `iconSetUid`
+
+**Type:** `string|null`
+
+The stable identity of the source Icon Set. Saved selections keep this identity when a set is renamed. Deleting a set does not attach its selections to another set that reuses the handle.
 :::
 
 ::: reference

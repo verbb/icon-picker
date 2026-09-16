@@ -369,7 +369,7 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
         if ($value->iconSetHandle) {
             // Have we already rendered this spritesheet?
             if (!in_array($value->iconSetHandle, IconPicker::$plugin->getService()->$cacheCategory)) {
-                if ($iconSet = IconPicker::$plugin->getIconSets()->getIconSetByHandle($value->iconSetHandle)) {
+                if ($iconSet = $value->getSourceIconSet()) {
                     // Ensure the icons are loaded (from the cache)
                     $iconSet->populateIcons();
 
@@ -504,7 +504,7 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
             return;
         }
 
-        $iconSet = IconPicker::$plugin->getIconSets()->getIconSetByHandle($value->iconSetHandle);
+        $iconSet = $value->getSourceIconSet();
 
         if (!$iconSet) {
             return;

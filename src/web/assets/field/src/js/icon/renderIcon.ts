@@ -11,6 +11,7 @@ export interface IconItem {
     value?: string | null;
     iconSet?: string | null;
     iconSetHandle?: string | null;
+    iconSetUid?: string | null;
     type?: string | null;
     label?: string | null;
     keywords?: string | null;

@@ -109,3 +109,14 @@ it('removes cleared icon markup consumed by the Redactor insertion dialog', () =
     expect(preview.innerHTML).toBe('');
     picker.destroy();
 });
+
+
+it('submits stable source identity and clears it with the selection', () => {
+    const uid = 'a8887078-8df1-442a-909c-43ed16d293f5';
+    const { root, picker } = mount({ type: 'css', value: 'bi bi-alarm', iconSetHandle: 'icons', iconSetUid: uid });
+    const input = root.querySelector<HTMLInputElement>('input[data-icon-picker-key="iconSetUid"]')!;
+    expect(input.value).toBe(uid);
+    root.querySelector<HTMLButtonElement>('.ipui-icon-input-clear')!.click();
+    expect(input.value).toBe('');
+    picker.destroy();
+});

@@ -2,6 +2,7 @@
 namespace verbb\iconpicker\models;
 
 use verbb\iconpicker\IconPicker;
+use verbb\iconpicker\base\IconSetInterface;
 use verbb\iconpicker\helpers\IconPickerHelper;
 
 use Craft;
@@ -28,6 +29,7 @@ class Icon extends Model implements \JsonSerializable, \Countable
     public ?string $value = null;
     public ?string $iconSet = null;
     public ?string $iconSetHandle = null;
+    public ?string $iconSetUid = null;
     public ?string $type = null;
     public ?string $label = null;
     public ?string $keywords = null;
@@ -69,9 +71,11 @@ class Icon extends Model implements \JsonSerializable, \Countable
     {
         parent::init();
 
+        $this->getSourceIconSet();
+
         // Keep selections from the css.gg catalog compatible with its legacy stylesheet.
         if ($this->type === self::TYPE_CSS && $this->value === 'gg-vercel' && $this->iconSetHandle &&
-            IconPicker::$plugin->getIconSets()->getIconSetByHandle($this->iconSetHandle) instanceof \verbb\iconpicker\iconsets\CssGg) {
+            $this->getSourceIconSet() instanceof \verbb\iconpicker\iconsets\CssGg) {
             $this->value = 'gg-zeit';
         }
 
@@ -82,7 +86,8 @@ class Icon extends Model implements \JsonSerializable, \Countable
 
     public function serializeValueForDb(): ?array
     {
-        // For when saving the value from the field into the content table for an element
+        // Preserve source identity even when an existing model is saved after a rename.
+        $this->getSourceIconSet();
         return $this->toArray();
     }
 
@@ -106,6 +111,7 @@ class Icon extends Model implements \JsonSerializable, \Countable
     public function jsonSerialize(): mixed
     {
         // CP field catalog / selected-value JSON (not a public API).
+        $this->getSourceIconSet();
         $array = $this->toArray();
         $array['label'] = $this->getLabel();
         $array['keywords'] = $this->getKeywords();
@@ -118,7 +124,7 @@ class Icon extends Model implements \JsonSerializable, \Countable
         }
 
         if ($this->type === self::TYPE_CSS && $this->iconSetHandle) {
-            $iconSet = IconPicker::$plugin->getIconSets()->getIconSetByHandle($this->iconSetHandle);
+            $iconSet = $this->getSourceIconSet();
             $array['cssAttribute'] = $iconSet?->cssAttribute ?? 'class';
         }
 
@@ -203,6 +209,22 @@ class Icon extends Model implements \JsonSerializable, \Countable
         return (string)$this;
     }
 
+    public function getSourceIconSet(): ?IconSetInterface
+    {
+        $sets = IconPicker::$plugin->getIconSets();
+        // A deleted UID must never bind to another set that later reuses its handle.
+        $source = $this->iconSetUid
+            ? $sets->getIconSetByUid($this->iconSetUid)
+            : ($this->iconSetHandle ? $sets->getIconSetByHandle($this->iconSetHandle) : null);
+
+        if ($source) {
+            $this->iconSetUid = $source->uid;
+            $this->iconSetHandle = $source->handle;
+        }
+
+        return $source;
+    }
+
     public function getUrl(): ?string
     {
         if ($this->type !== self::TYPE_SVG || $this->value === null || $this->value === '') {
@@ -210,11 +232,15 @@ class Icon extends Model implements \JsonSerializable, \Countable
         }
 
         if ($this->iconSetHandle) {
-            $iconSet = IconPicker::$plugin->getIconSets()->getIconSetByHandle($this->iconSetHandle);
+            $iconSet = $this->getSourceIconSet();
 
             if ($iconSet instanceof \verbb\iconpicker\base\RemoteSvgIconSet) {
                 return $iconSet->resolveSvgUrl($this);
             }
+        }
+
+        if ($this->iconSetUid && !$this->getSourceIconSet() && !$this->getPath()) {
+            return null;
         }
 
         return IconPickerHelper::getIconUrl($this->value);
@@ -278,7 +304,7 @@ class Icon extends Model implements \JsonSerializable, \Countable
             $url = $this->getUrl();
 
             if ($url && $this->_isAbsoluteUrl($url) && $this->iconSetHandle) {
-                $iconSet = IconPicker::$plugin->getIconSets()->getIconSetByHandle($this->iconSetHandle);
+                $iconSet = $this->getSourceIconSet();
 
                 if ($iconSet instanceof \verbb\iconpicker\base\RemoteSvgIconSet) {
                     $contents = IconPickerHelper::getFileContents($url);

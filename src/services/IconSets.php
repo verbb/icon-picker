@@ -6,6 +6,7 @@ use verbb\iconpicker\base\IconSet;
 use verbb\iconpicker\base\IconSetInterface;
 use verbb\iconpicker\events\IconSetEvent;
 use verbb\iconpicker\events\RegisterIconSetsEvent;
+use verbb\iconpicker\helpers\IconSetIdentity;
 use verbb\iconpicker\iconsets as registerediconsets;
 use verbb\iconpicker\models\MissingIconSet;
 use verbb\iconpicker\records\IconSet as IconSetRecord;
@@ -212,6 +213,10 @@ class IconSets extends Component
             $isNewIconSet = $iconSetRecord->getIsNewRecord();
             $previousHandle = $iconSetRecord->handle;
 
+            if (!$isNewIconSet && $previousHandle !== $data['handle']) {
+                IconSetIdentity::backfill($previousHandle, $iconSetUid);
+            }
+
             $settings = $data['settings'] ?? [];
 
             $iconSetRecord->name = $data['name'];
@@ -344,6 +349,7 @@ class IconSets extends Component
         $transaction = $db->beginTransaction();
 
         try {
+            IconSetIdentity::backfill($iconSetRecord->handle, $uid);
             $iconSet->beforeApplyDelete();
 
             // Delete the iconSet
