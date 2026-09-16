@@ -7,7 +7,7 @@ import { IconPickerInput } from './input/IconPickerInput';
 
 const INPUT_SELECTOR = '[data-icon-picker-auto-mount="input"], .ipui-input-component';
 
-const mountedInputs = new WeakSet<Element>();
+const mountedInputs = new WeakMap<Element, IconPickerInput>();
 /** Roots seen before Plugin Kit tags are defined (slideout HTML often lands first). */
 const queuedInputs = new Set<HTMLElement>();
 let pkReady = false;
@@ -25,8 +25,9 @@ const mountInput = (root: Element): void => {
     }
 
     try {
-        new IconPickerInput(root).init();
-        mountedInputs.add(root);
+        const input = new IconPickerInput(root);
+        input.init();
+        mountedInputs.set(root, input);
         queuedInputs.delete(root);
     } catch (error) {
         console.error('[icon-picker] Failed to mount field input', error);
@@ -58,6 +59,20 @@ const startObserver = (): void => {
             mutation.addedNodes.forEach((node) => {
                 if (node.nodeType === Node.ELEMENT_NODE) {
                     mountAll(node as HTMLElement);
+                }
+            });
+            mutation.removedNodes.forEach((node) => {
+                if (!(node instanceof HTMLElement) || node.isConnected) {
+                    return;
+                }
+
+                // Slideouts and nested field layouts remove whole subtrees. Release
+                // window listeners and ignore pending requests owned by those inputs.
+                const roots = [node, ...node.querySelectorAll<HTMLElement>(INPUT_SELECTOR)];
+                for (const root of roots) {
+                    mountedInputs.get(root)?.destroy();
+                    mountedInputs.delete(root);
+                    queuedInputs.delete(root);
                 }
             });
         });
@@ -98,11 +113,12 @@ const hookCraftSlideoutMount = (): void => {
 Craft.IconPicker = Craft.IconPicker || {};
 Craft.IconPicker.mountAll = mountAll;
 Craft.IconPicker.startAutoMountObserver = (): void => {
-    if (Craft.IconPicker.__autoMountObserverStarted) {
+    const iconPicker = Craft.IconPicker;
+    if (!iconPicker || iconPicker.__autoMountObserverStarted) {
         return;
     }
 
-    Craft.IconPicker.__autoMountObserverStarted = true;
+    iconPicker.__autoMountObserverStarted = true;
     startObserver();
 };
 

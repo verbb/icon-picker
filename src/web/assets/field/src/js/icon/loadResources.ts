@@ -26,7 +26,11 @@ const ensureCache = (): { stylesheets: string[]; fonts: string[]; scripts: strin
     Craft.IconPicker.Cache = Craft.IconPicker.Cache || { stylesheets: [], fonts: [], scripts: [] };
     Craft.IconPicker.Cache.scripts = Craft.IconPicker.Cache.scripts || [];
 
-    return Craft.IconPicker.Cache;
+    return {
+        stylesheets: Craft.IconPicker.Cache.stylesheets,
+        fonts: Craft.IconPicker.Cache.fonts,
+        scripts: Craft.IconPicker.Cache.scripts,
+    };
 };
 
 export const loadFonts = (fonts: FontResource[] | undefined): void => {

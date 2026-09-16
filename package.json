@@ -11,15 +11,18 @@
         "build": "vite build",
         "watch": "vite build --watch",
         "test:frontend": "vitest run",
+        "typecheck": "tsc --noEmit",
         "dev:plugin-docs": "npm run docs:dev --prefix docs",
         "docs:screenshots": "npm --prefix docs run docs:screenshots --"
     },
     "devDependencies": {
+        "@types/lodash-es": "^4.17.12",
+        "happy-dom": "^20.14.5",
         "rollup-plugin-analyzer": "^4.0.0",
         "typescript": "^5.7.3",
-        "vitest": "^5.0.0",
         "vite": "^8.0.10",
-        "vite-plugin-compression": "^0.5.1"
+        "vite-plugin-compression": "^0.5.1",
+        "vitest": "^5.0.0"
     },
     "dependencies": {
         "@lit-labs/virtualizer": "^2.1.1",

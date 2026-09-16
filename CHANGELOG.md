@@ -23,6 +23,8 @@
 - Align documentation filenames with page titles and update internal links.
 
 ### Fixed
+- Keep loaded icons when resource requests overlap, and show a retry action when icon loading fails.
+- Release field listeners when slideouts close and restore keyboard focus after selecting or clearing an icon.
 - Validate icon-set names and unique handles before saving.
 - Render CSS icons correctly when combining icon sets that use different rendering attributes.
 - Handle empty SVG spritesheets without interrupting icon loading.

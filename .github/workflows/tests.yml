@@ -22,7 +22,7 @@ jobs:
       - name: Validate Composer manifest
         run: composer validate --no-plugins --no-check-publish
       - name: Build production assets
-        run: npm ci && npm audit --omit=dev && npm run test:frontend && npm run build
+        run: npm ci && npm audit --omit=dev && npm run typecheck && npm run test:frontend && npm run build
       - uses: ddev/github-action-setup-ddev@v1
         with:
           version: "1.24.4"

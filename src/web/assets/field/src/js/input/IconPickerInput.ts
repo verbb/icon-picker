@@ -68,6 +68,8 @@ export class IconPickerInput {
     private cssAttribute = 'class';
     private isFetching = false;
     private isPreloadFetching = false;
+    private requestFailed = false;
+    private destroyed = false;
     private open = false;
 
     private wrap!: HTMLElement;
@@ -76,7 +78,7 @@ export class IconPickerInput {
     private chipLabel!: HTMLElement;
     private chipSpinner!: HTMLElement;
     private searchInput!: HTMLElement;
-    private clearButton!: HTMLElement;
+    private clearButton!: HTMLButtonElement;
     private popover!: HTMLElement;
     private pane!: HTMLElement;
     private statusEl!: HTMLElement;
@@ -129,6 +131,8 @@ export class IconPickerInput {
     }
 
     destroy(): void {
+        this.destroyed = true;
+        this.focusGridToken++;
         window.removeEventListener('resize', this.onResize);
     }
 
@@ -349,6 +353,9 @@ export class IconPickerInput {
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 this.paneRefreshQueued = false;
+                if (this.destroyed) {
+                    return;
+                }
                 this.refreshPane();
             });
         });
@@ -373,12 +380,14 @@ export class IconPickerInput {
         this.syncHiddenInputs();
         this.setOpen(false);
         this.syncChrome();
+        this.searchInput.focus();
     }
 
     private clear(): void {
         this.selected = {};
         this.syncHiddenInputs();
         this.syncChrome();
+        this.searchInput.focus();
     }
 
     private syncHiddenInputs(): void {
@@ -507,6 +516,11 @@ export class IconPickerInput {
             return;
         }
 
+        if (this.requestFailed) {
+            this.showStatus('error');
+            return;
+        }
+
         const items = this.iconsFiltered;
 
         if (!items.length) {
@@ -533,7 +547,7 @@ export class IconPickerInput {
         }
     }
 
-    private showStatus(kind: 'loading' | 'empty'): void {
+    private showStatus(kind: 'loading' | 'empty' | 'error'): void {
         if (this.virtualizer) {
             // Drop items so a failed `[hidden]` can't leave the previous grid painted
             // under the empty/loading message (same display-vs-hidden trap as the chip).
@@ -551,6 +565,17 @@ export class IconPickerInput {
             spinner.setAttribute('size', 'sm');
             spinner.setAttribute('centered', '');
             this.statusEl.appendChild(spinner);
+            return;
+        }
+
+        if (kind === 'error') {
+            this.statusEl.textContent = Craft.t('icon-picker', 'Request failed.');
+            const retry = document.createElement('button');
+            retry.type = 'button';
+            retry.className = 'btn';
+            retry.textContent = Craft.t('icon-picker', 'Retry');
+            retry.addEventListener('click', () => { void this.fetchIcons(); });
+            this.statusEl.appendChild(retry);
             return;
         }
 
@@ -919,7 +944,10 @@ export class IconPickerInput {
     // -------------------------------------------------------------------------
 
     private async fetchIcons({ preload = false }: { preload?: boolean } = {}): Promise<void> {
-        this.isFetching = !preload;
+        if (!preload) {
+            this.isFetching = true;
+            this.requestFailed = false;
+        }
         this.refreshPane();
 
         const data = {
@@ -933,13 +961,16 @@ export class IconPickerInput {
 
         try {
             const response = await Craft.sendActionRequest('POST', endpoint, { data });
+            if (this.destroyed) {
+                return;
+            }
             const payload = response.data || {};
 
             if (payload.cssAttribute) {
                 this.cssAttribute = payload.cssAttribute;
             }
 
-            if (payload.icons) {
+            if (!preload && payload.icons) {
                 this.icons = payload.icons as IconItem[];
             }
 
@@ -948,11 +979,18 @@ export class IconPickerInput {
             await loadScripts(payload.scripts);
         } catch (error) {
             console.error('[icon-picker] Failed to fetch icons', error);
-            this.statusEl.hidden = false;
-            this.statusEl.textContent = Craft.t('icon-picker', 'Request failed.');
+            if (!preload) {
+                this.requestFailed = true;
+            }
         } finally {
-            this.isFetching = false;
-            this.isPreloadFetching = false;
+            if (this.destroyed) {
+                return;
+            }
+            if (preload) {
+                this.isPreloadFetching = false;
+            } else {
+                this.isFetching = false;
+            }
             this.syncChrome();
             // Warm the grid while the popover is still closed when possible; if open,
             // defer so the enter transition isn’t competing with the first bind.

@@ -72,6 +72,8 @@ return [
   'New Icon Set' => 'New Icon Set',
   'No icon sets exist yet.' => 'No icon sets exist yet.',
   'No icons match your query.' => 'No icons match your query.',
+  'Request failed.' => 'Request failed.',
+  'Retry' => 'Retry',
   'Outline' => 'Outline',
   'Pro' => 'Pro',
   'Pro requires a Font Awesome subscription. You also need to add this site to the [allowed domains](https://fontawesome.com/account/cdn) for your CDN.' => 'Pro requires a Font Awesome subscription. You also need to add this site to the [allowed domains](https://fontawesome.com/account/cdn) for your CDN.',
