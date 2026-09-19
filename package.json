@@ -13,7 +13,7 @@
         "test:frontend": "vitest run",
         "typecheck": "tsc --noEmit",
         "dev:plugin-docs": "npm run docs:dev --prefix docs",
-        "docs:screenshots": "npm --prefix docs run docs:screenshots --"
+        "screenshots": "npm --prefix screenshots run screenshots --"
     },
     "devDependencies": {
         "@types/lodash-es": "^4.17.12",

@@ -1,6 +1,6 @@
-import { defineScreenshotScenario } from '@verbb/docs-screenshots/api';
-import { seedIconPickerDocsFixture } from '../.screenshots/icon-picker/fixtures';
-import { createIconPickerCleanupStep } from '../.screenshots/icon-picker/presets';
+import { defineScreenshotScenario } from '@verbb/craft-screenshots/api';
+import { seedIconPickerDocsFixture } from '../../../support/docs/fixtures';
+import { createIconPickerCleanupStep } from '../../../support/docs/presets';
 
 // Image scrapped — awkward Type-dropdown crop. Stub kept for a future clean
 // Icon Set form capture (named set, Type closed). Do not ship icon-sets.png until then.
@@ -8,7 +8,7 @@ let settingsRoute = '/admin/icon-picker/settings/icon-sets';
 
 export default defineScreenshotScenario({
     id: 'feature-tour-icon-sets',
-    output: '_screenshots/feature-tour/icon-sets.png',
+    output: 'docs/feature-tour/icon-sets.png',
     route: () => settingsRoute,
     viewport: {
         width: 1320,

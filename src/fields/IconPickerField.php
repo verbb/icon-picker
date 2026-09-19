@@ -18,6 +18,7 @@ use craft\helpers\ArrayHelper;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\helpers\Json;
+use craft\services\Gql as GqlService;
 use craft\web\View;
 
 use yii\db\Schema;
@@ -82,15 +83,23 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
                 'type' => Type::string(),
                 'description' => 'Return the full URL to the icon.',
             ],
-            'path' => [
-                'name' => 'path',
-                'type' => Type::string(),
-                'description' => 'Return the full path to the icon.',
-            ],
             'inline' => [
                 'name' => 'inline',
                 'type' => Type::string(),
-                'description' => 'Returns the raw contents of the icon.',
+                'description' => 'Returns the raw contents of a local SVG icon.',
+                'resolve' => static function(Icon $icon): ?string {
+                    // GraphQL field selection must never trigger an outbound request.
+                    $path = $icon->getPath();
+
+                    if ($path === '') {
+                        return null;
+                    }
+
+                    $contents = @file_get_contents($path);
+
+                    return $contents !== false ? $contents : null;
+                },
+                'complexity' => static fn($childrenComplexity) => $childrenComplexity + GqlService::GRAPHQL_COMPLEXITY_CPU_HEAVY,
             ],
             'glyph' => [
                 'name' => 'glyph',

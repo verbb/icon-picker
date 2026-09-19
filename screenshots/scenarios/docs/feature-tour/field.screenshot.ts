@@ -1,9 +1,9 @@
-import { defineScreenshotScenario } from '@verbb/docs-screenshots/api';
-import { seedIconPickerDocsFixture } from '../.screenshots/icon-picker/fixtures';
+import { defineScreenshotScenario } from '@verbb/craft-screenshots/api';
+import { seedIconPickerDocsFixture } from '../../../support/docs/fixtures';
 import {
     createIconPickerCleanupStep,
     createIconPickerFieldPromoCropStep,
-} from '../.screenshots/icon-picker/presets';
+} from '../../../support/docs/presets';
 
 // Capture the Icon Picker field with the popover open (search + icon grid).
 let entryEditRoute = '/admin/entries';
@@ -16,7 +16,7 @@ const viewport = {
 
 export default defineScreenshotScenario({
     id: 'feature-tour-field',
-    output: '_screenshots/feature-tour/field.png',
+    output: 'docs/feature-tour/field.png',
     route: () => entryEditRoute,
     viewport,
     async setup(context) {

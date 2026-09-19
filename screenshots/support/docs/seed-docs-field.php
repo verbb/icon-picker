@@ -2,7 +2,7 @@
  * Seed an Icon Picker field + a section/entry for docs screenshots.
  *
  * Echoes JSON: fieldId, fieldHandle, settingsRoute, entryEditRoute.
- * Note: no opening PHP tag — @verbb/docs-screenshots injects this into a bootstrap.
+ * Note: no opening PHP tag — @verbb/craft-screenshots injects this into a bootstrap.
  *
  * This is a starter seed: it creates the field with defaults so the field-settings and
  * entry-edit routes resolve. Tune the field settings (icon sets, remote sets, etc.) here

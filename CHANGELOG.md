@@ -23,6 +23,8 @@
 - Align documentation filenames with page titles and update internal links.
 
 ### Fixed
+- Fixed a medium-severity resource exhaustion vulnerability.
+- Fixed a low-severity information disclosure vulnerability.
 - Fix a cross-site scripting vulnerability.
 - Wait for shared icon scripts to load before completing overlapping requests.
 - Preserve cleared Font Awesome style selections when saving icon sets.
