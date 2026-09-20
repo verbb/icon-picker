@@ -12,5 +12,6 @@ Browse or search an icon set in a focused picker, then store a stable reference 
 - **Large libraries:** Cache and lazily load icon sets so larger collections remain practical.
 - **GraphQL:** Query structured icon values in headless builds.
 - **Element cards:** Show selected icons in supported Craft cards, chips, and thumbnails.
+- **Editor integration:** Use Icon Picker values from supported Redactor fields as well as ordinary Craft field layouts.
 - **Extensible sources:** Register another remote icon service through plugin events.
 - **Your icon sources:** Register individual SVG files, SVG sprites, icon fonts, or supported services such as Font Awesome. Multiple folders keep local sets organised, and extension events allow additional remote sources to join the same picker.

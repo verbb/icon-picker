@@ -1,86 +1,62 @@
 # Changelog
 
-## Unreleased
+## 3.1.0 - 2026-09-
 
 ### Added
-- Add field setting for optional input placeholder text when no icon is selected.
-- Icon grid supports arrow-key navigation (Left/Right, Up/Down by row, Home/End).
 - Built-in icon sets for Bootstrap Icons, Remix Icon, Material Design Icons, Phosphor, Lucide, Tabler Icons, Heroicons, and Octicons (CDN-backed catalogs — no icon files bundled in the plugin).
 - **Ionicons** icon set (SVG from `ionicons@8`, outline / default / sharp variants). Legacy web-font set renamed **Ionicons (Legacy)**.
 - Optional **Package version** field on remote CSS/SVG icon sets (`cdnVersion`).
+- Add field setting for optional input placeholder text when no icon is selected.
+- Icon grid supports arrow-key navigation (Left/Right, Up/Down by row, Home/End).
 
 ### Changed
-- Update Plugin Kit and lodash dependencies to their patched releases.
 - Field input rebuilt on [Plugin Kit](https://docs.verbb.io/plugin-kit/web/) (web components).
-- SVG icon catalogs no longer embed full markup in the set cache or CP picker JSON. The field paints SVG cells/chips via `<img src>` (URL), which shrinks large-folder payloads and avoids CSS/`id` bleed between icons (e.g. Carbon). Existing caches are superseded by a `icon-picker:v2:*` key on next load. ([#101](https://github.com/verbb/icon-picker/issues/101), [#103](https://github.com/verbb/icon-picker/issues/103)).
-- `resources-for-field` loads fonts/sprites/scripts without hydrating the full icon catalog.
-- Sprite sheet AJAX payloads omit the parsed `sprites` map (name + URL only).
+- SVG icon catalogs and resource requests now use lightweight URLs and metadata instead of embedding full SVG markup, reducing cache and picker payloads while isolating SVG IDs and styles. Existing caches are superseded on next load. ([#101](https://github.com/verbb/icon-picker/issues/101), [#103](https://github.com/verbb/icon-picker/issues/103)).
 - Feather Icons no longer depend on remote `feather.min.js` / `feather.replace()`. Icon paths are bundled and cached as inline SVG for the CP. ([#85](https://github.com/verbb/icon-picker/issues/85)).
 - Feather Icons renamed to **Feather Icons (Legacy)** with CP notice to prefer Lucide.
-- css.gg catalog pinned to package **2.1.4** (`icons.json`); CSS still loads from jsDelivr `icons/all.css` (legacy path for `gg-*` classes).
-- Bumped default package versions: Bootstrap Icons **1.13.1**, Remix **4.9.1**, Tabler **3.46.0** (catalogs regenerated via `scripts/generate-icon-catalogs.php`).
-- Clarify field setup, remote SVG output, custom Icon Sets and configuration overrides in the documentation.
-- Align documentation filenames with page titles and update internal links.
+- Update the bundled provider catalogs for css.gg **2.1.4**, Bootstrap Icons **1.13.1**, Remix Icon **4.9.1**, Lucide **1.33.0**, Tabler Icons **3.46.0**, and Heroicons **2.2.0**.
+- Update Plugin Kit and lodash dependencies to their patched releases.
+- Clarify field setup, remote SVG output, custom Icon Sets, configuration overrides, and Web Font requirements in the documentation.
 
 ### Fixed
 - Fixed a medium-severity resource exhaustion vulnerability.
 - Fixed a low-severity information disclosure vulnerability.
-- Fix a cross-site scripting vulnerability.
-- Wait for shared icon scripts to load before completing overlapping requests.
-- Preserve cleared Font Awesome style selections when saving icon sets.
-- Preserve Font Awesome collection selections when switching icon set types or licences.
-- Load Font Awesome kit resources for element previews, including custom uploaded icons.
-- Allow immediate retries after Font Awesome API failures and keep saved Kit previews available during discovery outages.
-- Retry loading icon scripts, stylesheets and spritesheets after a failed request.
-- Report when an icon set deletion is prevented by an event handler.
-- Keep element previews usable when a spritesheet cannot be loaded.
-- Preserve public sprite references in Redactor content while keeping editor previews isolated.
-- Render sprite gradients and nested symbol references in field previews.
-- Keep sprite collections distinct when their symbols share the same names.
-- Strengthen request validation for utility actions.
-- Allow admins to regenerate caches and run diagnostics when admin changes are disabled.
-- Give the icon search input an accessible field label.
-- Allow the Clear button to be activated with Enter or Space.
-- Load Material Icons web fonts that omit glyph names.
-- Match Material Icons fallback labels to the correct glyphs across font versions.
-- Keep icons searchable by name when additional metadata keywords are present.
-- Restore icon selection and insertion in Redactor fields.
-- Prevent cleared selections from being inserted into Redactor fields.
+- Fixed a cross-site scripting vulnerability.
+- Preserve saved icon selections and previews when icon sets are renamed, disabled, deleted, or restricted to different collections, variants, or weights.
+- Refresh icon catalogs, metadata, and resources when caches are regenerated or icon-set paths, URLs, handles, and project configuration change.
+- Preserve Font Awesome style and collection selections, and load Kit resources and custom icons in element previews.
+- Allow immediate retries after Font Awesome API failures, retain saved Kit previews during discovery outages, and respect the one-hour Kit cache duration.
+- Keep SVG sprite collections distinct when symbols share names, and render nested references and gradients in field previews.
+- Keep element previews usable when SVG spritesheets are empty or unavailable.
+- Restore icon selection and insertion in Redactor fields, including correct handling of cleared selections and public sprite references.
 - Import icons through Feed Me when a field uses all enabled icon sets.
-- Keep loaded icons when resource requests overlap, and show a retry action when icon loading fails.
-- Release field listeners when slideouts close and restore keyboard focus after selecting or clearing an icon.
-- Validate icon-set names and unique handles before saving.
-- Render CSS icons correctly when combining icon sets that use different rendering attributes.
-- Load each selected font collection when multiple icon sets share a font name.
+- Validate icon-set names and unique handles, preserve their enabled state, fix reordering, and report deletions prevented by event handlers.
+- Render mixed CSS icon sets with their own attributes and load each selected collection when multiple icon sets share a font name.
 - Include the complete Material Design Icons catalog for the bundled font version.
-- Render the css.gg Vercel icon using its legacy stylesheet class.
-- Handle empty SVG spritesheets without interrupting icon loading.
-- Refresh icons and metadata when regenerating an already loaded icon-set cache.
-- Refresh cached catalogs when icon sets change through project config or reuse a handle.
-- Refresh catalogs and resources when the configured Icons Path or Icons URL changes.
-- Allow remote icon catalogs when the unused local icon directory is read-only.
-- Preserve saved icon selections when their icon set is renamed, and prevent deleted sets from binding to reused handles.
-- Keep saved SVG icons available after narrowing the variants offered in the picker.
-- Avoid downloading remote SVGs on the server when rendering icon fields.
-- Keep saved icon previews visible when their set, collection or weight is no longer offered.
-- Render read-only fields without editable picker or Clear controls.
+- Render css.gg icons at the correct size and map the Vercel icon to its legacy stylesheet class.
+- Load Material Icons fonts without glyph names and match fallback labels to the correct glyphs across font versions.
 - Render custom fonts whose filenames contain spaces or punctuation.
-- Preserve the disabled state when saving an Icon Set.
-- Preserve package versions and selected variants when saving remote icon sets.
-- Fix an error when reordering icon sets.
-- Restrict icon catalog requests to POST requests for a real Icon Picker field on an element the current user can view.
-- Respect the one-hour cache duration for Font Awesome kits and icon catalogs.
-- Heroicons icon set uses npm `heroicons@2.2.0` (`24/outline` / `24/solid`). Saved v1 names may need re-picking.
-- Lucide pins `lucide-static@1.33.0`; catalog generated from the same package.
-- Fix css.gg icon sizing in the field grid and selected-icon preview (scale via `--ggs`, center in cell).
-- Fix icon set settings crash for Remix Icon, Heroicons, Tabler Icons, and Phosphor (missing `iconSet` in shared variants partial).
+- Render read-only fields without editable picker or Clear controls.
+- Allow admins to regenerate caches and run diagnostics when admin changes are disabled.
 - Fix false "leave page" warnings on icon set create/edit screens when no changes were made.
 - Don’t open the icon pane on programmatic focus (Craft slideout `setFocusWithin` / focus restore). Open on click, Enter/Space/ArrowDown, or typing instead. ([#109](https://github.com/verbb/icon-picker/issues/109)).
 - Clarify Web Font support: glyph indexing requires `.ttf` / `.woff` / `.otf` (not `.woff2` alone). Docs and icon-set UI updated; `.woff2` is rejected with a clear error. ([#107](https://github.com/verbb/icon-picker/issues/107)).
-- Enforce admin on Icon Sets and Settings controller actions (matching settings templates).
-- SVG field values must resolve to contained local files or exact configured remote-catalog entries; forged `displayValue` markup is discarded.
-- Sprite/glyph CP previews encode untrusted attribute/text values; CSS raw SVG paint requires a hydrated icon set.
 - Fix `Icon::count()` return type for `Countable` (`int`).
+
+## 3.0.16 - 2026-09-14
+
+### Fixed
+- Fix the icon sets admin table after settings normalization.
+
+## 3.0.15 - 2026-09-13
+
+### Changed
+- Normalize plugin settings.
+
+## 3.0.14 - 2026-08-20
+
+### Fixed
+- Fix conflicting `phenx/php-font-lib` dependency (again).
 
 ## 3.0.13 - 2026-07-15
 
@@ -174,6 +150,11 @@
 ### Changed
 - Now requires PHP `8.2.0+`.
 - Now requires Craft `5.0.0+`.
+
+## 2.0.26 - 2026-08-20
+
+### Fixed
+- Fix conflicting `phenx/php-font-lib` dependency when used alongside plugins that require dompdf v3.
 
 ## 2.0.25 - 2026-05-30
 
