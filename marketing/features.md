@@ -17,9 +17,9 @@ Search icons quickly by name or browse the available set visually. Each field ca
 <!-- feature-grid-end -->
 
 <!-- feature-section -->
-## Multiple folders
+## Bring the right icon set
 
-Keep local icon sets organised in folders — including nested folders — and choose which ones are available to each field. Supported services such as [Font Awesome](https://fontawesome.com/) and extension events allow remote sources to join the same picker.
+Start with supported catalogues including Bootstrap Icons, Heroicons, Lucide, Material Design Icons, Octicons, Phosphor, Remix Icon and Tabler Icons. Keep project-owned sets organised in nested folders and limit each field to the collections, variants or weights its authors actually need.
 
 <!-- feature-section-end -->
 

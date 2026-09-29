@@ -1,17 +1,35 @@
-Icon Picker gives authors a searchable, visual field for choosing the right icon without copying filenames or markup. Bring SVGs, sprites, webfonts, and supported remote sets together in one consistent Craft workflow.
+Icon Picker gives authors a searchable, visual field for choosing the right icon without copying filenames or markup. Bring SVGs, sprites, webfonts and supported remote sets together in one consistent Craft workflow.
 
 Browse or search an icon set in a focused picker, then store a stable reference for templates. Fields can expose only the sets that make sense for that part of the site, keeping a large library from becoming a wall of unrelated choices.
 
 ## Features
 
-- **Searchable picker:** Find an icon by name instead of scanning an unlabelled library.
-- **SVG files:** Use individual project-owned SVG artwork as an icon source.
-- **SVG sprites:** Select symbols from an existing SVG sprite sheet.
-- **Icon fonts:** Browse glyphs exposed by the project’s webfont styles.
-- **Organised sets:** Group icon sources and limit which sets each field may use.
-- **Large libraries:** Cache and lazily load icon sets so larger collections remain practical.
-- **GraphQL:** Query structured icon values in headless builds.
-- **Element cards:** Show selected icons in supported Craft cards, chips, and thumbnails.
-- **Editor integration:** Use Icon Picker values from supported Redactor fields as well as ordinary Craft field layouts.
-- **Extensible sources:** Register another remote icon service through plugin events.
-- **Your icon sources:** Register individual SVG files, SVG sprites, icon fonts, or supported services such as Font Awesome. Multiple folders keep local sets organised, and extension events allow additional remote sources to join the same picker.
+- Find an icon by name or move through the grid with the keyboard instead of scanning an unlabelled library.
+- Use individual SVG files, SVG sprites and icon fonts already owned by the project.
+- Choose from a broad collection of remotely backed icon libraries without bundling their SVG files into the plugin.
+- Connect kits and CDN sets, including custom kit icons and their available styles and families.
+- Keep local SVGs in multiple or nested folders and limit which sets, collections, variants or weights each field may use.
+- Cache and lazily load icon metadata and resources so substantial collections remain practical and isolated from one another.
+- Access the selected icon and its source details in Twig or through GraphQL.
+- Show selected icons in supported element cards, chips and thumbnails, or use the picker from supported Redactor fields.
+- Register another remote icon service or extend existing behaviour through plugin events.
+
+## Icon Sets
+
+- Bootstrap Icons
+- css.gg
+- Feather Icons (Legacy)
+- Font Awesome
+- Heroicons
+- Ionicons
+- Ionicons (Legacy)
+- Lucide
+- Material Design Icons
+- Material Symbols
+- Octicons
+- Phosphor
+- Remix Icon
+- SVG Folders
+- SVG Sprites
+- Tabler Icons
+- Web Fonts

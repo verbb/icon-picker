@@ -1,20 +1,21 @@
 <p align="center"><img src="https://assets.verbb.io/plugins/icon-picker/icon-picker-icon.svg" width="100" height="100" alt="Icon Picker icon"></p>
 <h1 align="center">Icon Picker for Craft CMS</h1>
 
-Icon Picker is a Craft CMS field for selecting icons from project files or supported remote icon libraries.
+Icon Picker is a Craft CMS plugin that gives authors a searchable, visual field for choosing the right icon without copying filenames or markup. Bring SVGs, sprites, webfonts and supported remote sets together in one consistent Craft workflow.
+
+Browse or search an icon set in a focused picker, then store a stable reference for templates. Fields can expose only the sets that make sense for that part of the site, keeping a large library from becoming a wall of unrelated choices.
 
 ## Features
 
-- Provides a searchable, accessible UI for selecting icons.
-- Supports single SVGs, SVG sprites, and icon fonts.
-- Supports multiple Icon Sets and recursive SVG directories to keep icons organised by source or purpose.
-- Built-in support for Font Awesome kits and CDN sets, including custom kit icons.
-- Restrict which icon sets are available for each field.
-- Cache and lazily load large icon sets.
-- GraphQL support for structured icon values.
-- Use selected icons in supported Craft element cards, chips, and thumbnails.
-- Redactor integration.
-- Events for adding or extending icon set types.
+- Find an icon by name or move through the grid with the keyboard instead of scanning an unlabelled library.
+- Use individual SVG files, SVG sprites and icon fonts already owned by the project.
+- Choose from a broad collection of remotely backed icon libraries without bundling their SVG files into the plugin.
+- Connect kits and CDN sets, including custom kit icons and their available styles and families.
+- Keep local SVGs in multiple or nested folders and limit which sets, collections, variants or weights each field may use.
+- Cache and lazily load icon metadata and resources so substantial collections remain practical and isolated from one another.
+- Access the selected icon and its source details in Twig or through GraphQL.
+- Show selected icons in supported element cards, chips and thumbnails, or use the picker from supported Redactor fields.
+- Register another remote icon service or extend existing behaviour through plugin events.
 
 ## Icon Sets
 
