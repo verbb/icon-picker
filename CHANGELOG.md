@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.1.0 - 2026-09-
+## 3.1.0 - 2026-09-29
 
 ### Added
 - Built-in icon sets for Bootstrap Icons, Remix Icon, Material Design Icons, Phosphor, Lucide, Tabler Icons, Heroicons, and Octicons (CDN-backed catalogs — no icon files bundled in the plugin).
