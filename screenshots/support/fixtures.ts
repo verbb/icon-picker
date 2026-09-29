@@ -6,6 +6,7 @@ import type { ScreenshotSetupContext } from '@verbb/craft-screenshots/types';
 
 type IconPickerFixture = {
     entryEditRoute: string;
+    iconSetRoute: string;
 };
 
 const supportDir = dirname(fileURLToPath(import.meta.url));
@@ -16,7 +17,7 @@ export async function seedIconPickerFixture(context: ScreenshotSetupContext): Pr
     const output = await context.runCraftScript(seedScript, { label: 'seed-icon-picker-entry' });
     const fixture = JSON.parse(output.trim()) as IconPickerFixture;
 
-    if (!fixture.entryEditRoute) {
+    if (!fixture.entryEditRoute || !fixture.iconSetRoute) {
         throw new Error(`Invalid Icon Picker fixture payload: ${output}`);
     }
 

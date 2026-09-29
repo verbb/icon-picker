@@ -101,4 +101,7 @@ if (!Craft::$app->getElements()->saveElement($entry)) {
     throw new RuntimeException('Unable to save Icon Picker entry: ' . Json::encode($entry->getErrors()));
 }
 
-echo Json::encode(['entryEditRoute' => parse_url((string)$entry->getCpEditUrl(), PHP_URL_PATH)], JSON_THROW_ON_ERROR);
+echo Json::encode([
+    'entryEditRoute' => parse_url((string)$entry->getCpEditUrl(), PHP_URL_PATH),
+    'iconSetRoute' => '/admin/icon-picker/settings/icon-sets/edit/' . $iconSet->id,
+], JSON_THROW_ON_ERROR);

@@ -7,9 +7,12 @@ Icon Picker is a Craft CMS field for selecting icons from project files or suppo
 
 - Provides a searchable, accessible UI for selecting icons.
 - Supports single SVGs, SVG sprites, and icon fonts.
-- Supports multiple Icon Sets to keep icons organised by source or purpose.
+- Supports multiple Icon Sets and recursive SVG directories to keep icons organised by source or purpose.
+- Built-in support for Font Awesome kits and CDN sets, including custom kit icons.
 - Restrict which icon sets are available for each field.
-- GraphQL support.
+- Cache and lazily load large icon sets.
+- GraphQL support for structured icon values.
+- Use selected icons in supported Craft element cards, chips, and thumbnails.
 - Redactor integration.
 - Events for adding or extending icon set types.
 

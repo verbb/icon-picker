@@ -8,6 +8,7 @@ use Tests\Support\NonAdminUser;
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\controllers\IconSetsController;
 use verbb\iconpicker\controllers\SettingsController;
+use verbb\iconpicker\controllers\UtilityController;
 use yii\web\ForbiddenHttpException;
 
 describe('Icon Picker plugin boot', function() {
@@ -56,29 +57,33 @@ describe('Settings and icon-sets admin gate', function() {
 
 it('requires POST for cache regeneration', function() {
     AdminUser::login();
-    CpRequestContext::activate('actions/icon-picker/settings/clear-cache', 'GET');
-    $controller = new SettingsController('settings', IconPicker::$plugin);
+    CpRequestContext::activate('actions/icon-picker/utility/clear-cache', 'GET');
+    $controller = new UtilityController('utility', IconPicker::$plugin);
     $controller->enableCsrfValidation = false;
     expect(fn() => $controller->runAction('clear-cache'))->toThrow(\yii\web\MethodNotAllowedHttpException::class);
 });
 
 it('allows admin utilities when configuration changes are disabled', function() {
     AdminUser::login();
-    CpRequestContext::activate('actions/icon-picker/settings/clear-cache', 'POST');
+    CpRequestContext::activate('actions/icon-picker/utility/clear-cache', 'POST');
     $general = Craft::$app->getConfig()->getGeneral();
     $previous = $general->allowAdminChanges;
     $general->allowAdminChanges = false;
     try {
-        $controller = new SettingsController('settings', IconPicker::$plugin);
-        $controller->enableCsrfValidation = false;
+        $utilityController = new UtilityController('utility', IconPicker::$plugin);
+        $utilityController->enableCsrfValidation = false;
         foreach (['clear-cache', 'troubleshoot'] as $id) {
-            expect($controller->beforeAction($controller->createAction($id)))->toBeTrue();
+            expect($utilityController->beforeAction($utilityController->createAction($id)))->toBeTrue();
         }
-        expect(fn() => $controller->beforeAction($controller->createAction('save-settings')))
+
+        $settingsController = new SettingsController('settings', IconPicker::$plugin);
+        $settingsController->enableCsrfValidation = false;
+        expect(fn() => $settingsController->beforeAction($settingsController->createAction('save-settings')))
             ->toThrow(ForbiddenHttpException::class);
+
         NonAdminUser::login();
         foreach (['clear-cache', 'troubleshoot'] as $id) {
-            expect(fn() => $controller->beforeAction($controller->createAction($id)))
+            expect(fn() => $utilityController->beforeAction($utilityController->createAction($id)))
                 ->toThrow(ForbiddenHttpException::class);
         }
     } finally {

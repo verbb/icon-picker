@@ -73,5 +73,4 @@ class Settings extends Model
 
         return $rules;
     }
-
 }

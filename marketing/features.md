@@ -7,7 +7,7 @@ Give content editors an intuitive, visual field for selecting icons without copy
 
 Search icons quickly by name or browse the available set visually. Each field can expose only the sources that make sense for that part of the site, keeping a large library from becoming a wall of unrelated choices.
 
-![The Icon Picker field open over a searchable grid of SVG icons.](../screenshots/output/feature-tour/icon-picker-field.png)
+![The Icon Picker field open over a searchable grid of Lucide icons.](../screenshots/output/docs/feature-tour/field.png)
 <!-- feature-section-end -->
 
 <!-- feature-grid -->

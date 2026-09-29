@@ -9,7 +9,7 @@
 <p class="light">{{ 'This will create a queue job for each icon set.' | t('icon-picker') }}</p>
 
 <form class="utility" method="post" accept-charset="UTF-8">
-    {{ actionInput('icon-picker/settings/clear-cache') }}
+    {{ actionInput('icon-picker/utility/clear-cache') }}
     {{ redirectInput('utilities/icon-picker') }}
     {{ csrfInput() }}
 
@@ -23,7 +23,7 @@
 <p>{{ 'Use the utility below for troubleshooting any issues with the plugin, such as no icons being available, etc. This will confirm the paths and URLs to icons, and report back on findings.' | t('icon-picker') }}</p>
 
 <form class="utility" method="post" accept-charset="UTF-8">
-    {{ actionInput('icon-picker/settings/troubleshoot') }}
+    {{ actionInput('icon-picker/utility/troubleshoot') }}
     {{ csrfInput() }}
 
     {% set iconSetOptions = [] %}

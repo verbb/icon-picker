@@ -15,6 +15,7 @@
 - Feather Icons no longer depend on remote `feather.min.js` / `feather.replace()`. Icon paths are bundled and cached as inline SVG for the CP. ([#85](https://github.com/verbb/icon-picker/issues/85)).
 - Feather Icons renamed to **Feather Icons (Legacy)** with CP notice to prefer Lucide.
 - Update the bundled provider catalogs for css.gg **2.1.4**, Bootstrap Icons **1.13.1**, Remix Icon **4.9.1**, Lucide **1.33.0**, Tabler Icons **3.46.0**, and Heroicons **2.2.0**.
+- Route plugin settings through the plugin’s authorized settings controller while keeping utility actions restricted to admin POST requests.
 - Clarify field setup, remote SVG output, custom Icon Sets, configuration overrides, and Web Font requirements in the documentation.
 
 ### Fixed
