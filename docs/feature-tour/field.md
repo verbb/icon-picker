@@ -2,7 +2,7 @@
 
 Use an Icon Picker field when editors need to choose an icon from a collection you provide. For example, a product feature can pair an icon with its title, while a social link can use a collection limited to brand icons.
 
-![Icon Picker field with search and icon grid](../../screenshots/output/docs/feature-tour/field.png)
+![Icon Picker field with search and icon grid](../../screenshots/icon-picker-field.png)
 
 ## Field Settings
 

@@ -1,4 +1,4 @@
-name: icon-picker-react-tests
+name: icon-picker-craft5-tests
 type: php
 docroot: tests/runtime/web
 php_version: "8.3"
