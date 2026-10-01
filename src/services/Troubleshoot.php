@@ -33,7 +33,7 @@ class Troubleshoot extends Component
         return $results;
     }
 
-    
+
     // Private Methods
     // =========================================================================
 

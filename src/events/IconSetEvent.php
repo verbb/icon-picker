@@ -12,5 +12,5 @@ class IconSetEvent extends Event
 
     public ?IconSet $iconSet = null;
     public bool $isNew = false;
-    
+
 }

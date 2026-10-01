@@ -119,6 +119,7 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
         $name = self::GQL_ICON_INTERFACE_NAME;
 
         $interface = GqlEntityRegistry::getEntity($name);
+
         if ($interface instanceof InterfaceType) {
             return $interface;
         }
@@ -301,6 +302,7 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
         $this->_hydrateIconDisplay($value);
 
         $loadResources = false;
+
         if (
             $value->value
             && $value->type !== Icon::TYPE_SVG
@@ -439,13 +441,13 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
                                     font-family: "{$font['name']}" !important;
                                 }
                             CSS);
-                        } else if ($font['type'] === 'proxy') {
+                        } elseif ($font['type'] === 'proxy') {
                             $view->registerCss(<<<CSS
                                 .{$font['id']} {
                                     font-family: "{$font['name']}" !important;
                                 }
                             CSS);
-                        } else if ($font['type'] === 'remote') {
+                        } elseif ($font['type'] === 'remote') {
                             // Support multiple remote stylesheets
                             if (!is_array($font['url'])) {
                                 $font['url'] = [$font['url']];
@@ -485,6 +487,7 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
             // Catalog glyphs are numeric HTML entities (`&#xf16c;`) — encode the class,
             // but never Html::encode the entity or the browser shows the raw `&#x…` text.
             $entity = trim((string)$value->getDisplayValue());
+
             if (!preg_match('/^&#(?:x[0-9a-f]+|\d+);$/i', $entity)) {
                 $entity = '';
             }

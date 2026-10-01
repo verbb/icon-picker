@@ -70,7 +70,7 @@ class Install extends Migration
         }
     }
 
-    
+
     // Private Methods
     // =========================================================================
 

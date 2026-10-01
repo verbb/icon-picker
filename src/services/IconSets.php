@@ -183,11 +183,11 @@ class IconSets extends Component
 
         if ($isNewIconSet) {
             $iconSet->uid = StringHelper::UUID();
-            
+
             $iconSet->sortOrder = (new Query())
                     ->from(['{{%iconpicker_iconsets}}'])
                     ->max('[[sortOrder]]') + 1;
-        } else if (!$iconSet->uid) {
+        } elseif (!$iconSet->uid) {
             $iconSet->uid = Db::uidById('{{%iconpicker_iconsets}}', $iconSet->id);
         }
 
@@ -208,6 +208,7 @@ class IconSets extends Component
         $data = $event->newValue;
 
         $transaction = Craft::$app->getDb()->beginTransaction();
+
         try {
             $iconSetRecord = $this->_getIconSetRecord($iconSetUid, true);
             $isNewIconSet = $iconSetRecord->getIsNewRecord();

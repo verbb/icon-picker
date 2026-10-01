@@ -124,6 +124,7 @@ class Icon extends Model implements \JsonSerializable, \Countable
         if ($this->type === self::TYPE_SPRITE) {
             $array['spriteId'] = $this->getCpSpriteId();
             $source = $this->getSourceIconSet();
+
             if ($source instanceof SvgSprite) {
                 $array['spriteSheet'] = pathinfo((string)$source->spriteFile, PATHINFO_FILENAME);
             }

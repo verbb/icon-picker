@@ -9,5 +9,5 @@ class RegisterIconSetsEvent extends Event
     // =========================================================================
 
     public ?array $iconSets = [];
-    
+
 }

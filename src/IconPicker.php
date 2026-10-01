@@ -70,7 +70,7 @@ class IconPicker extends Plugin
             $this->_registerCpRoutes();
             $this->_registerUtilities();
             $this->_registerRedactorPlugins();
-            
+
             // Provide a cache of loaded spritesheets for the CP
             Craft::$app->getView()->registerAssetBundle(IconPickerCacheAsset::class);
 
