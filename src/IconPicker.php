@@ -1,8 +1,6 @@
 <?php
 namespace verbb\iconpicker;
 
-use verbb\iconpicker\assetbundles\IconPickerCacheAsset;
-use verbb\iconpicker\assetbundles\IconPickerRedactorAsset;
 use verbb\iconpicker\base\PluginTrait;
 use verbb\iconpicker\fields\IconPickerField;
 use verbb\iconpicker\helpers\ProjectConfigHelper;
@@ -11,6 +9,8 @@ use verbb\iconpicker\models\Settings;
 use verbb\iconpicker\services\IconSets;
 use verbb\iconpicker\utilities\IconsUtility;
 use verbb\iconpicker\variables\IconPickerVariable;
+use verbb\iconpicker\web\assets\cp\IconPickerCacheAsset;
+use verbb\iconpicker\web\assets\redactor\IconPickerRedactorAsset;
 
 use Craft;
 use craft\base\Model;
@@ -160,7 +160,7 @@ class IconPicker extends Plugin
     {
         if (class_exists(RichText::class)) {
             Event::on(RichText::class, RichText::EVENT_REGISTER_PLUGIN_PATHS, function(RegisterPluginPathsEvent $event) {
-                $event->paths[] = Craft::getAlias('@verbb/iconpicker/resources/dist/js');
+                $event->paths[] = Craft::getAlias('@verbb/iconpicker/web/assets/redactor/dist');
 
                 Craft::$app->getView()->registerAssetBundle(IconPickerRedactorAsset::class);
             });

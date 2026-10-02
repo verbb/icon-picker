@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 /// <reference types="vite/client" />
-import source from '../../../../../../resources/dist/js/icon-picker.js?raw';
+import source from '../../../../redactor/dist/icon-picker.js?raw';
 import { afterEach, expect, it } from 'vitest';
 import { renderIconInto } from './renderIcon.js';
 

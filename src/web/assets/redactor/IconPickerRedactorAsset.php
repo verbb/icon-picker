@@ -1,5 +1,5 @@
 <?php
-namespace verbb\iconpicker\assetbundles;
+namespace verbb\iconpicker\web\assets\redactor;
 
 use verbb\iconpicker\helpers\Plugin;
 
@@ -7,7 +7,7 @@ use craft\redactor\assets\redactor\RedactorAsset;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
-use verbb\base\assetbundles\CpAsset as VerbbCpAsset;
+use verbb\base\web\assets\cp\CpAsset as VerbbCpAsset;
 
 class IconPickerRedactorAsset extends AssetBundle
 {
@@ -16,7 +16,7 @@ class IconPickerRedactorAsset extends AssetBundle
 
     public function init(): void
     {
-        $this->sourcePath = "@verbb/iconpicker/resources/dist";
+        $this->sourcePath = '@verbb/iconpicker/web/assets/redactor/dist';
 
         $this->depends = [
             VerbbCpAsset::class,
@@ -25,11 +25,11 @@ class IconPickerRedactorAsset extends AssetBundle
         ];
 
         $this->js = [
-            'js/icon-picker.js',
+            'icon-picker.js',
         ];
 
         $this->css = [
-            'css/icon-picker.css',
+            'icon-picker.css',
         ];
 
         parent::init();

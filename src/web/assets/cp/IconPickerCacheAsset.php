@@ -1,10 +1,10 @@
 <?php
-namespace verbb\iconpicker\assetbundles;
+namespace verbb\iconpicker\web\assets\cp;
 
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
-use verbb\base\assetbundles\CpAsset as VerbbCpAsset;
+use verbb\base\web\assets\cp\CpAsset as VerbbCpAsset;
 
 class IconPickerCacheAsset extends AssetBundle
 {
@@ -13,7 +13,7 @@ class IconPickerCacheAsset extends AssetBundle
 
     public function init(): void
     {
-        $this->sourcePath = "@verbb/iconpicker/resources/dist";
+        $this->sourcePath = '@verbb/iconpicker/web/assets/cp/dist';
 
         $this->depends = [
             VerbbCpAsset::class,
@@ -21,7 +21,7 @@ class IconPickerCacheAsset extends AssetBundle
         ];
 
         $this->js = [
-            'js/icon-picker-cache.js',
+            'icon-picker-cache.js',
         ];
 
         parent::init();
