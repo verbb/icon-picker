@@ -1,10 +1,9 @@
 # Changelog
 
-## Unreleased
+## 3.1.1 - 2026-10-02
 
 ### Changed
 - Updated the required version of `verbb/base` to 3.0.19.
-- Reorganized control panel and Redactor assets under `src/web`.
 
 ## 3.1.0 - 2026-09-29
 
