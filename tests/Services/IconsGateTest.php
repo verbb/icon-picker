@@ -12,7 +12,9 @@ use Tests\Support\CpRequestContext;
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\controllers\IconsController;
 use verbb\iconpicker\fields\IconPickerField;
+use verbb\iconpicker\helpers\CpInputContext;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\MethodNotAllowedHttpException;
 
 describe('IconsController access boundary', function() {
@@ -40,7 +42,7 @@ describe('IconsController access boundary', function() {
             ->toThrow(MethodNotAllowedHttpException::class);
     });
 
-    it('requires an element context for a real Icon Picker field', function() {
+    it('requires an authorized element or signed input context for a real Icon Picker field', function() {
         AdminUser::login();
         CpRequestContext::activate('actions/icon-picker/icons/icons-for-field', 'POST');
 
@@ -58,11 +60,50 @@ describe('IconsController access boundary', function() {
         $controller->enableCsrfValidation = false;
 
         try {
-            $controller->runAction('icons-for-field');
-            test()->fail('Expected a missing elementId exception.');
-        } catch (BadRequestHttpException $e) {
-            expect($request->getBodyParam('elementId'))->toBeNull()
-                ->and($e->getMessage())->toBe('Request missing required param');
+            expect(fn() => $controller->runAction('icons-for-field'))
+                ->toThrow(ForbiddenHttpException::class, 'Invalid or expired Icon Picker input context. Reload the editor.');
+        } finally {
+            Craft::$app->getFields()->deleteField($field);
+        }
+    });
+
+    it('accepts a signed context for a transient nested element', function() {
+        AdminUser::login();
+        CpRequestContext::activate('actions/icon-picker/icons/icons-for-field', 'POST');
+
+        $field = new IconPickerField([
+            'name' => 'Nested icon access fixture',
+            'handle' => 'nestedIconAccessFixture',
+            'iconSets' => [],
+        ]);
+        expect(Craft::$app->getFields()->saveField($field))->toBeTrue();
+
+        $siteId = Craft::$app->getSites()->getPrimarySite()->id;
+        $elementId = 1530628222;
+        $element = new GlobalSet([
+            'id' => $elementId,
+            'siteId' => $siteId,
+        ]);
+
+        /** @var \craft\web\Request $request */
+        $request = Craft::$app->getRequest();
+        $request->setBodyParams([
+            'fieldId' => $field->id,
+            'elementId' => $elementId,
+            'siteId' => $siteId,
+            'context' => CpInputContext::create($field, $element),
+        ]);
+
+        $controller = new IconsController('icons', IconPicker::$plugin);
+        $controller->enableCsrfValidation = false;
+
+        try {
+            expect($controller->runAction('icons-for-field')->data)->toBe([
+                'icons' => [],
+                'fonts' => [],
+                'spriteSheets' => [],
+                'scripts' => [],
+            ]);
         } finally {
             Craft::$app->getFields()->deleteField($field);
         }

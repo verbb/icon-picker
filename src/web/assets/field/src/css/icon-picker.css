@@ -145,10 +145,12 @@
    Also: kit `:host { display: inline-block }` + sibling after a full-width control wraps
    onto a new line and still reserves a line-box while closed (~20px gap under every
    field). Same pattern shows up in other Plugin Kit plugins using external `for=`
-   triggers. Pull the host out of flow locally; upstream should treat non-wrapping
-   hosts as zero-layout (`display: contents` or absolute) when trigger is external. */
+   triggers. Pull the host out of flow locally. Fixed positioning also gives
+   lit-virtualizer the correct overlay boundary: it otherwise counts nested overflow
+   containers (Hyper's body wrapper, for example) as clipping ancestors and renders
+   only a few rows into an otherwise full-height panel. */
 .ipui-icons-popover {
-    position: absolute;
+    position: fixed;
     width: 0;
     height: 0;
     overflow: visible;

@@ -6,6 +6,8 @@
 - Require Verbb Base 3.0.20 or later so shared control-panel layouts use the current asset bundle namespace. ([verbb-base#3](https://github.com/verbb/verbb-base/issues/3))
 
 ### Fixed
+- Allow Icon Picker fields rendered inside unsaved or nested elements, such as Hyper links, to load their configured icons without weakening saved-element permission checks. ([#121](https://github.com/verbb/icon-picker/issues/121))
+- Prevent virtualized icon grids inside clipped containers, such as Hyper link cards, from rendering only part of the visible panel.
 - Remove the extra vertical gap above Icon Picker field controls in Craft 5.
 
 ## 3.1.2 - 2026-10-05

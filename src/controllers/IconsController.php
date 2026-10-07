@@ -3,6 +3,7 @@ namespace verbb\iconpicker\controllers;
 
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\fields\IconPickerField;
+use verbb\iconpicker\helpers\CpInputContext;
 use verbb\iconpicker\models\Icon;
 
 use Craft;
@@ -60,19 +61,31 @@ class IconsController extends Controller
             throw new BadRequestHttpException(Craft::t('icon-picker', 'Invalid Icon Picker field.'));
         }
 
-        $elementId = (int)$this->request->getRequiredParam('elementId');
+        $elementIdParam = $this->request->getParam('elementId');
+        $elementId = $elementIdParam !== null && $elementIdParam !== '' ? (int)$elementIdParam : null;
         $siteId = (int)($this->request->getParam('siteId') ?: Craft::$app->getSites()->getCurrentSite()->id);
-        $element = Craft::$app->getElements()->getElementById($elementId, null, $siteId);
+        $element = $elementId ? Craft::$app->getElements()->getElementById($elementId, null, $siteId) : null;
 
-        if (!$element instanceof ElementInterface || !Craft::$app->getElements()->canView($element)) {
+        if ($element instanceof ElementInterface && !Craft::$app->getElements()->canView($element)) {
             throw new ForbiddenHttpException(Craft::t('icon-picker', 'You are not permitted to browse icons for this element.'));
         }
 
-        if (!$this->_elementLayoutContainsField($element, $field)) {
-            throw new ForbiddenHttpException(Craft::t('icon-picker', 'This field is not part of the element being edited.'));
+        if ($element instanceof ElementInterface) {
+            if (!$this->_elementLayoutContainsField($element, $field)) {
+                throw new ForbiddenHttpException(Craft::t('icon-picker', 'This field is not part of the element being edited.'));
+            }
+
+            $this->_element = $element;
+
+            return $field;
         }
 
-        $this->_element = $element;
+        CpInputContext::validate(
+            (string)$this->request->getParam('context'),
+            (int)$field->id,
+            $siteId,
+            $elementId,
+        );
 
         return $field;
     }

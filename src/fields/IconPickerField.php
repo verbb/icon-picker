@@ -2,6 +2,7 @@
 namespace verbb\iconpicker\fields;
 
 use verbb\iconpicker\IconPicker;
+use verbb\iconpicker\helpers\CpInputContext;
 use verbb\iconpicker\helpers\IconPickerHelper;
 use verbb\iconpicker\helpers\Plugin;
 use verbb\iconpicker\iconsets\FontAwesome;
@@ -320,6 +321,7 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
             'settings' => $this->settings,
             'fieldId' => $this->id,
             'requestController' => $this->_requestController,
+            'context' => CpInputContext::create($this, $element),
             'elementId' => $element?->id,
             'siteId' => $element?->siteId,
             'itemSize' => $pluginSettings->iconItemSize,

@@ -30,6 +30,7 @@ export interface IconPickerSettings {
     };
     fieldId?: number | null;
     requestController?: 'icons' | 'redactor';
+    context?: string | null;
     elementId?: number | null;
     siteId?: number | null;
     itemSize?: number;
@@ -959,6 +960,7 @@ export class IconPickerInput {
 
         const data = {
             fieldId: this.settings.fieldId,
+            context: this.settings.context,
             elementId: this.settings.elementId,
             siteId: this.settings.siteId,
         };
