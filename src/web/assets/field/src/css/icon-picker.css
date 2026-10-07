@@ -27,12 +27,16 @@
     width: 100%;
 }
 
+/* Craft already renders the field label. The accessible shadow label is positioned
+   out of flow below, so remove the now-empty header-to-control row gap. */
+.ipui-icon-input-search::part(form-control) {
+    gap: 0;
+}
+
 /* Chip overlays the pk-input text row; clicks pass through to the control. */
 .ipui-icon-input-item {
     position: absolute;
-    /* pk-input retains its label-to-control gap when its label is visually hidden.
-       Start below that gap so the chip and slot=end clear control share a center. */
-    inset: 0.375rem 0 0;
+    inset: 0;
     z-index: 1;
     display: flex;
     align-items: center;
