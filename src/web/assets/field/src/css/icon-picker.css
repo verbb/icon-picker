@@ -220,6 +220,42 @@
     display: none !important;
 }
 
+/* A row of icons (the scroller virtualizes rows): cells side by side, the gap under it too (padding: the
+   virtualizer positions rows itself, so a margin would shift the row) */
+.ipui-icons-row {
+    display: flex;
+    gap: var(--ipui-cell-gap, 0px);
+    width: 100%;
+    box-sizing: border-box;
+    padding-bottom: var(--ipui-cell-gap, 0px);
+}
+
+/* A group heading (an icon set's name, then any subfolder, e.g. "Font Awesome / Light") over its icons. Every
+   heading but the first has some space above it and a divider under that space. Padding, not margin: the
+   virtualizer positions rows itself, so a margin would shift the row instead of spacing it. */
+.ipui-icons-group {
+    display: flex;
+    align-items: flex-end;
+    box-sizing: border-box;
+    width: 100%;
+    height: calc(var(--ipui-group-height, 28px) + var(--ipui-group-space, 16px));
+    padding: var(--ipui-group-space, 16px) 0.25rem 0.25rem;
+    background: linear-gradient(var(--pk-color-gray-200), var(--pk-color-gray-200)) no-repeat 0 var(--ipui-group-space, 16px) / 100% 1px;
+    color: var(--pk-color-gray-500);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ipui-icons-group[data-first] {
+    height: var(--ipui-group-height, 28px);
+    padding-top: 0;
+    background: none;
+}
+
 .ipui-icon-wrap {
     display: flex;
     flex-direction: column;

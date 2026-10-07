@@ -4,6 +4,7 @@ namespace verbb\iconpicker\controllers;
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\fields\IconPickerField;
 use verbb\iconpicker\helpers\CpInputContext;
+use verbb\iconpicker\iconsets\SvgFolder;
 use verbb\iconpicker\models\Icon;
 
 use Craft;
@@ -107,6 +108,7 @@ class IconsController extends Controller
 
         $json = [
             'icons' => [],
+            'iconSets' => [],
             'fonts' => [],
             'spriteSheets' => [],
             'scripts' => [],
@@ -115,6 +117,12 @@ class IconsController extends Controller
         $iconSets = IconPicker::$plugin->getIconSets()->getIconSetsForField($field);
 
         foreach ($iconSets as $iconSet) {
+            // Group headings in the picker: the set's name, then (SVG folders) the icon's subfolder within the set's folder
+            $json['iconSets'][$iconSet->handle] = [
+                'name' => $iconSet->name,
+                'folder' => $iconSet instanceof SvgFolder ? $iconSet->folder : null,
+            ];
+
             if ($includeIcons) {
                 $iconSet->populateIcons();
                 $json['icons'] = array_merge($json['icons'], $iconSet->icons);

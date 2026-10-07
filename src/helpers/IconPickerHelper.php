@@ -52,9 +52,9 @@ class IconPickerHelper
 
         $files = FileHelper::findFiles($path, $options);
 
-        // Sort alphabetically
+        // Sort alphabetically: by folder (so a recursive set's subfolders are in order), then by file name
         uasort($files, function($a, $b) {
-            return strcmp(basename($a), basename($b));
+            return strcmp(dirname($a), dirname($b)) ?: strcmp(basename($a), basename($b));
         });
 
         return $files;
