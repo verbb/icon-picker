@@ -63,8 +63,14 @@ class IconsController extends Controller
 
         $elementIdParam = $this->request->getParam('elementId');
         $elementId = $elementIdParam !== null && $elementIdParam !== '' ? (int)$elementIdParam : null;
+        $elementTypeParam = $this->request->getParam('elementType');
+        $elementType = is_string($elementTypeParam) && is_subclass_of($elementTypeParam, ElementInterface::class)
+            ? $elementTypeParam
+            : null;
         $siteId = (int)($this->request->getParam('siteId') ?: Craft::$app->getSites()->getCurrentSite()->id);
-        $element = $elementId ? Craft::$app->getElements()->getElementById($elementId, null, $siteId) : null;
+        // Match both ID and type. Transient nested elements can deliberately
+        // borrow a persisted surrogate ID, and must use their signed context.
+        $element = $elementId ? Craft::$app->getElements()->getElementById($elementId, $elementType, $siteId) : null;
 
         if ($element instanceof ElementInterface && !Craft::$app->getElements()->canView($element)) {
             throw new ForbiddenHttpException(Craft::t('icon-picker', 'You are not permitted to browse icons for this element.'));
@@ -85,6 +91,7 @@ class IconsController extends Controller
             (int)$field->id,
             $siteId,
             $elementId,
+            $elementType,
         );
 
         return $field;

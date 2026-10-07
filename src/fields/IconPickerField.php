@@ -322,6 +322,7 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
             'fieldId' => $this->id,
             'requestController' => $this->_requestController,
             'context' => CpInputContext::create($this, $element),
+            'elementType' => $element ? $element::class : null,
             'elementId' => $element?->id,
             'siteId' => $element?->siteId,
             'itemSize' => $pluginSettings->iconItemSize,

@@ -26,13 +26,14 @@ class CpInputContext
         return Craft::$app->getSecurity()->hashData(Json::encode([
             'userId' => $userId,
             'fieldId' => (int)$field->id,
+            'elementType' => $element ? $element::class : null,
             'elementId' => $element?->id ? (int)$element->id : null,
             'siteId' => (int)($element?->siteId ?? Craft::$app->getSites()->getCurrentSite()->id),
             'expires' => time() + 86400,
         ]));
     }
 
-    public static function validate(string $token, int $fieldId, int $siteId, ?int $elementId): void
+    public static function validate(string $token, int $fieldId, int $siteId, ?int $elementId, ?string $elementType): void
     {
         $raw = Craft::$app->getSecurity()->validateData($token);
         $data = $raw === false ? null : Json::decodeIfJson($raw);
@@ -40,6 +41,7 @@ class CpInputContext
         if (!is_array($data)
             || ($data['userId'] ?? null) !== Craft::$app->getUser()->getId()
             || ($data['fieldId'] ?? null) !== $fieldId
+            || ($data['elementType'] ?? null) !== $elementType
             || ($data['elementId'] ?? null) !== $elementId
             || ($data['siteId'] ?? null) !== $siteId
             || ($data['expires'] ?? 0) < time()) {

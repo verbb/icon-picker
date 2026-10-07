@@ -12,7 +12,14 @@ import { IconPickerInput } from './IconPickerInput.js';
 const mount = (value = {}) => {
     const root = document.createElement('div');
     root.dataset.value = JSON.stringify(value);
-    root.dataset.settings = JSON.stringify({ name: 'icon', fieldId: 1, elementId: 2 });
+    root.dataset.settings = JSON.stringify({
+        name: 'icon',
+        fieldId: 1,
+        context: 'signed-context',
+        elementType: 'verbb\\vizy\\elements\\Block',
+        elementId: 2,
+        siteId: 3,
+    });
     document.body.append(root);
     const picker = new IconPickerInput(root);
     picker.init();
@@ -27,6 +34,24 @@ beforeEach(() => {
     });
 });
 afterEach(() => { document.body.replaceChildren(); vi.unstubAllGlobals(); vi.restoreAllMocks(); });
+
+it('sends the signed element type with the nested input identity', async () => {
+    const { picker } = mount();
+    vi.mocked(Craft.sendActionRequest).mockResolvedValue({ data: { icons: [] } });
+
+    await (picker as unknown as { fetchIcons(): Promise<void> }).fetchIcons();
+
+    expect(Craft.sendActionRequest).toHaveBeenCalledWith('POST', 'icon-picker/icons/icons-for-field', {
+        data: {
+            fieldId: 1,
+            context: 'signed-context',
+            elementType: 'verbb\\vizy\\elements\\Block',
+            elementId: 2,
+            siteId: 3,
+        },
+    });
+    picker.destroy();
+});
 
 it('keeps an actionable error visible after a failed catalog request', async () => {
     const { root, picker } = mount();

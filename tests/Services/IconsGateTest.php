@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use craft\elements\Entry;
 use craft\elements\GlobalSet;
 use craft\fieldlayoutelements\CustomField;
 use craft\helpers\StringHelper;
@@ -89,6 +90,7 @@ describe('IconsController access boundary', function() {
         $request = Craft::$app->getRequest();
         $request->setBodyParams([
             'fieldId' => $field->id,
+            'elementType' => $element::class,
             'elementId' => $elementId,
             'siteId' => $siteId,
             'context' => CpInputContext::create($field, $element),
@@ -105,6 +107,50 @@ describe('IconsController access boundary', function() {
                 'scripts' => [],
             ]);
         } finally {
+            Craft::$app->getFields()->deleteField($field);
+        }
+    });
+
+    it('uses a signed context when a transient element borrows a persisted element ID', function() {
+        AdminUser::login();
+        $field = new IconPickerField([
+            'name' => 'Surrogate identity fixture',
+            'handle' => 'surrogateIconAccessFixture',
+            'iconSets' => [],
+        ]);
+        expect(Craft::$app->getFields()->saveField($field))->toBeTrue();
+
+        $set = new GlobalSet([
+            'name' => 'Persisted identity fixture',
+            'handle' => 'persistedIdentityFixture' . bin2hex(random_bytes(4)),
+        ]);
+        expect(Craft::$app->getGlobals()->saveSet($set))->toBeTrue();
+
+        $transient = new Entry([
+            'id' => $set->id,
+            'siteId' => $set->siteId,
+        ]);
+        CpRequestContext::activate('actions/icon-picker/icons/icons-for-field', 'POST');
+        Craft::$app->getRequest()->setBodyParams([
+            'fieldId' => $field->id,
+            'elementType' => $transient::class,
+            'elementId' => $transient->id,
+            'siteId' => $transient->siteId,
+            'context' => CpInputContext::create($field, $transient),
+        ]);
+
+        $controller = new IconsController('icons', IconPicker::$plugin);
+        $controller->enableCsrfValidation = false;
+
+        try {
+            expect($controller->runAction('icons-for-field')->data)->toBe([
+                'icons' => [],
+                'fonts' => [],
+                'spriteSheets' => [],
+                'scripts' => [],
+            ]);
+        } finally {
+            Craft::$app->getGlobals()->deleteSet($set);
             Craft::$app->getFields()->deleteField($field);
         }
     });
@@ -142,6 +188,7 @@ describe('IconsController access boundary', function() {
             Craft::$app->getRequest()->setIsConsoleRequest(true);
             Craft::$app->getRequest()->setBodyParams([
                 'fieldId' => $field->id,
+                'elementType' => $set::class,
                 'elementId' => $set->id,
                 'siteId' => Craft::$app->getSites()->getPrimarySite()->id,
             ]);
