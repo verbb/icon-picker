@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.1.3 - 2026-10-08
 
 ### Added
 - Add Small, Default, and Large icon sizes and Hidden, Tooltip, and Below Icon label modes to field settings.
