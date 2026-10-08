@@ -5,6 +5,7 @@
 // (value contract, AJAX, four icon types, Cache dedupe) stays the same.
 
 import { html, nothing } from 'lit';
+import type { PkTooltip } from '@verbb/plugin-kit-web/components/tooltip/pk-tooltip.js';
 import { ref } from 'lit/directives/ref.js';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import '@lit-labs/virtualizer';
@@ -15,6 +16,8 @@ import { loadFonts, loadScripts, loadSpriteSheets } from '../icon/loadResources.
 import { humanizeLabel, renderIconInto, type IconItem } from '../icon/renderIcon.js';
 
 import { adjacentIconIndex, applyIconSetGroups, buildIconRows, indexIconRows, orderIconGroups, type IconRow } from './iconGroups.js';
+
+import { pickerPresentation, type IconSize, type LabelDisplay } from './pickerPresentation.js';
 
 export type IconValue = IconItem;
 
@@ -27,6 +30,8 @@ export interface IconPickerSettings {
     loadResources?: boolean;
     settings?: {
         showLabels?: boolean;
+        labelDisplay?: LabelDisplay | null;
+        iconSize?: IconSize;
         placeholder?: string | null;
         [key: string]: unknown;
     };
@@ -147,6 +152,7 @@ export class IconPickerInput {
     }
 
     destroy(): void {
+        this.hideTooltips();
         this.destroyed = true;
         this.focusGridToken++;
         window.removeEventListener('resize', this.onResize);
@@ -327,13 +333,16 @@ export class IconPickerInput {
         // Chip restore on hide *start* — waiting for `pk-after-hide` ties the valued
         // chrome to exit animation + any main-thread work from a large grid (FA ~2k
         // icons). Virtualization limits DOM, but after-hide still feels lagged.
-        this.popover.addEventListener('pk-hide', () => {
+        this.popover.addEventListener('pk-hide', (event) => {
+            if (event.target !== this.popover) return;
+            this.hideTooltips();
             this.open = false;
             this.activeGridIndex = -1;
             this.syncChrome();
         });
 
-        this.popover.addEventListener('pk-after-hide', () => {
+        this.popover.addEventListener('pk-after-hide', (event) => {
+            if (event.target !== this.popover) return;
             this.open = false;
             this.activeGridIndex = -1;
             const hadSearch = this.search !== '';
@@ -347,7 +356,9 @@ export class IconPickerInput {
             }
         });
 
-        this.popover.addEventListener('pk-after-show', () => {
+        this.popover.addEventListener('pk-after-show', (event) => {
+            // Tooltip lifecycle events bubble through the picker popover.
+            if (event.target !== this.popover) return;
             this.open = true;
             this.syncPopoverWidth();
             this.syncChrome();
@@ -389,6 +400,7 @@ export class IconPickerInput {
             return;
         }
 
+        if (!next) this.hideTooltips();
         this.open = next;
         (this.popover as HTMLElement & { open: boolean }).open = next;
         this.syncChrome();
@@ -477,7 +489,7 @@ export class IconPickerInput {
     }
 
     private get showLabels(): boolean {
-        return Boolean(this.settings.settings?.showLabels);
+        return pickerPresentation(this.settings).showLabels;
     }
 
     private get placeholder(): string {
@@ -496,21 +508,19 @@ export class IconPickerInput {
     }
 
     private get cellSize(): number {
-        return this.showLabels
-            ? (this.settings.itemWrapperSizeLarge ?? 72)
-            : (this.settings.itemWrapperSize ?? 56);
+        return pickerPresentation(this.settings).cellSize;
     }
 
     private get iconSize(): number {
-        // Webfont size — BEFORE always uses itemSize (32) for font-size/line-height,
-        // even when the labeled box is itemSizeLarge (40). See show-labels CSS.
-        return this.settings.itemSize ?? 32;
+        return pickerPresentation(this.settings).iconSize;
     }
 
     private get iconBoxSize(): number {
-        return this.showLabels
-            ? (this.settings.itemSizeLarge ?? 40)
-            : (this.settings.itemSize ?? 32);
+        return pickerPresentation(this.settings).iconBoxSize;
+    }
+
+    private hideTooltips(): void {
+        this.virtualizer?.querySelectorAll<PkTooltip>('pk-tooltip').forEach((tooltip) => { void tooltip.hide?.(); });
     }
 
     private get iconsFiltered(): IconItem[] {
@@ -574,6 +584,7 @@ export class IconPickerInput {
         if (this.virtualizer) {
             // Drop items so a failed `[hidden]` can't leave the previous grid painted
             // under the empty/loading message (same display-vs-hidden trap as the chip).
+            this.hideTooltips();
             this.virtualizer.items = [];
             this.rowSource = null;
             this.rows = [];
@@ -614,6 +625,7 @@ export class IconPickerInput {
 
         const virtualizer = document.createElement('lit-virtualizer') as LitVirtualizer<IconRow>;
         virtualizer.className = 'ipui-icons-scroller';
+        virtualizer.addEventListener('scroll', () => this.hideTooltips(), { passive: true });
         virtualizer.scroller = true;
         virtualizer.renderItem = (row: IconRow, index: number) => this.renderRow(row, index);
         // Capture so arrows win over scroll-default and recycled cell focus.
@@ -815,6 +827,7 @@ export class IconPickerInput {
             const restoreFocus = this.open && this.virtualizer.contains(document.activeElement);
             this.gridCols = cols;
             this.rowSource = items;
+            this.hideTooltips();
             this.rows = rows;
             this.rowPositions = indexIconRows(rows);
             this.virtualizer.items = rows;
@@ -838,19 +851,22 @@ export class IconPickerInput {
     }
 
     private renderGridItem(item: IconItem, index: number) {
-        const label = humanizeLabel(item.label);
+        const label = humanizeLabel(item.label || item.value);
         const cssAttribute = this.cssAttribute;
         const showLabels = this.showLabels;
+        const tooltip = pickerPresentation(this.settings).labelDisplay === 'tooltip';
         // One tab stop in the grid; arrows move focus (see onGridKeydown).
         // When nothing has been arrow-focused yet, keep index 0 in the Tab cycle.
         const tabIndex =
             index === (this.activeGridIndex >= 0 ? this.activeGridIndex : 0) ? 0 : -1;
 
-        return html`
+        const button = html`
             <button
                 type="button"
                 class="ipui-icon-wrap"
-                title=${item.label || ''}
+                slot=${tooltip ? 'trigger' : nothing}
+                aria-label=${label}
+                title=${showLabels ? label : nothing}
                 data-grid-index=${String(index)}
                 tabindex=${tabIndex}
                 @focus=${() => {
@@ -867,6 +883,8 @@ export class IconPickerInput {
                 ${showLabels ? html`<span class="ipui-icon-label">${label}</span>` : nothing}
             </button>
         `;
+
+        return tooltip ? html`<pk-tooltip content=${label}>${button}</pk-tooltip>` : button;
     }
 
     private renderIconTemplate(item: IconItem, cssAttribute: string) {

@@ -1,10 +1,29 @@
 {% import '_includes/forms' as forms %}
 
-{{ forms.lightswitchField({
-    label: 'Show Labels' | t('icon-picker'),
-    instructions: 'Whether to show labels for each icon in the selection dropdown.' | t('icon-picker'),
-    name: 'showLabels',
-    on: field.showLabels,
+{{ forms.selectField({
+    label: 'Icon Size' | t('icon-picker'),
+    instructions: 'Choose the size of icons in the picker. The number of columns adjusts to the available width.' | t('icon-picker'),
+    name: 'iconSize',
+    value: field.iconSize,
+    options: [
+        { label: 'Small' | t('icon-picker'), value: 'small' },
+        { label: 'Default' | t('icon-picker'), value: 'default' },
+        { label: 'Large' | t('icon-picker'), value: 'large' },
+    ],
+    errors: field.getErrors('iconSize'),
+}) }}
+
+{{ forms.selectField({
+    label: 'Labels' | t('icon-picker'),
+    instructions: 'Choose how icon names appear in the picker.' | t('icon-picker'),
+    name: 'labelDisplay',
+    value: field.resolvedLabelDisplay,
+    options: [
+        { label: 'Hidden' | t('icon-picker'), value: 'hidden' },
+        { label: 'Tooltip' | t('icon-picker'), value: 'tooltip' },
+        { label: 'Below Icon' | t('icon-picker'), value: 'below' },
+    ],
+    errors: field.getErrors('labelDisplay'),
 }) }}
 
 {{ forms.textField({

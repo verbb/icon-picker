@@ -1,6 +1,16 @@
 <?php
 
 return [
+  'Icon Size' => 'Icon Size',
+  'Choose the size of icons in the picker. The number of columns adjusts to the available width.' => 'Choose the size of icons in the picker. The number of columns adjusts to the available width.',
+  'Small' => 'Small',
+  'Large' => 'Large',
+  'Labels' => 'Labels',
+  'Choose how icon names appear in the picker.' => 'Choose how icon names appear in the picker.',
+  'Hidden' => 'Hidden',
+  'Tooltip' => 'Tooltip',
+  'Below Icon' => 'Below Icon',
+
   'Group by Subfolder' => 'Group by Subfolder',
   'Show headings for subfolders in the icon picker. This does not change which icons are included.' => 'Show headings for subfolders in the icon picker. This does not change which icons are included.',
   'Couldn’t delete icon set.' => 'Couldn’t delete icon set.',

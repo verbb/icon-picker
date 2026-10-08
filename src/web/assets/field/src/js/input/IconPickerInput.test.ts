@@ -7,13 +7,15 @@ vi.mock('../icon/loadResources.js', () => ({
 }));
 
 import { loadFonts, loadSpriteSheets } from '../icon/loadResources.js';
+import { render, type TemplateResult } from 'lit';
 import { IconPickerInput } from './IconPickerInput.js';
 
-const mount = (value = {}) => {
+const mount = (value = {}, displaySettings = {}) => {
     const root = document.createElement('div');
     root.dataset.value = JSON.stringify(value);
     root.dataset.settings = JSON.stringify({
         name: 'icon',
+        settings: displaySettings,
         fieldId: 1,
         context: 'signed-context',
         elementType: 'verbb\\vizy\\elements\\Block',
@@ -160,5 +162,34 @@ it('keeps browsing groups out of submitted values', () => {
     expect(root.querySelector<HTMLInputElement>('input[data-icon-picker-key="value"]')?.value).toBe('/social/star.svg');
     expect(root.querySelector<HTMLInputElement>('input[data-icon-picker-key="iconSetUid"]')?.value).toBe('set-uid');
     expect([...root.querySelectorAll('input[type="hidden"]')].some((input) => input.getAttribute('name')?.includes('browse'))).toBe(false);
+    picker.destroy();
+});
+
+it.each(['hidden', 'tooltip', 'below'] as const)('renders accessible names in %s label mode', (labelDisplay) => {
+    const { picker } = mount({}, { labelDisplay });
+    const state = picker as unknown as { renderGridItem(item: unknown, index: number): TemplateResult };
+    const host = document.createElement('div');
+    document.body.append(host);
+    render(state.renderGridItem({ type: 'css', value: 'heart', label: 'heart' }, 0), host);
+    const button = host.querySelector('button')!;
+    expect(button.getAttribute('aria-label')).toBe('Heart');
+    expect(host.querySelector('pk-tooltip') !== null).toBe(labelDisplay === 'tooltip');
+    expect(host.querySelector('.ipui-icon-label') !== null).toBe(labelDisplay === 'below');
+    expect(button.hasAttribute('title')).toBe(labelDisplay === 'below');
+    picker.destroy();
+});
+
+it('ignores nested tooltip lifecycle events without clearing the picker search', () => {
+    const { root, picker } = mount();
+    const state = picker as unknown as { open: boolean; search: string };
+    state.open = true;
+    state.search = 'heart';
+    const tooltip = document.createElement('pk-tooltip');
+    root.querySelector('pk-popover')!.append(tooltip);
+    for (const type of ['pk-hide', 'pk-after-hide', 'pk-after-show']) {
+        tooltip.dispatchEvent(new CustomEvent(type, { bubbles: true }));
+        expect(state.open).toBe(true);
+        expect(state.search).toBe('heart');
+    }
     picker.destroy();
 });

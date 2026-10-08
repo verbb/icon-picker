@@ -8,6 +8,7 @@ import { PkButton } from '@verbb/plugin-kit-web/components/button/pk-button.js';
 import { PkIcon } from '@verbb/plugin-kit-web/components/icon/pk-icon.js';
 import { PkInput } from '@verbb/plugin-kit-web/components/input/pk-input.js';
 import { PkPopover } from '@verbb/plugin-kit-web/components/popover/pk-popover.js';
+import { PkTooltip } from '@verbb/plugin-kit-web/components/tooltip/pk-tooltip.js';
 import { PkSpinner } from '@verbb/plugin-kit-web/components/spinner/pk-spinner.js';
 
 // Opt-in glyphs for `<pk-icon icon="…">` (JS camelCase keys → kebab lookup names).
@@ -33,7 +34,7 @@ registerIcons({
 });
 
 /** Constructors whose modules run `@customElement` — must stay reachable so Rollup can't DCE them. */
-const ICON_PICKER_PK_CTORS = [PkButton, PkIcon, PkInput, PkPopover, PkSpinner] as const;
+const ICON_PICKER_PK_CTORS = [PkButton, PkIcon, PkInput, PkPopover, PkSpinner, PkTooltip] as const;
 
 let registered = false;
 

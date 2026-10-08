@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+- Add Small, Default, and Large icon sizes and Hidden, Tooltip, and Below Icon label modes to field settings.
 - Show headings between enabled icon sets, with optional subfolder headings for SVG Folder sets. ([#124](https://github.com/verbb/icon-picker/pull/124))
 
 ### Changed

@@ -358,6 +358,7 @@
     width: 100%;
 }
 
+.ipui-icon-row > pk-tooltip,
 .ipui-icon-row .ipui-icon-wrap {
     flex: 0 0 var(--ipui-cell-size);
 }

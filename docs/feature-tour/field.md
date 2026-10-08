@@ -10,7 +10,11 @@ Create an [Icon Set](docs:feature-tour/icon-sets) before configuring the field. 
 
 Choose that collection under **Available Icon Sets**. Limiting the field to relevant icons helps editors make a consistent choice; choose **All** when every enabled collection is appropriate. Manage the collections under **Icon Picker → Settings → Icon Sets**.
 
-Enable **Show Labels** when names would help editors distinguish similar icons. Labels use the larger icon sizes from [Configuration](docs:get-started/configuration#iconitemwrappersizelarge). Use **Placeholder** for a prompt such as “Choose a product feature icon” when the field is empty.
+Choose **Small**, **Default**, or **Large** under **Icon Size** to suit the artwork. The grid adjusts its column count to the field’s width. Small keeps room for readable labels, while Large gives detailed icons more space. Default uses the sizes from [Configuration](docs:get-started/configuration#iconitemwrappersize); the other presets scale those sizes.
+
+Use **Labels** to choose **Hidden** for an icon-only picker, **Tooltip** to show names on hover or keyboard focus, or **Below Icon** when names help editors distinguish similar icons. Hidden icons still have accessible names for screen readers. Existing fields with **Show Labels** enabled use Below Icon; other existing fields use Tooltip.
+
+Use **Placeholder** for a prompt such as “Choose a product feature icon” when the field is empty.
 
 Save the field and add it to the entry type's field layout.
 

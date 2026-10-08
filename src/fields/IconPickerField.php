@@ -149,6 +149,8 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
     // =========================================================================
 
     public bool $showLabels = false;
+    public ?string $labelDisplay = null;
+    public string $iconSize = 'default';
     /** Shown in the empty search control (e.g. “Choose an icon…”). */
     public ?string $placeholder = null;
     public mixed $iconSets = null;
@@ -198,6 +200,12 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
             'field' => $this,
             'iconSets' => $iconSets,
         ]);
+    }
+
+    /** Existing fields retain below-icon labels or hover names until explicitly changed. */
+    public function getResolvedLabelDisplay(): string
+    {
+        return $this->labelDisplay ?? ($this->showLabels ? 'below' : 'tooltip');
     }
 
     public function getRedactorInputHtml(): string
@@ -283,6 +291,15 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
     // Protected Methods
     // =========================================================================
 
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+        $rules[] = [['iconSize'], 'in', 'range' => ['small', 'default', 'large'], 'skipOnEmpty' => false];
+        $rules[] = [['labelDisplay'], 'in', 'range' => ['hidden', 'tooltip', 'below']];
+
+        return $rules;
+    }
+
     protected function inputHtml(mixed $value, ?ElementInterface $element, bool $inline): string
     {
         if (!$value) {
@@ -318,7 +335,7 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
             'label' => Craft::t('site', $this->name),
             'name' => $this->handle,
             'loadResources' => $loadResources,
-            'settings' => $this->settings,
+            'settings' => array_merge($this->settings, ['labelDisplay' => $this->getResolvedLabelDisplay()]),
             'fieldId' => $this->id,
             'requestController' => $this->_requestController,
             'context' => CpInputContext::create($this, $element),

@@ -7,4 +7,5 @@ export const ICON_PICKER_PK_COMPONENTS = [
     'pk-input',
     'pk-popover',
     'pk-spinner',
+    'pk-tooltip',
 ] as const;

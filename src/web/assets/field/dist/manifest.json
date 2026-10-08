@@ -12,33 +12,33 @@
     "file": "assets/flow-u-4RYc_W.js",
     "name": "flow"
   },
-  "_iconPickerPkComponents-DCcvcxy5.js": {
-    "file": "assets/iconPickerPkComponents-DCcvcxy5.js",
+  "_iconPickerPkComponents-DYt5j7-l.js": {
+    "file": "assets/iconPickerPkComponents-DYt5j7-l.js",
     "name": "iconPickerPkComponents"
   },
   "field/src/js/icon-picker.ts": {
-    "file": "assets/icon-picker-BAuRrH7M.js",
+    "file": "assets/icon-picker-DPaKoItT.js",
     "name": "icon-picker",
     "src": "field/src/js/icon-picker.ts",
     "isEntry": true,
     "imports": [
-      "_iconPickerPkComponents-DCcvcxy5.js",
+      "_iconPickerPkComponents-DYt5j7-l.js",
       "_flow-u-4RYc_W.js"
     ],
     "dynamicImports": [
       "../../../node_modules/@lit-labs/virtualizer/layouts/flow.js"
     ],
     "css": [
-      "assets/icon-picker-DGI6bhJv.css"
+      "assets/icon-picker-BG-4xebQ.css"
     ]
   },
   "field/src/js/plugin-kit-register.ts": {
-    "file": "assets/pluginKit-xKQzJsfH.js",
+    "file": "assets/pluginKit-DIe1oOjP.js",
     "name": "pluginKit",
     "src": "field/src/js/plugin-kit-register.ts",
     "isEntry": true,
     "imports": [
-      "_iconPickerPkComponents-DCcvcxy5.js"
+      "_iconPickerPkComponents-DYt5j7-l.js"
     ],
     "css": [
       "assets/pluginKit-L3ZLhEvQ.css"

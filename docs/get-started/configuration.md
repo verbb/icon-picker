@@ -69,6 +69,8 @@ The base URL prepended to the path and filename of the icon. The default is an `
 To enable Icon Picker for use with Redactor, supply the field handle for an Icon Picker field.
 :::
 
+The field’s **Default** icon size uses the following dimensions. **Small** and **Large** scale the artwork and adjust the selectable area, keeping space for below-icon labels.
+
 ::: reference
 ### `iconItemWrapperSize`
 
@@ -82,7 +84,7 @@ The number (in pixels) for the width and height of the icon wrapper when shown i
 
 **Type:** `int` · **Default:** `72`
 
-The number (in pixels) for the width and height of the icon wrapper when shown in the icon-selector dropdown, when `showLabels` is also enabled for the field settings. This represents the selectable square for the icon.
+The number (in pixels) for the width and height of the icon wrapper when shown in the icon-selector dropdown, when **Labels** is set to **Below Icon** in the field settings. This represents the selectable square for the icon.
 :::
 
 ::: reference
@@ -98,7 +100,7 @@ The number (in pixels) for the width and height of the inner icon when shown in 
 
 **Type:** `int` · **Default:** `40`
 
-The number (in pixels) for the width and height of the inner icon when shown in the icon-selector dropdown, when `showLabels` is also enabled for the field settings. This represents the actual icon glyph within the wrapper.
+The number (in pixels) for the width and height of the inner icon when shown in the icon-selector dropdown, when **Labels** is set to **Below Icon** in the field settings. This represents the actual icon glyph within the wrapper.
 :::
 
 
