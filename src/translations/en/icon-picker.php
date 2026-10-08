@@ -1,6 +1,8 @@
 <?php
 
 return [
+  'Group by Subfolder' => 'Group by Subfolder',
+  'Show headings for subfolders in the icon picker. This does not change which icons are included.' => 'Show headings for subfolders in the icon picker. This does not change which icons are included.',
   'Couldn’t delete icon set.' => 'Couldn’t delete icon set.',
   'Configure an Icon Picker field for Redactor in the plugin settings.' => 'Configure an Icon Picker field for Redactor in the plugin settings.',
   '/' => '/',

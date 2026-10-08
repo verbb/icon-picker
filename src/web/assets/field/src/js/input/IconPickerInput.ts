@@ -8,11 +8,13 @@ import { html, nothing } from 'lit';
 import { ref } from 'lit/directives/ref.js';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import '@lit-labs/virtualizer';
-import { grid } from '@lit-labs/virtualizer/layouts/grid.js';
+import { flow } from '@lit-labs/virtualizer/layouts/flow.js';
 import type { LitVirtualizer } from '@lit-labs/virtualizer/LitVirtualizer.js';
 
 import { loadFonts, loadScripts, loadSpriteSheets } from '../icon/loadResources.js';
 import { humanizeLabel, renderIconInto, type IconItem } from '../icon/renderIcon.js';
+
+import { adjacentIconIndex, applyIconSetGroups, buildIconRows, indexIconRows, orderIconGroups, type IconRow } from './iconGroups.js';
 
 export type IconValue = IconItem;
 
@@ -69,6 +71,11 @@ export class IconPickerInput {
 
     private selected: IconValue;
     private icons: IconItem[] = [];
+    private showSetHeadings = false;
+    private rows: IconRow[] = [];
+    private rowPositions = indexIconRows([]);
+    private filteredCache: { source: IconItem[]; query: string; items: IconItem[] } | null = null;
+    private rowSource: IconItem[] | null = null;
     private search = '';
     private cssAttribute = 'class';
     private isFetching = false;
@@ -87,11 +94,12 @@ export class IconPickerInput {
     private popover!: HTMLElement;
     private pane!: HTMLElement;
     private statusEl!: HTMLElement;
-    private virtualizer: LitVirtualizer<IconItem> | null = null;
-    /** Last `size:gap` applied to the virtualizer — avoid rebuilding layout on every open. */
+    private virtualizer: LitVirtualizer<IconRow> | null = null;
+    /** Rebuild the flow layout only when row metrics change. */
     private layoutKey: string | null = null;
     private paneRefreshQueued = false;
-    /** Column count from the last layout pass — arrow Up/Down moves by this stride. */
+    private resizeObserver: ResizeObserver | null = null;
+    /** Column count used to pack the visible icon rows. */
     private gridCols = 1;
     /** Roving focus index into `iconsFiltered` (−1 = focus not in the grid). */
     private activeGridIndex = -1;
@@ -133,12 +141,16 @@ export class IconPickerInput {
         }
 
         window.addEventListener('resize', this.onResize);
+        // Sidebars and slide-outs can resize the field without a window resize.
+        this.resizeObserver = new ResizeObserver(this.onResize);
+        this.resizeObserver.observe(this.wrap);
     }
 
     destroy(): void {
         this.destroyed = true;
         this.focusGridToken++;
         window.removeEventListener('resize', this.onResize);
+        this.resizeObserver?.disconnect();
     }
 
     // -------------------------------------------------------------------------
@@ -512,7 +524,14 @@ export class IconPickerInput {
             return this.icons;
         }
 
-        return this.icons.filter((icon) => `${icon.label || ''} ${icon.keywords || ''}`.toLowerCase().includes(query));
+        if (this.filteredCache?.source !== this.icons || this.filteredCache.query !== query) {
+            this.filteredCache = {
+                source: this.icons,
+                query,
+                items: this.icons.filter((icon) => `${icon.label || ''} ${icon.keywords || ''}`.toLowerCase().includes(query)),
+            };
+        }
+        return this.filteredCache.items;
     }
 
     // -------------------------------------------------------------------------
@@ -547,11 +566,6 @@ export class IconPickerInput {
 
         if (this.virtualizer) {
             this.virtualizer.hidden = false;
-            // Same array ref → virtualizer no-ops; skip the write so warm re-opens
-            // don’t schedule a full range rebuild mid-animation.
-            if (this.virtualizer.items !== items) {
-                this.virtualizer.items = items;
-            }
             this.syncVirtualizerLayout();
         }
     }
@@ -561,6 +575,8 @@ export class IconPickerInput {
             // Drop items so a failed `[hidden]` can't leave the previous grid painted
             // under the empty/loading message (same display-vs-hidden trap as the chip).
             this.virtualizer.items = [];
+            this.rowSource = null;
+            this.rows = [];
             this.virtualizer.hidden = true;
             this.virtualizer.style.height = '';
             this.virtualizer.style.minHeight = '';
@@ -596,10 +612,10 @@ export class IconPickerInput {
             return;
         }
 
-        const virtualizer = document.createElement('lit-virtualizer') as LitVirtualizer<IconItem>;
+        const virtualizer = document.createElement('lit-virtualizer') as LitVirtualizer<IconRow>;
         virtualizer.className = 'ipui-icons-scroller';
         virtualizer.scroller = true;
-        virtualizer.renderItem = (item: IconItem, index: number) => this.renderGridItem(item, index);
+        virtualizer.renderItem = (row: IconRow, index: number) => this.renderRow(row, index);
         // Capture so arrows win over scroll-default and recycled cell focus.
         virtualizer.addEventListener(
             'keydown',
@@ -632,9 +648,10 @@ export class IconPickerInput {
                     ? this.activeGridIndex
                     : 0;
 
-        // Column stride must match the painted grid (lit-virtualizer’s own math), not
-        // only our height-sizing estimate — mismatch makes ArrowDown miss the cell below.
-        const cols = this.resolveGridCols(focused);
+        const row = this.rows[this.rowPositions.rowOfIndex[next]];
+        if (!row || row.kind !== 'icons') {
+            return;
+        }
 
         switch (event.key) {
             case 'ArrowRight':
@@ -644,25 +661,27 @@ export class IconPickerInput {
                 next = Math.max(0, next - 1);
                 break;
             case 'ArrowDown':
-                next = Math.min(items.length - 1, next + cols);
+                next = adjacentIconIndex(this.rows, this.rowPositions, next, 1);
                 break;
-            case 'ArrowUp':
-                if (next < cols) {
+            case 'ArrowUp': {
+                const above = adjacentIconIndex(this.rows, this.rowPositions, next, -1);
+                if (above < 0) {
                     event.preventDefault();
                     this.activeGridIndex = next;
                     (this.searchInput as HTMLElement & { focus?: () => void }).focus?.();
                     return;
                 }
-                next = next - cols;
+                next = above;
                 break;
+            }
             case 'Home':
-                next = event.ctrlKey || event.metaKey ? 0 : next - (next % cols);
+                next = event.ctrlKey || event.metaKey ? 0 : row.startIndex;
                 break;
             case 'End': {
                 if (event.ctrlKey || event.metaKey) {
                     next = items.length - 1;
                 } else {
-                    const rowEnd = next - (next % cols) + (cols - 1);
+                    const rowEnd = row.startIndex + row.items.length - 1;
                     next = Math.min(items.length - 1, rowEnd);
                 }
                 break;
@@ -673,50 +692,6 @@ export class IconPickerInput {
 
         event.preventDefault();
         this.focusGridIndex(next);
-    }
-
-    /**
-     * Count cells that share a row’s Y — authoritative for arrow stride.
-     * Falls back to the last layout estimate when the scroller isn’t painted yet.
-     */
-    private resolveGridCols(focused: HTMLElement | null): number {
-        if (!this.virtualizer) {
-            return Math.max(1, this.gridCols);
-        }
-
-        const buttons = this.virtualizer.querySelectorAll<HTMLElement>('.ipui-icon-wrap');
-        if (buttons.length < 2) {
-            return Math.max(1, this.gridCols);
-        }
-
-        const counts = new Map<number, number>();
-        buttons.forEach((button) => {
-            const top = Math.round(button.getBoundingClientRect().top);
-            counts.set(top, (counts.get(top) ?? 0) + 1);
-        });
-
-        let measured = 0;
-        counts.forEach((count) => {
-            if (count > measured) {
-                measured = count;
-            }
-        });
-
-        // Prefer the focused row when it’s a full row (partial last rows under-count).
-        if (focused) {
-            const focusTop = Math.round(focused.getBoundingClientRect().top);
-            const focusRow = counts.get(focusTop) ?? 0;
-            if (focusRow >= measured) {
-                measured = focusRow;
-            }
-        }
-
-        if (measured >= 2) {
-            this.gridCols = measured;
-            return measured;
-        }
-
-        return Math.max(1, this.gridCols);
     }
 
     /**
@@ -733,7 +708,7 @@ export class IconPickerInput {
         this.activeGridIndex = next;
         const token = ++this.focusGridToken;
 
-        this.virtualizer.scrollToIndex(next, 'nearest');
+        this.virtualizer.scrollToIndex(this.rowPositions.rowOfIndex[next] ?? 0, 'nearest');
 
         const tryFocus = (): void => {
             if (token !== this.focusGridToken || !this.virtualizer) {
@@ -800,24 +775,14 @@ export class IconPickerInput {
         const size = this.cellSize;
         const gapPx = this.showLabels ? 4 : 0;
         const layoutKey = `${size}:${gapPx}`;
-        // New `grid()` every call tears down layout state and reflows the active
-        // range (~100 cells with the default 1000px overhang). Only rebuild when
-        // cell metrics change; height/items updates below are cheap.
         if (this.layoutKey !== layoutKey) {
             this.layoutKey = layoutKey;
-            this.virtualizer.layout = grid({
-                itemSize: {
-                    width: `${size}px`,
-                    height: `${size}px`,
-                },
-                // Labeled cells need a hairline gutter so inset focus / 3-line labels
-                // don't visually collide with the next row (screen 5).
-                gap: gapPx ? `${gapPx}px` : '0px',
-                // Default overhang is 1000px (~12 extra rows). Two rows of buffer is
-                // enough for scroll smoothness and cuts open-paint cost sharply.
-                // lit-virtualizer assigns config onto the layout instance (`_overhang`).
+            // Retain the existing small offscreen buffer: flow's 1000px default
+            // paints many extra icon rows when a picker first opens.
+            this.virtualizer.layout = flow({
                 ...({ _overhang: Math.max(size * 2, 160) } as object),
             });
+            this.rowSource = null;
         }
 
         this.root.style.setProperty('--ipui-cell-size', `${size}px`);
@@ -827,36 +792,49 @@ export class IconPickerInput {
         this.root.style.setProperty('--ipui-icon-size-large', `${this.iconBoxSize}px`);
         this.pane.classList.toggle('show-labels', this.showLabels);
 
-        // Size the scroller to the grid (BEFORE: min 100px / max 50vh), not a fixed 20rem box.
-        // lit-virtualizer defaults minHeight to 150px — set both height + minHeight or it wins.
-        // Prefer pane/wrap width over virtualizer.clientWidth: once a Y scrollbar appears,
-        // clientWidth shrinks and a second pass can thrash column count. Include padding +
-        // a classic scrollbar gutter when the grid will hit max-height so columns don’t
-        // spill a few px and spawn an X scrollbar (looks like a misaligned Y track).
-        const scrollerPad = 10; // .ipui-icons-scroller padding 5px × 2
-        const scrollbarGutter = 15;
+        this.root.style.setProperty('--ipui-row-gap', `${gapPx}px`);
+        const scrollerPad = 10;
         const rawWidth = Math.max(this.pane.clientWidth || this.wrap.offsetWidth, size);
-        const minHeight = 100;
         const maxHeight = Math.floor(window.innerHeight * 0.5);
-        const colsFor = (innerWidth: number) =>
-            Math.max(1, Math.floor(Math.max(innerWidth, size) / (size + gapPx)));
-        const heightFor = (cols: number) => {
-            const rows = Math.max(1, Math.ceil(this.iconsFiltered.length / cols));
-            return rows * size + Math.max(0, rows - 1) * gapPx + scrollerPad;
-        };
+        const items = this.iconsFiltered;
+        const colsFor = (width: number) => Math.max(1, Math.floor((width + gapPx) / (size + gapPx)));
+        const heightFor = (rows: IconRow[]) => rows.reduce((height, row, index) =>
+            height + (row.kind === 'heading' ? (index === 0 ? 24 : 32) : size + gapPx), scrollerPad);
 
         let cols = colsFor(rawWidth - scrollerPad);
-        let contentHeight = heightFor(cols);
+        let rows = buildIconRows(items, cols, this.showSetHeadings);
+        let contentHeight = heightFor(rows);
         if (contentHeight > maxHeight) {
-            cols = colsFor(rawWidth - scrollerPad - scrollbarGutter);
-            contentHeight = heightFor(cols);
+            // Reserve room for a classic scrollbar before packing rows.
+            cols = colsFor(rawWidth - scrollerPad - 15);
+            rows = buildIconRows(items, cols, this.showSetHeadings);
+            contentHeight = heightFor(rows);
         }
 
-        this.gridCols = cols;
+        if (this.rowSource !== items || this.gridCols !== cols) {
+            const restoreFocus = this.open && this.virtualizer.contains(document.activeElement);
+            this.gridCols = cols;
+            this.rowSource = items;
+            this.rows = rows;
+            this.rowPositions = indexIconRows(rows);
+            this.virtualizer.items = rows;
+            if (restoreFocus) {
+                this.focusGridIndex(this.activeGridIndex);
+            }
+        }
 
-        const height = Math.min(Math.max(contentHeight, minHeight), maxHeight);
+        const height = Math.min(Math.max(contentHeight, 100), maxHeight);
         this.virtualizer.style.height = `${height}px`;
         this.virtualizer.style.minHeight = `${height}px`;
+    }
+
+    private renderRow(row: IconRow, index: number) {
+        if (row.kind === 'heading') {
+            return html`<div class="ipui-group-heading" ?data-first=${index === 0} role="heading" aria-level=${row.level} title=${row.label}>${row.label}</div>`;
+        }
+        return html`<div class="ipui-icon-row" role="group" aria-label=${row.label}>
+            ${row.items.map((item, offset) => this.renderGridItem(item, row.startIndex + offset))}
+        </div>`;
     }
 
     private renderGridItem(item: IconItem, index: number) {
@@ -981,7 +959,8 @@ export class IconPickerInput {
             }
 
             if (!preload && payload.icons) {
-                this.icons = payload.icons as IconItem[];
+                this.icons = orderIconGroups(applyIconSetGroups(payload.icons as IconItem[], payload.iconSets));
+                this.showSetHeadings = payload.showSetHeadings === true;
             }
 
             await Promise.all([

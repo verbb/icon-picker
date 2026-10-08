@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+- Show headings between enabled icon sets, with optional subfolder headings for SVG Folder sets. ([#124](https://github.com/verbb/icon-picker/pull/124))
+
 ### Changed
 - Require Verbb Base 3.0.20 or later so shared control-panel layouts use the current asset bundle namespace. ([verbb-base#3](https://github.com/verbb/verbb-base/issues/3))
 

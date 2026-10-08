@@ -4,6 +4,7 @@ namespace verbb\iconpicker\controllers;
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\fields\IconPickerField;
 use verbb\iconpicker\helpers\CpInputContext;
+use verbb\iconpicker\iconsets\SvgFolder;
 use verbb\iconpicker\models\Icon;
 
 use Craft;
@@ -107,6 +108,7 @@ class IconsController extends Controller
 
         $json = [
             'icons' => [],
+            'iconSets' => [],
             'fonts' => [],
             'spriteSheets' => [],
             'scripts' => [],
@@ -114,10 +116,22 @@ class IconsController extends Controller
 
         $iconSets = IconPicker::$plugin->getIconSets()->getIconSetsForField($field);
 
+        $json['showSetHeadings'] = count($iconSets) > 1;
+
         foreach ($iconSets as $iconSet) {
             if ($includeIcons) {
                 $iconSet->populateIcons();
-                $json['icons'] = array_merge($json['icons'], $iconSet->icons);
+                $json['iconSets'][$iconSet->handle] = [
+                    'id' => $iconSet->uid ?: $iconSet->handle,
+                    'label' => $iconSet->name,
+                ];
+
+                // Grouping belongs to the browsing response, not persisted selections or caches.
+                foreach ($iconSet->icons as $icon) {
+                    $item = $icon->jsonSerialize();
+                    $item['browsePath'] = $iconSet instanceof SvgFolder ? $iconSet->getIconGroupPath($icon) : '';
+                    $json['icons'][] = $item;
+                }
             } else {
                 // Chip preload for non-SVG values — skip catalog hydration.
                 $iconSet->populateResources();

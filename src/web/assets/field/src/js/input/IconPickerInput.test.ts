@@ -69,7 +69,11 @@ it('keeps catalog results when an earlier resource preload finishes afterwards',
     let finishPreload!: (value: { data: unknown }) => void;
     const request = vi.mocked(Craft.sendActionRequest);
     request.mockImplementationOnce(() => new Promise((resolve) => { finishPreload = resolve; }));
-    request.mockResolvedValueOnce({ data: { icons: [{ type: 'css', value: 'known' }] } });
+    request.mockResolvedValueOnce({ data: {
+        icons: [{ type: 'css', value: 'known', iconSetHandle: 'custom', browsePath: 'brands' }],
+        iconSets: { custom: { id: 'custom-uid', label: 'Custom' } },
+        showSetHeadings: true,
+    } });
     const state = picker as unknown as {
         fetchIcons(options?: { preload: boolean }): Promise<void>;
         icons: unknown[];
@@ -79,9 +83,12 @@ it('keeps catalog results when an earlier resource preload finishes afterwards',
     vi.spyOn(state, 'refreshPane').mockImplementation(() => {});
     const pending = state.fetchIcons({ preload: true });
     await state.fetchIcons();
-    finishPreload({ data: { icons: [], fonts: [] } });
+    finishPreload({ data: { icons: [], fonts: [], iconSets: {}, showSetHeadings: false } });
     await pending;
-    expect(state.icons).toEqual([{ type: 'css', value: 'known' }]);
+    expect(state.icons).toEqual([{
+        type: 'css', value: 'known', iconSetHandle: 'custom', browsePath: 'brands',
+        browseGroup: { id: 'custom-uid', label: 'Custom', path: 'brands' },
+    }]);
     picker.destroy();
 });
 
@@ -143,5 +150,15 @@ it('submits stable source identity and clears it with the selection', () => {
     expect(input.value).toBe(uid);
     root.querySelector<HTMLButtonElement>('.ipui-icon-input-clear')!.click();
     expect(input.value).toBe('');
+    picker.destroy();
+});
+
+it('keeps browsing groups out of submitted values', () => {
+    const { root, picker } = mount();
+    const state = picker as unknown as { select(icon: unknown): void };
+    state.select({ value: '/social/star.svg', type: 'svg', iconSetUid: 'set-uid', browsePath: 'social', browseGroup: { id: 'set-uid', label: 'Custom', path: 'social' } });
+    expect(root.querySelector<HTMLInputElement>('input[data-icon-picker-key="value"]')?.value).toBe('/social/star.svg');
+    expect(root.querySelector<HTMLInputElement>('input[data-icon-picker-key="iconSetUid"]')?.value).toBe('set-uid');
+    expect([...root.querySelectorAll('input[type="hidden"]')].some((input) => input.getAttribute('name')?.includes('browse'))).toBe(false);
     picker.destroy();
 });

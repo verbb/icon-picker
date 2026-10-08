@@ -21,3 +21,12 @@
     warning: macros.configWarning('recursive', 'icon-picker'),
     errors: iconSet.getErrors('recursive'),
 }) }}
+
+{{ forms.lightswitchField({
+    label: 'Group by Subfolder' | t('icon-picker'),
+    instructions: 'Show headings for subfolders in the icon picker. This does not change which icons are included.' | t('icon-picker'),
+    name: 'groupBySubfolder',
+    on: iconSet.settings.groupBySubfolder ?? false,
+    warning: macros.configWarning('groupBySubfolder', 'icon-picker'),
+    errors: iconSet.getErrors('groupBySubfolder'),
+}) }}

@@ -347,3 +347,39 @@
     clip-path: inset(50%);
     white-space: nowrap;
 }
+
+/* Rows are the virtualized units; headings never occupy selectable grid cells. */
+.ipui-icon-row {
+    display: flex;
+    gap: var(--ipui-row-gap);
+    box-sizing: border-box;
+    height: calc(var(--ipui-cell-size) + var(--ipui-row-gap));
+    padding: 0 5px var(--ipui-row-gap);
+    width: 100%;
+}
+
+.ipui-icon-row .ipui-icon-wrap {
+    flex: 0 0 var(--ipui-cell-size);
+}
+
+.ipui-group-heading {
+    box-sizing: border-box;
+    width: 100%;
+    height: 32px;
+    padding: 7px 5px;
+    border-top: 1px solid var(--pk-color-gray-200);
+    color: var(--pk-color-gray-550);
+    font-size: var(--pk-font-size-sm);
+    line-height: 17px;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Use the logical first row, not :first-child: virtualized DOM rows are recycled. */
+.ipui-group-heading[data-first] {
+    height: 24px;
+    padding-top: 0;
+    border-top: 0;
+}

@@ -8,6 +8,10 @@
 import { startCase, toLower } from 'lodash-es';
 
 export interface IconItem {
+    /** Server-resolved relative folder; set metadata is sent once per catalog. */
+    browsePath?: string;
+    /** Catalog-only organization; never submitted as part of a selection. */
+    browseGroup?: { id: string; label: string; path: string };
     value?: string | null;
     iconSet?: string | null;
     iconSetHandle?: string | null;

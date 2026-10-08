@@ -18,6 +18,8 @@ Save the field and add it to the entry type's field layout.
 
 Open an entry containing the field and open the picker. Search by icon name or keyword, or browse the grid. Use the arrow keys to move through the results, Enter to select an icon and Escape to close the picker.
 
+When the field has multiple enabled Icon Sets, headings separate their icons using the configured set names. SVG Folder sets can also show subfolder headings when **Group by Subfolder** is enabled in the set settings. Searching keeps headings for matching icons and hides groups with no results.
+
 Select an icon, save the entry and reopen it to confirm the selection is retained. Follow [Rendering Icons](docs:template-guides/rendering-icons) to display it beside the product feature on your site; the required markup depends on the Icon Set's format.
 
 ## Feed Me

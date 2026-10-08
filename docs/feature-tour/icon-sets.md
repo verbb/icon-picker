@@ -27,6 +27,8 @@ Use an **SVG Folder** set when your project keeps individual `.svg` files in one
 
 Enable **Search Subfolders** to include `.svg` files nested under the selected folder (on by default). Turn it off to limit the catalogue to files directly in that folder.
 
+Enable **Group by Subfolder** to separate icons with folder headings in the picker. For example, `social/brands` appears as **Social / Brands**, relative to the folder selected for the set. Icons directly inside the selected folder appear first, without a subfolder heading. Grouping is off by default and does not change which files are included.
+
 When you are ready to display a selection, follow [Rendering SVG Icons](docs:template-guides/rendering-icons#svg-icons).
 
 :::tip

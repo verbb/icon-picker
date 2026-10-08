@@ -102,9 +102,11 @@ describe('IconsController access boundary', function() {
         try {
             expect($controller->runAction('icons-for-field')->data)->toBe([
                 'icons' => [],
+                'iconSets' => [],
                 'fonts' => [],
                 'spriteSheets' => [],
                 'scripts' => [],
+                'showSetHeadings' => false,
             ]);
         } finally {
             Craft::$app->getFields()->deleteField($field);
@@ -145,9 +147,11 @@ describe('IconsController access boundary', function() {
         try {
             expect($controller->runAction('icons-for-field')->data)->toBe([
                 'icons' => [],
+                'iconSets' => [],
                 'fonts' => [],
                 'spriteSheets' => [],
                 'scripts' => [],
+                'showSetHeadings' => false,
             ]);
         } finally {
             Craft::$app->getGlobals()->deleteSet($set);
@@ -198,9 +202,11 @@ describe('IconsController access boundary', function() {
 
             expect($response->data)->toBe([
                 'icons' => [],
+                'iconSets' => [],
                 'fonts' => [],
                 'spriteSheets' => [],
                 'scripts' => [],
+                'showSetHeadings' => false,
             ]);
         } finally {
             if ($set->id) {

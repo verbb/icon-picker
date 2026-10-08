@@ -25,6 +25,7 @@ class SvgFolder extends IconSet
 
     public ?string $folder = null;
     public bool $recursive = true;
+    public bool $groupBySubfolder = false;
 
 
     // Public Methods
@@ -95,6 +96,29 @@ class SvgFolder extends IconSet
         }
     }
 
+    /** Return browsing metadata independently of the cached or saved icon value. */
+    public function getIconGroupPath(Icon $icon): string
+    {
+        if (!$this->groupBySubfolder) {
+            return '';
+        }
+
+        $folder = $this->folder === '[root]' ? '' : trim(str_replace('\\', '/', (string)$this->folder), '/');
+        $value = ltrim(str_replace('\\', '/', (string)$icon->value), '/');
+
+        if ($folder !== '') {
+            if (!str_starts_with($value, $folder . '/')) {
+                return '';
+            }
+
+            $value = substr($value, strlen($folder) + 1);
+        }
+
+        $directory = dirname($value);
+
+        return $directory === '.' ? '' : $directory;
+    }
+
     public function getIconDiagnosticsSummary(Icon $icon): array
     {
         $options = parent::getIconDiagnosticsSummary($icon);
@@ -113,7 +137,7 @@ class SvgFolder extends IconSet
         $rules = parent::defineRules();
 
         $rules[] = [['folder'], 'required'];
-        $rules[] = [['recursive'], 'boolean'];
+        $rules[] = [['recursive', 'groupBySubfolder'], 'boolean'];
 
         return $rules;
     }
