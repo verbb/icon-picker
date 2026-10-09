@@ -348,22 +348,31 @@ class Icon extends Model implements \JsonSerializable, \Countable
     public function getGlyph($format = 'charHex'): ?string
     {
         if ($this->type === self::TYPE_GLYPH) {
-            $glyphName = (explode(':', $this->value)[0]) ?? null;
-            $glyphId = (explode(':', $this->value)[1]) ?? null;
+            $glyphId = explode(':', (string)$this->value, 2)[1] ?? null;
+
+            if ($glyphId === null || !ctype_digit($glyphId)) {
+                return null;
+            }
+
+            $codePoint = (int)$glyphId;
+
+            if ($codePoint > 0x10FFFF || ($codePoint >= 0xD800 && $codePoint <= 0xDFFF)) {
+                return null;
+            }
 
             if ($format === 'decimal') {
-                return $glyphId;
+                return (string)$codePoint;
             }
 
             if ($format === 'hex') {
-                return dechex($glyphId);
+                return dechex($codePoint);
             }
 
             if ($format === 'char') {
-                return '&#' . $glyphId . ';';
+                return '&#' . $codePoint . ';';
             }
 
-            return '&#x' . dechex((int)$glyphId) . ';';
+            return '&#x' . dechex($codePoint) . ';';
         }
 
         return null;

@@ -40,6 +40,25 @@ describe('Icon normalize security', function() {
         expect($rendered)->toContain('class="ipui-font ' . $icon->jsonSerialize()['fontClass'] . '"');
     });
 
+    it('returns glyph output only for valid Unicode code points', function(string $value) {
+        $icon = new Icon([
+            'type' => Icon::TYPE_GLYPH,
+            'value' => $value,
+        ]);
+
+        expect($icon->getGlyph('decimal'))->toBeNull()
+            ->and($icon->getGlyph('hex'))->toBeNull()
+            ->and($icon->getGlyph('char'))->toBeNull()
+            ->and($icon->getGlyph())->toBeNull();
+    })->with([
+        'missing code point' => 'missing',
+        'empty code point' => 'empty:',
+        'negative code point' => 'negative:-1',
+        'markup suffix' => 'markup:61804;<script>',
+        'surrogate' => 'surrogate:55296',
+        'above Unicode range' => 'large:1114112',
+    ]);
+
     it('keeps CSS selections as identifiers while presentation comes from the catalog', function() {
         $field = new IconPickerField();
         $valid = $field->normalizeValue(['type' => Icon::TYPE_CSS, 'value' => 'fas fa-heart']);
