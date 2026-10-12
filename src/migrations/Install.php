@@ -6,7 +6,6 @@ use verbb\iconpicker\iconsets\SvgFolder;
 
 use Craft;
 use craft\db\Migration;
-use craft\helpers\MigrationHelper;
 
 class Install extends Migration
 {
