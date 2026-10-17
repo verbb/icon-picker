@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.1.5 - 2026-10-17
 
 ### Fixed
 - Fixed the missing icon source service.
