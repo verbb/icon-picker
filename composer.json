@@ -44,5 +44,8 @@
         "handle": "icon-picker",
         "changelogUrl": "https://raw.githubusercontent.com/verbb/icon-picker/craft-4/CHANGELOG.md",
         "class": "verbb\\iconpicker\\IconPicker"
+    },
+    "scripts": {
+        "test:class-resolution-regressions": "@php tests/regression/class-resolution.php"
     }
 }

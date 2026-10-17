@@ -11,6 +11,7 @@ use Craft;
 use craft\helpers\ArrayHelper;
 use craft\helpers\StringHelper;
 use craft\web\Controller;
+use craft\helpers\Json;
 
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;

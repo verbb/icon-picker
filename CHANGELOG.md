@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- Fixed the missing icon source service and related icon set error handling.
+
 ## 2.0.26 - 2026-08-20
 
 ### Fixed
