@@ -10352,16 +10352,16 @@
         },
         {
             "name": "verbb/base",
-            "version": "3.0.14",
+            "version": "3.0.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/verbb/verbb-base.git",
-                "reference": "c847f893fa7278413b6554324447137b815e7d3e"
+                "reference": "0b60c166a79e2762aa968e062dc84ca6c0a9406e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/verbb/verbb-base/zipball/c847f893fa7278413b6554324447137b815e7d3e",
-                "reference": "c847f893fa7278413b6554324447137b815e7d3e",
+                "url": "https://api.github.com/repos/verbb/verbb-base/zipball/0b60c166a79e2762aa968e062dc84ca6c0a9406e",
+                "reference": "0b60c166a79e2762aa968e062dc84ca6c0a9406e",
                 "shasum": ""
             },
             "require": {
@@ -10398,15 +10398,15 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-14T11:53:23+00:00"
+            "time": "2026-10-04T21:22:12+00:00"
         },
         {
             "name": "verbb/icon-picker",
-            "version": "3.1.0",
+            "version": "3.1.4",
             "dist": {
                 "type": "path",
                 "url": "../../..",
-                "reference": "b98f452a791ae47b489e8d3f79ec1950fb8fce40"
+                "reference": "70876acef527d890915a5391608f5bcea1cc49af"
             },
             "require": {
                 "cakephp/core": "^5.0.0",
@@ -10416,7 +10416,7 @@
                 "glenscott/url-normalizer": "^1.4",
                 "nystudio107/craft-plugin-vite": "^5.0.0",
                 "php": "^8.2",
-                "verbb/base": "^3.0.0"
+                "verbb/base": "^3.0.20"
             },
             "require-dev": {
                 "craftcms/cms": "^5.9",
@@ -10451,6 +10451,9 @@
                 ],
                 "test:perf": [
                     "ddev test --suite=performance"
+                ],
+                "test:class-resolution-regressions": [
+                    "@php tests/regression/class-resolution.php"
                 ]
             },
             "license": [
@@ -10462,7 +10465,7 @@
                     "homepage": "https://verbb.io"
                 }
             ],
-            "description": "A slick field to pick icons from. Supports SVGs, Sprites, Webfonts, Font Awesome and more.",
+            "description": "A Craft CMS field for searching and selecting SVGs, sprites, webfonts and remote icon sets.",
             "keywords": [
                 "cms",
                 "craft",
@@ -11420,5 +11423,5 @@
     "platform-overrides": {
         "php": "8.2.0"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }

@@ -1,0 +1,9 @@
+{
+    "craft\\feedme\\base\\Field": "craftcms/feed-me (optional import integration)",
+    "craft\\feedme\\base\\FieldInterface": "craftcms/feed-me (optional import integration)",
+    "craft\\feedme\\events\\RegisterFeedMeFieldsEvent": "craftcms/feed-me (optional import integration)",
+    "craft\\feedme\\services\\Fields": "craftcms/feed-me (optional import integration)",
+    "craft\\redactor\\Field": "craftcms/redactor (optional Redactor integration)",
+    "craft\\redactor\\assets\\redactor\\RedactorAsset": "craftcms/redactor (optional Redactor integration)",
+    "craft\\redactor\\events\\RegisterPluginPathsEvent": "craftcms/redactor (optional Redactor integration)"
+}
