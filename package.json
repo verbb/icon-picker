@@ -22,7 +22,7 @@
         "typescript": "^5.7.3",
         "vite": "^8.3.4",
         "vite-plugin-compression": "^0.5.1",
-        "vitest": "^5.0.0"
+        "vitest": "^5.0.5"
     },
     "dependencies": {
         "@lit-labs/virtualizer": "^2.1.1",
