@@ -17,7 +17,7 @@
     "name": "iconPickerPkComponents"
   },
   "field/src/js/icon-picker.ts": {
-    "file": "assets/icon-picker-Crh7e-XZ.js",
+    "file": "assets/icon-picker-C1CD1nbh.js",
     "name": "icon-picker",
     "src": "field/src/js/icon-picker.ts",
     "isEntry": true,
@@ -33,7 +33,7 @@
     ]
   },
   "field/src/js/plugin-kit-register.ts": {
-    "file": "assets/pluginKit-BtRTcCSM.js",
+    "file": "assets/pluginKit-B47cmui-.js",
     "name": "pluginKit",
     "src": "field/src/js/plugin-kit-register.ts",
     "isEntry": true,
@@ -41,7 +41,7 @@
       "_iconPickerPkComponents-DYt5j7-l.js"
     ],
     "css": [
-      "assets/pluginKit-L3ZLhEvQ.css"
+      "assets/pluginKit-Cvzm7hAh.css"
     ]
   }
 }
