@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ea22e463fa0c94793a494cc281d4147",
+    "content-hash": "e8945066411e74297973968fc5df3abd",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -10402,11 +10402,11 @@
         },
         {
             "name": "verbb/icon-picker",
-            "version": "3.1.4",
+            "version": "3.1.6",
             "dist": {
                 "type": "path",
                 "url": "../../..",
-                "reference": "70876acef527d890915a5391608f5bcea1cc49af"
+                "reference": "d07bef5011044aa757e8bf99354a58d9c27e35ea"
             },
             "require": {
                 "cakephp/core": "^5.0.0",
@@ -11421,7 +11421,8 @@
     "platform": {},
     "platform-dev": {},
     "platform-overrides": {
-        "php": "8.2.0"
+        "php": "8.2.0",
+        "php-64bit": "8.2.0"
     },
     "plugin-api-version": "2.6.0"
 }
