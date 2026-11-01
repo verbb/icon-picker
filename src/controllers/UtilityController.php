@@ -48,6 +48,8 @@ class UtilityController extends Controller
         if ($selectedHandles === '*' || (is_array($selectedHandles) && in_array('*', $selectedHandles))) {
             $iconSets = $allIconSets;
         } else {
+            // An empty selection is posted as an empty string.
+            $selectedHandles = is_array($selectedHandles) ? $selectedHandles : [];
             $iconSets = array_filter($allIconSets, fn($handle) => in_array($handle, $selectedHandles), ARRAY_FILTER_USE_KEY);
         }
 

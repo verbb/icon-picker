@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- Fixed an error when running the troubleshooting utility with no icon sets selected.
+
 ## 3.1.6 - 2026-10-22
 
 ### Changed
