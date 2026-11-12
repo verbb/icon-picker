@@ -47,7 +47,7 @@ Based on [SVG Icons](https://github.com/fyrebase/svg-icons) for Craft 2.
 
 ## Support
 
-Get in touch with us via the [Icon Picker Support page](https://verbb.io/craft-plugins/icon-picker/support) or by [creating a Github issue](https://github.com/verbb/icon-picker/issues)
+Get in touch with us via the [Icon Picker Support page](https://verbb.io/craft-plugins/icon-picker/support) or by [creating a GitHub issue](https://github.com/verbb/icon-picker/issues).
 
 <h2></h2>
 
