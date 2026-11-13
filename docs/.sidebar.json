@@ -30,9 +30,23 @@
         "title": "Developers",
         "collapsable": false,
         "children": [
-            "developers/icon",
-            "developers/icon-sets",
-            "developers/graphql"
+            "developers/events",
+            "developers/custom-icon-sets"
+        ]
+    },
+    {
+        "title": "GraphQL",
+        "collapsable": false,
+        "children": [
+            "graphql/queries",
+            "graphql/interfaces-types"
+        ]
+    },
+    {
+        "title": "Reference",
+        "collapsable": false,
+        "children": [
+            "reference/icon"
         ]
     }
 ]

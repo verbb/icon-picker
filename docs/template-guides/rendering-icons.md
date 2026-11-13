@@ -1,6 +1,6 @@
 # Rendering Icons
 
-An Icon Picker field returns an [Icon object](docs:developers/icon). The markup you use depends on the selected Icon Set, so first confirm whether the field uses individual SVGs, a spritesheet, a Web Font or a remote CSS collection. The examples below assume an entry field with the handle `featureIcon`.
+An Icon Picker field returns an [Icon object](docs:reference/icon). The markup you use depends on the selected Icon Set, so first confirm whether the field uses individual SVGs, a spritesheet, a Web Font or a remote CSS collection. The examples below assume an entry field with the handle `featureIcon`.
 
 Always check that the field has a value before rendering it:
 

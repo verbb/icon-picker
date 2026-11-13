@@ -1,5 +1,14 @@
-# GraphQL
-You can fetch Icon Picker field content through Craft's GraphQL API. Add the entry section and Icon Picker field to the schema used by your access token before running the query. Replace `blog_blog_Entry` and `iconPickerField` below with the generated entry type and field handle from your project.
+# Queries
+
+Icon Picker doesn’t add its own GraphQL queries. An Icon Picker field adds its value to Craft’s element types, so you query it through Craft’s own queries, such as `entries`, the same way as any other custom field. The field returns a `{fieldHandle}_Icon` object, which implements the `IconInterface` interface.
+
+## Set Up the Schema
+
+In **GraphQL → Schemas**, edit the schema used by your access token and allow it to read the section that contains your Icon Picker field. [Craft’s GraphQL documentation](https://craftcms.com/docs/5.x/development/graphql.html) explains schemas, tokens and endpoints.
+
+## Query an Icon
+
+Replace `blog_blog_Entry` and `iconPickerField` below with the generated entry type and field handle from your project.
 
 ```graphql
 {
@@ -47,23 +56,48 @@ A selected local SVG returns data in this shape. The example uses `null` for the
 }
 ```
 
-## The `IconInterface` Interface
-This is the interface implemented by every Icon Picker field’s GraphQL object type (`{fieldHandle}_Icon`). Use it when you want one fragment or selection set to work across different field handles.
+Which fields have values depends on the icon’s `type`. An SVG icon returns `url`, and `inline` when it comes from a local SVG folder. A remote SVG set returns `null` for `inline`, so use `url` for those icons. A web font icon returns `glyph` and `glyphName`, and a CSS or sprite icon returns its class or sprite name in `value`. Check `isEmpty` before rendering, as the field returns an object even when no icon is selected. [Interfaces & Types](docs:graphql/interfaces-types) describes every field.
 
-| Field | Type | Description
-| - | - | -
-| `value` | `String` | The value of the icon. This will vary depending on the type of icon.
-| `iconSet` | `String` | The icon set this icon belongs to.
-| `label` | `String` | The named representation of the icon.
-| `keywords` | `String` | The keywords used to search for the icon by. Defaults to the `label`.
-| `type` | `String` | What type of icon this is: `svg`, `sprite`, `glyph`, or `css`.
-| `isEmpty` | `Boolean` | Whether the icon value is empty (`true` means no selection).
-| `url` | `String` | The full URL to the icon.
-| `inline` | `String` | The raw contents of a local SVG icon. Remote SVG sets return `null`; use `url` for those icons.
-| `glyph` | `String` | The character representation of a font glyph.
-| `glyphName` | `String` | The named representation of a font glyph.
+## Query a Web Font Icon
 
-## Reusable Fragments
+For a field using a web font icon set, request the glyph fields to render the character in your own markup.
+
+```graphql
+{
+  entries(section: "blog", limit: 1) {
+    ... on blog_blog_Entry {
+      iconPickerField {
+        type
+        iconSet
+        glyph
+        glyphName
+      }
+    }
+  }
+}
+```
+
+```json
+{
+  "data": {
+    "entries": [
+      {
+        "iconPickerField": {
+          "type": "glyph",
+          "iconSet": "fontawesome-webfont",
+          "glyph": "&#xf081;",
+          "glyphName": "twitter-square"
+        }
+      }
+    ]
+  }
+}
+```
+
+`glyph` is a hexadecimal HTML character reference. Output it with your frontend’s raw HTML method inside an element that uses the icon font.
+
+## Share a Fragment Across Fields
+
 Because each `{fieldHandle}_Icon` type implements `IconInterface`, you can define a single fragment and spread it on any Icon Picker field:
 
 ```graphql
