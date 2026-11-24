@@ -198,6 +198,16 @@
     display: none !important;
 }
 
+/* The state panel brings its own padding and type. */
+.ipui-icons-status-panel {
+    padding: 0;
+    font-size: inherit;
+}
+
+.ipui-icons-status-panel pk-state-panel {
+    width: 100%;
+}
+
 /* Height is set in JS from row count (min 100px, max 50vh) so one icon isn't a huge empty box.
    Padding is inside the scrollport (BEFORE tippy `.scroller`) so the scrollbar sits flush
    with the panel edge. lit-virtualizer inlines `overflow: auto` — hide X with !important

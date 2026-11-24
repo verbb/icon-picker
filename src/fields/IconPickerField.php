@@ -19,6 +19,7 @@ use craft\helpers\ArrayHelper;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\helpers\Json;
+use craft\helpers\UrlHelper;
 use craft\services\Gql as GqlService;
 use craft\web\View;
 
@@ -342,6 +343,8 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
             'elementType' => $element ? $element::class : null,
             'elementId' => $element?->id,
             'siteId' => $element?->siteId,
+            // Icon Sets need admin changes, so only link people who can manage them.
+            'iconSetsUrl' => $this->_canManageIconSets() ? UrlHelper::cpUrl('icon-picker/settings/icon-sets') : null,
             'itemSize' => $pluginSettings->iconItemSize,
             'itemSizeLarge' => $pluginSettings->iconItemSizeLarge,
             'itemWrapperSize' => $pluginSettings->iconItemWrapperSize,
@@ -364,6 +367,12 @@ class IconPickerField extends Field implements ThumbableFieldInterface, Previewa
 
     // Private Methods
     // =========================================================================
+
+    private function _canManageIconSets(): bool
+    {
+        return Craft::$app->getConfig()->getGeneral()->allowAdminChanges
+            && (bool)Craft::$app->getUser()->getIsAdmin();
+    }
 
     /**
      * Stored SVG values are either contained local paths or catalog identifiers.

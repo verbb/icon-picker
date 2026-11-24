@@ -43,7 +43,7 @@
     {{ forms.checkboxSelectField({
         label: 'Available Icon Sets' | t('icon-picker'),
         instructions: 'Select which icon sets should be available for this field. Manage these through [Icon Sets]({url}).' | t('icon-picker', { url: cpUrl('icon-picker/settings/icon-sets') }),
-        warning: 'You must create at least one icon set to proceed.',
+        warning: 'You must create at least one icon set to proceed.' | t('icon-picker'),
     }) }}
 {% else %}
     {{ forms.checkboxSelectField({

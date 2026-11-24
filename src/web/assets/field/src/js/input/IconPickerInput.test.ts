@@ -10,7 +10,7 @@ import { loadFonts, loadSpriteSheets } from '../icon/loadResources.js';
 import { render, type TemplateResult } from 'lit';
 import { IconPickerInput } from './IconPickerInput.js';
 
-const mount = (value = {}, displaySettings = {}) => {
+const mount = (value = {}, displaySettings = {}, extraSettings = {}) => {
     const root = document.createElement('div');
     root.dataset.value = JSON.stringify(value);
     root.dataset.settings = JSON.stringify({
@@ -21,6 +21,7 @@ const mount = (value = {}, displaySettings = {}) => {
         elementType: 'verbb\\vizy\\elements\\Block',
         elementId: 2,
         siteId: 3,
+        ...extraSettings,
     });
     document.body.append(root);
     const picker = new IconPickerInput(root);
@@ -116,7 +117,8 @@ it.each([['stylesheet', loadFonts], ['spritesheet', loadSpriteSheets]] as const)
     expect(root.querySelector('.ipui-icons-status')?.textContent).toContain('Request failed.');
     expect(root.querySelector('.ipui-icons-status button')?.textContent).toBe('Retry');
     await state.fetchIcons();
-    expect(root.querySelector('.ipui-icons-status')?.textContent).toBe('No icons match your query.');
+    expect(root.querySelector('.ipui-icons-status')?.textContent).not.toContain('Request failed.');
+    expect(root.querySelector('.ipui-icons-status pk-state-panel')?.getAttribute('heading')).toBe('No icons available');
     picker.destroy();
 });
 
@@ -191,5 +193,44 @@ it('ignores nested tooltip lifecycle events without clearing the picker search',
         expect(state.open).toBe(true);
         expect(state.search).toBe('heart');
     }
+    picker.destroy();
+});
+
+it('explains an empty catalog and links admins to Icon Sets', async () => {
+    const { root, picker } = mount({}, {}, { iconSetsUrl: 'https://example.test/admin/icon-picker/settings/icon-sets' });
+    vi.mocked(Craft.sendActionRequest).mockResolvedValue({ data: { icons: [], iconSets: { root: { id: 'root-uid', label: 'Root' } } } });
+    await (picker as unknown as { fetchIcons(): Promise<void> }).fetchIcons();
+    const panel = root.querySelector('.ipui-icons-status pk-state-panel')!;
+    expect(panel.getAttribute('heading')).toBe('No icons available');
+    expect(panel.textContent).toContain('This field’s icon sets don’t have any icons yet.');
+    expect(panel.textContent).not.toContain('Ask an admin');
+    const link = panel.querySelector<HTMLAnchorElement>('a[slot="actions"]')!;
+    expect(link.textContent).toBe('Manage icon sets');
+    expect(link.getAttribute('href')).toBe('https://example.test/admin/icon-picker/settings/icon-sets');
+    picker.destroy();
+});
+
+it('asks people who can’t manage icon sets to contact an admin', async () => {
+    const { root, picker } = mount();
+    vi.mocked(Craft.sendActionRequest).mockResolvedValue({ data: { icons: [], iconSets: [] } });
+    const state = picker as unknown as { fetchIcons(): Promise<void>; search: string; refreshPane(): void };
+    await state.fetchIcons();
+    // Typing can't help an empty catalog, so the panel stays.
+    state.search = 'star';
+    state.refreshPane();
+    const panel = root.querySelector('.ipui-icons-status pk-state-panel')!;
+    expect(panel.textContent).toBe('This field doesn’t have any icon sets yet. Ask an admin to add some.');
+    expect(panel.querySelector('a')).toBeNull();
+    picker.destroy();
+});
+
+it('keeps the no-match message for searches of a populated catalog', () => {
+    const { root, picker } = mount();
+    const state = picker as unknown as { icons: unknown[]; search: string; refreshPane(): void };
+    state.icons = [{ type: 'css', value: 'bi bi-alarm', label: 'Alarm' }];
+    state.search = 'zzz';
+    state.refreshPane();
+    expect(root.querySelector('.ipui-icons-status')?.textContent).toBe('No icons match your query.');
+    expect(root.querySelector('.ipui-icons-status pk-state-panel')).toBeNull();
     picker.destroy();
 });

@@ -90,3 +90,41 @@ it('allows admin utilities when configuration changes are disabled', function() 
         $general->allowAdminChanges = $previous;
     }
 });
+
+describe('Icon Sets link in the field input', function() {
+    $inputSettings = function(): array {
+        CpRequestContext::activate('entries/icon-sets-link', 'GET');
+        Craft::$app->set('assetManager', Craft::createObject(\craft\helpers\App::assetManagerConfig()));
+        Craft::$app->getView()->setTemplateMode(\craft\web\View::TEMPLATE_MODE_CP);
+        $field = new \verbb\iconpicker\fields\IconPickerField(['name' => 'Linked icon', 'handle' => 'linkedIcon']);
+        $html = $field->getInputHtml(new \verbb\iconpicker\models\Icon(), new \craft\elements\Entry());
+        preg_match('/data-settings="([^"]*)"/', $html, $match);
+
+        return \craft\helpers\Json::decode(html_entity_decode($match[1], ENT_QUOTES));
+    };
+
+    it('links admins who can change settings', function() use ($inputSettings) {
+        AdminUser::login();
+
+        expect($inputSettings()['iconSetsUrl'])->toContain('icon-picker/settings/icon-sets');
+    });
+
+    it('leaves the link out for non-admins', function() use ($inputSettings) {
+        NonAdminUser::login();
+
+        expect($inputSettings()['iconSetsUrl'])->toBeNull();
+    });
+
+    it('leaves the link out when admin changes are off', function() use ($inputSettings) {
+        AdminUser::login();
+        $general = Craft::$app->getConfig()->getGeneral();
+        $previous = $general->allowAdminChanges;
+        $general->allowAdminChanges = false;
+
+        try {
+            expect($inputSettings()['iconSetsUrl'])->toBeNull();
+        } finally {
+            $general->allowAdminChanges = $previous;
+        }
+    });
+});

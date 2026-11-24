@@ -41,6 +41,8 @@ export interface IconPickerSettings {
     elementType?: string | null;
     elementId?: number | null;
     siteId?: number | null;
+    /** Icon Sets settings URL, only set for people who can manage icon sets. */
+    iconSetsUrl?: string | null;
     itemSize?: number;
     itemSizeLarge?: number;
     itemWrapperSize?: number;
@@ -86,6 +88,9 @@ export class IconPickerInput {
     private isFetching = false;
     private isPreloadFetching = false;
     private requestFailed = false;
+    /** Set once the catalog has loaded, so an empty catalog isn't mistaken for a pending one. */
+    private catalogLoaded = false;
+    private iconSetCount = 0;
     private destroyed = false;
     private open = false;
 
@@ -559,6 +564,12 @@ export class IconPickerInput {
             return;
         }
 
+        // The field's sets have no icons at all, so searching can't help.
+        if (!this.icons.length) {
+            this.showStatus(this.catalogLoaded ? 'unavailable' : 'loading');
+            return;
+        }
+
         const items = this.iconsFiltered;
 
         if (!items.length) {
@@ -580,7 +591,7 @@ export class IconPickerInput {
         }
     }
 
-    private showStatus(kind: 'loading' | 'empty' | 'error'): void {
+    private showStatus(kind: 'loading' | 'empty' | 'unavailable' | 'error'): void {
         if (this.virtualizer) {
             // Drop items so a failed `[hidden]` can't leave the previous grid painted
             // under the empty/loading message (same display-vs-hidden trap as the chip).
@@ -595,6 +606,7 @@ export class IconPickerInput {
 
         this.statusEl.hidden = false;
         this.statusEl.replaceChildren();
+        this.statusEl.classList.toggle('ipui-icons-status-panel', kind === 'unavailable');
 
         if (kind === 'loading') {
             const spinner = document.createElement('pk-spinner');
@@ -615,7 +627,41 @@ export class IconPickerInput {
             return;
         }
 
+        if (kind === 'unavailable') {
+            this.statusEl.appendChild(this.buildUnavailablePanel());
+            return;
+        }
+
         this.statusEl.textContent = Craft.t('icon-picker', 'No icons match your query.');
+    }
+
+    /** Shown when the field's icon sets have no icons, such as the empty folder install seeds. */
+    private buildUnavailablePanel(): HTMLElement {
+        const panel = document.createElement('pk-state-panel');
+        panel.setAttribute('size', 'sm');
+        panel.setAttribute('heading', Craft.t('icon-picker', 'No icons available'));
+
+        const iconSetsUrl = this.settings.iconSetsUrl;
+        let message = this.iconSetCount
+            ? Craft.t('icon-picker', 'This field’s icon sets don’t have any icons yet.')
+            : Craft.t('icon-picker', 'This field doesn’t have any icon sets yet.');
+
+        if (!iconSetsUrl) {
+            message += ` ${Craft.t('icon-picker', 'Ask an admin to add some.')}`;
+        }
+
+        panel.append(message);
+
+        if (iconSetsUrl) {
+            const action = document.createElement('a');
+            action.slot = 'actions';
+            action.className = 'btn';
+            action.href = iconSetsUrl;
+            action.textContent = Craft.t('icon-picker', 'Manage icon sets');
+            panel.appendChild(action);
+        }
+
+        return panel;
     }
 
     private ensureVirtualizer(): void {
@@ -979,6 +1025,8 @@ export class IconPickerInput {
             if (!preload && payload.icons) {
                 this.icons = orderIconGroups(applyIconSetGroups(payload.icons as IconItem[], payload.iconSets));
                 this.showSetHeadings = payload.showSetHeadings === true;
+                this.iconSetCount = Object.keys(payload.iconSets || {}).length;
+                this.catalogLoaded = true;
             }
 
             await Promise.all([

@@ -8,7 +8,14 @@
 {% endblock %}
 
 {% block settingsContent %}
-    <div id="icon-sets-vue-admin-table"></div>
+    {% if iconSets | length %}
+        <div id="icon-sets-vue-admin-table"></div>
+    {% else %}
+        <pk-state-panel heading="{{ 'No icon sets yet' | t('icon-picker') }}">
+            {{ 'Icon sets give Icon Picker fields their icons, from a folder of SVGs, a sprite sheet, a web font or an icon library.' | t('icon-picker') }}
+            <a slot="actions" class="btn" href="{{ url('icon-picker/settings/icon-sets/new') }}">{{ 'New icon set' | t('icon-picker') }}</a>
+        </pk-state-panel>
+    {% endif %}
 {% endblock %}
 
 {% set tableData = [] %}
@@ -32,6 +39,7 @@
     }]) %}
 {% endfor %}
 
+{% if iconSets | length %}
 {% js %}
 
 var columns = [
@@ -67,3 +75,4 @@ new Craft.VueAdminTable({
 });
 
 {% endjs %}
+{% endif %}

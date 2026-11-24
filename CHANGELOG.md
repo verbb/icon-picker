@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+### Added
+- Added an empty state to the Icon Picker field when its icon sets have no icons, which links admins to Icon Sets, in place of “No icons match your query.”
+- Added an empty state to the Icon Sets settings page.
+
+### Fixed
+- Fixed the field settings warning “You must create at least one icon set to proceed.” not being translatable.
+
 ## 3.1.8 - 2026-11-05
 
 ### Removed

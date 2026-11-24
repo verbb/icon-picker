@@ -36,6 +36,8 @@ export default {
         alias: { '@': path.resolve('./src/web/assets/field/src') },
         // Resolve kit peers (lit, @floating-ui/dom, …) from this plugin's node_modules.
         preserveSymlinks: false,
+        // Plugin Kit is linked locally until its next release, so keep one copy of its peers.
+        dedupe: ['lit', '@verbb/plugin-kit-core', '@verbb/plugin-kit-icons', '@verbb/plugin-kit-web'],
     },
 
     optimizeDeps: { include: ['lodash-es', 'lit', '@lit-labs/virtualizer'] },

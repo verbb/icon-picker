@@ -4,6 +4,7 @@ namespace verbb\iconpicker\controllers;
 use verbb\iconpicker\IconPicker;
 use verbb\iconpicker\base\IconSet;
 use verbb\iconpicker\base\IconSetInterface;
+use verbb\iconpicker\helpers\Plugin;
 use verbb\iconpicker\models\MissingIconSet;
 
 use Craft;
@@ -35,6 +36,11 @@ class IconSetsController extends Controller
     public function actionIndex(): Response
     {
         $iconSets = IconPicker::$plugin->getIconSets()->getAllIconSets();
+
+        // The empty state is a Plugin Kit state panel.
+        if (!$iconSets) {
+            Plugin::registerAsset('field/src/js/plugin-kit-register.ts');
+        }
 
         return $this->renderTemplate('icon-picker/settings/icon-sets', compact('iconSets'));
     }
