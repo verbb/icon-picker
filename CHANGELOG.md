@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.1.9 - 2026-11-24
 
 ### Added
 - Added an empty state to the Icon Picker field when its icon sets have no icons, which links admins to Icon Sets, in place of “No icons match your query.”
