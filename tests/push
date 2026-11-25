@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+source .github/scripts/push-runtime.sh
+
+frontend() {
+    check_npm_links
+    npm ci
+    npm run typecheck
+    npm run test:frontend
+    npm run build
+}
+
+integration() {
+    run_integration
+}
+
+case "${1:-all}" in
+    all)
+        minimum
+        frontend
+        start_runtime
+        integration
+        ;;
+    minimum|frontend|integration) "$1" ;;
+    *) echo "Unknown push check: $1" >&2; exit 2 ;;
+esac
