@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.1.10 - 2026-11-29
+
+### Changed
+- Run focused checks on push and keep the full test suite available manually.
+- Update Vite and the selector parser for documentation builds.
+
 ## 3.1.9 - 2026-11-24
 
 ### Added
